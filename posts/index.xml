@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Intranautic</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 13 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 14 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>FILE Structure Exploitation</title>
+      <link>https://intranautic.com/posts/file-struct-pwn/</link>
+      <pubDate>Tue, 14 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://intranautic.com/posts/file-struct-pwn/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Welcome</title>
       <link>https://intranautic.com/posts/welcome/</link>
