@@ -1,0 +1,73 @@
+==================================================================
+https://keybase.io/intranautic
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://intranautic.com
+  * I am intranautic (https://keybase.io/intranautic) on keybase.
+  * I have a public key with fingerprint FA1A 2CB1 67E4 BCF2 6B29  931D 09AA 31BF 67BB 3E57
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "01014424936f7f2ed0d6715c327b6cd013b6b3b36b13154060b109693341ee917a060a",
+      "fingerprint": "fa1a2cb167e4bcf26b29931d09aa31bf67bb3e57",
+      "host": "keybase.io",
+      "key_id": "09aa31bf67bb3e57",
+      "kid": "01014424936f7f2ed0d6715c327b6cd013b6b3b36b13154060b109693341ee917a060a",
+      "uid": "cb7c9fd56237fb59e5d7579b58238c19",
+      "username": "intranautic"
+    },
+    "service": {
+      "hostname": "intranautic.com",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "ctime": 1678810708,
+  "expire_in": 157680000,
+  "prev": "656b6a4690aaea10cb964477fe36a6fd692258ba47158424c189128b2a91abd4",
+  "seqno": 4,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+
+owGtUm1QVFUYXr4mWILWcBBwKLk1MeEK99yvc+82yqQgZEQMkziJsdxz79nlurAL
+d5evAUmJZCSDBWwYMJhmKDWxkR0HUj4GMMJxmFInFSTLGBl3SJpa6gdkYXctf/m3
+8+fMed/nec7zPvO6I4J0oQFhp8GYdXjbnoDpRaSTDT17agjkkKsJUw1hw48uXCxj
+p8tsU2TCRJCABAxDMQLNWaCFwjIpcxCwEk1BxEkyCWjEIRrRHAI0YBmSIxEgBU6g
+aQZgLAAoaiWRMBIWxW7Faqmq2F2arEUEIiUhwEHMIMlCcYgSBBrIpCCKNEAWDiJE
+YxZqxCKH08/QzCHRiZMVh1bTHuZ/7T2J/599lz+SkxCUBIvMchQNLYgVMCtDFgqI
+5Smal4DgBzqxahdLsIbWZlRFu1juUiTigJHQGhWKhP3Z+od5EpQsOUo0hVLV4XJI
+jmKtWeRylTpNfrKrutSPrsTI/J+OGSl2WUtTY1Rg1ak47IQJaEjJpfiFtUx5HpCQ
+5I0EripVVGxW/AgWcjypHf8/uEKT5ApYDnEiwwmkKGIRkBISOIaB0IJpTuQsMidQ
+FMsjkdGC47UsJcALgOIRJQpARDJD+EcrszsIE6P5FK2aplOx2kVXuYqJA/ojgXSw
+LiBUFx+dEPxnnNFjXRhZtr3cHv94A0MC/eun04cZHlemSgy6xomhhd43oyfO1PU1
+9w2+KPboTrZ+1ObzugaK79BLB5uOXlu+7YF/wWsvnchMl/ktFnDZOP7Klq/huQ3C
+p81XKr9wzRcv9tfd69r4g7eSHo9KifBwr5fl6OOrdiWuHlo/nrR5aMYYbuvGK4Vx
+u9RvveR8hD0EztxfTBjblzZKSdB3F/cUke/V5mZWR5mZtW3D32yvCav3qcnvBF14
+F4/39689dWnp8Fc7Mi5U+YZ6uuYfvD99vjY2KKSrBfO6wUT3Lb4rm8n2dYafmwsO
+S5/LOkp9aR3P2u85BdOnh4v2TUixtxuWZ2Jia/euTD0Yql8wLBrafPk5rNs9nzrV
+kfRW3dicLbtppHBjn+phwwL1w7Dl+l0yytYwyx+5EfnJ3r8HXp1IfOa17uS0h6vS
+2mb9MX5HzHcbmt4Y7GhxH4xtHKA3fT+SF3dzZtPuU79d/yPl8oe/p2XaPWsZ7Vcj
+L64WencueR/eOX8oJKHzp9SApYtnZ5/lf2z6uX6g7MT9W788bR9dH2EI/bzVvdYW
+rn4g5dFgYnf0mXzjTFQk2Nme2wGttVRcys2M3FRHakFD769bt76w7rOpxpzjvaFj
+7d2dpxfLTf1Bqys9aVdpPb5U3zqZpeqPFXjpmI+bmtdJxPH2pO1XnpvdPxlUWZlS
+NXlvqSifPfn282fd6mivfCPmcMRC3j8=
+=TfvN
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/intranautic
+
+==================================================================
+
