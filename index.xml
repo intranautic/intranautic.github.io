@@ -13,7 +13,9 @@
       <pubDate>Tue, 14 Mar 2023 00:00:00 +0000</pubDate>
       
       <guid>https://intranautic.com/posts/file-struct-pwn/</guid>
-      <description></description>
+      <description>Introduction The technique known as FILE structure exploitation is a technique which aims to abuse the FILE struct within libc.
+This structure, as well as it&amp;rsquo;s associated set of functions, is used as a buffered input and output stream. This allows for more optimized i/o as it performs less read and writes, which allows for less context switching into the kernel.
+However, if not used correctly, the FILE structure can be abused to gain various exploit primitives.</description>
     </item>
     
     <item>
