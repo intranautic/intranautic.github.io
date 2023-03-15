@@ -4,17 +4,17 @@
 <meta http-equiv="content-type" content="text/html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title itemprop="name">Emoji Support | Intranautic</title>
-<meta property="og:title" content="Emoji Support | Intranautic" />
-<meta name="twitter:title" content="Emoji Support | Intranautic" />
-<meta itemprop="name" content="Emoji Support | Intranautic" />
-<meta name="application-name" content="Emoji Support | Intranautic" />
+<title itemprop="name">Regular Expressions Engine Part 1 | Intranautic</title>
+<meta property="og:title" content="Regular Expressions Engine Part 1 | Intranautic" />
+<meta name="twitter:title" content="Regular Expressions Engine Part 1 | Intranautic" />
+<meta itemprop="name" content="Regular Expressions Engine Part 1 | Intranautic" />
+<meta name="application-name" content="Regular Expressions Engine Part 1 | Intranautic" />
 <meta property="og:site_name" content="My blog" />
 
-<meta name="description" content="Guide to emoji usage in Hugo">
-<meta itemprop="description" content="Guide to emoji usage in Hugo" />
-<meta property="og:description" content="Guide to emoji usage in Hugo" />
-<meta name="twitter:description" content="Guide to emoji usage in Hugo" />
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
 
 <meta property="og:locale" content="en-us" />
 <meta name="language" content="en-us" />
@@ -35,13 +35,13 @@
     
 
     <meta property="og:type" content="article" />
-    <meta property="og:article:published_time" content=2023-02-01T00:00:00Z />
-    <meta property="article:published_time" content=2023-02-01T00:00:00Z />
+    <meta property="og:article:published_time" content=2023-03-14T00:00:00Z />
+    <meta property="article:published_time" content=2023-03-14T00:00:00Z />
 
     
-    <meta property="og:article:author" content="Hugo authors" />
-    <meta property="article:author" content="Hugo authors" />
-    <meta name="author" content="Hugo authors" />
+    <meta property="og:article:author" content="Intranautic" />
+    <meta property="article:author" content="Intranautic" />
+    <meta name="author" content="Intranautic" />
     
 
     
@@ -50,16 +50,16 @@
     {
         "@context": "http://schema.org",
         "@type": "Article",
-        "headline": "Emoji Support",
+        "headline": "Regular Expressions Engine Part 1",
         "author": {
         "@type": "Person",
         "name": ""
         },
-        "datePublished": "2023-02-01",
-        "description": "Guide to emoji usage in Hugo",
-        "wordCount":  131 ,
+        "datePublished": "2023-03-14",
+        "description": "",
+        "wordCount":  0 ,
         "mainEntityOfPage": "True",
-        "dateModified": "2023-02-01",
+        "dateModified": "2023-03-14",
         "image": {
         "@type": "imageObject",
         "url": ""
@@ -75,7 +75,7 @@
 
   
 
-  <link rel="canonical" href="https://intranautic.com/posts/emoji-support/"><link href="/sass/main.min.e1a241912604fa0730aca01728f78b04c1144d447dd693df07a461d5f7a63544.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+  <link rel="canonical" href="https://intranautic.com/posts/regex-engine-part-1/"><link href="/sass/main.min.e1a241912604fa0730aca01728f78b04c1144d447dd693df07a461d5f7a63544.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
 
   
 
@@ -161,24 +161,14 @@ stroke-linejoin="round" class="feather feather-home">
     <main class="page-content" aria-label="Content">
         <article>
             <header class="header">
-                <h1 class="header-title">Emoji Support</h1>
+                <h1 class="header-title">Regular Expressions Engine Part 1</h1>
                 
                 <div class="post-meta">
-                    <time datetime="2023-02-01T00:00:00&#43;00:00" itemprop="datePublished"> Feb 1, 2023 </time>
+                    <time datetime="2023-03-14T00:00:00&#43;00:00" itemprop="datePublished"> Mar 14, 2023 </time>
                 </div>
             </header>
             <div class="page-content">
-                <p>Emoji can be enabled in a Hugo project in a number of ways.</p>
-<p>The <a href="https://gohugo.io/functions/emojify/"><code>emojify</code></a> function can be called directly in templates or <a href="https://gohugo.io/templates/shortcode-templates/#inline-shortcodes">Inline Shortcodes</a>.</p>
-<p>To enable emoji globally, set <code>enableEmoji</code> to <code>true</code> in your site&rsquo;s <code>config.toml</code>. You can type emoji shorthand codes directly in content files; e.g.</p>
-<p><code>🙈</code> 🙈 <code>🙉</code> 🙉 <code>🙊</code> 🙊</p>
-<p>I ❤️ Hugo! 😁</p>
-<p>The <a href="http://www.emoji-cheat-sheet.com/">Emoji cheat sheet</a> is a useful reference for emoji shorthand codes.</p>
-<hr>
-<p><strong>N.B.</strong> The above steps enable Unicode Standard emoji characters and sequences in Hugo, however the rendering of these glyphs depends on the browser and the platform. To style the emoji you can either use a third party emoji font or a font stack; e.g.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-css" data-lang="css"><span class="line"><span class="cl"><span class="p">.</span><span class="nc">emoji</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="k">font-family</span><span class="p">:</span> <span class="n">Apple</span> <span class="n">Color</span> <span class="n">Emoji</span><span class="p">,</span> <span class="n">Segoe</span> <span class="n">UI</span> <span class="n">Emoji</span><span class="p">,</span> <span class="n">NotoColorEmoji</span><span class="p">,</span> <span class="n">Segoe</span> <span class="n">UI</span> <span class="n">Symbol</span><span class="p">,</span> <span class="n">Android</span> <span class="n">Emoji</span><span class="p">,</span> <span class="n">EmojiSymbols</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div>
+                
             </div>
         </article>
     </main>

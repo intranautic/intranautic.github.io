@@ -179,7 +179,7 @@ exploit primitives. This is what we will be exploring today.</p>
 <p>But before we delve into the exploitation of the FILE structure, lets first take a
 look into it&rsquo;s internal implementation as well as its use cases.</p>
 <h1 id="the-file-structure">The FILE Structure</h1>
-<p>Lets first take a look at the FILE structure, which is also of type <code>_IO_FILE</code>.</p>
+<p>Lets first take a look at the FILE structure, which is also of type _IO_FILE.</p>
 <p><code>https://elixir.bootlin.com/glibc/latest/source/libio/bits/types/struct_FILE.h#L49</code></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// defined: https://elixir.bootlin.com/glibc/glibc-2.35/source/libio/bits/types/FILE.h#L7
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_IO_FILE</span> <span class="n">FILE</span><span class="p">;</span>
@@ -218,34 +218,38 @@ look into it&rsquo;s internal implementation as well as its use cases.</p>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="n">_IO_lock_t</span> <span class="o">*</span><span class="n">_lock</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span></code></pre></div><p>The <code>_flags</code> field actually serves as two fields, the magic which indicates that the
+</span></span></code></pre></div><p>The _flags field actually serves as two fields, the magic which indicates that the
 memory is indeed a FILE structure, and the flags which indicates the mode in which
 the file is opened. The mode determines which operations will be performed on the
 FILE structure.</p>
-<p>As of right now, the important fields to focus on are <code>_IO_read_ptr</code>, <code>_IO_read_end</code>,
-<code>_IO_read_base</code>, <code>_IO_write_base</code>, <code>_IO_write_ptr</code>, <code>_IO_write_end</code>, <code>_IO_buf_base</code>
-and <code>_IO_buf_end</code>.</p>
+<p>As of right now, the important fields to focus on are _IO_read_ptr, _IO_read_end,
+_IO_read_base, _IO_write_base, _IO_write_ptr, _IO_write_end, _IO_buf_base and
+_IO_buf_end.</p>
+<blockquote>
+<p>Something to note is the fact that in C, stdout, stdin and stderr are all FILE
+structures, meaning that they are also buffered. By default, these are line buffered,
+but you can change it via setvbuf.</p>
+</blockquote>
 <p>Now, we had previously stated that buffering was a vital optimization that these FILE
 structures allow us to utilize. The kinds of buffering are explained below.</p>
-<p><code>unbuffered</code> - Calls write system call as soon as possible, does not cache in buffer.
-<code>line buffered</code> - Writes when a newline is encountered or the buffer is full.
-<code>fully buffered</code> - Writes content of buffer only when the FILE buffer is full.</p>
-<p>Something to note is the fact that in C, <code>stdout</code>, <code>stdin</code> and <code>stderr</code> are all FILE
-structures, meaning that they are also buffered. By default, these are line buffered,
-but you can change it via <code>setvbuf</code>.</p>
+<p>unbuffered - Calls write system call as soon as possible, does not cache in buffer.
+line buffered - Writes when a newline is encountered or the buffer is full.
+fully buffered - Writes content of buffer only when the FILE buffer is full.</p>
+<blockquote>
 <p>Another thing to note is the fact that each of the FILE strucutures within the process
 are chained together as a singly linked list. The global variable which hold the head
 of the list is <code>_IO_list_all</code>. The head of the chain will point towards the standard
 streams that had been explained above, as they are always present within a binary at
 compile time. The definition for <code>_IO_list_all</code> is as shown below.</p>
+</blockquote>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">_IO_FILE_plus</span> <span class="o">*</span><span class="n">_IO_list_all</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">_IO_2_1_stderr_</span><span class="p">;</span>
-</span></span></code></pre></div><p>We can see that the field <code>struct _IO_FILE *chain</code> within the FILE structure acts as
+</span></span></code></pre></div><p>We can see that the field struct _IO_FILE *chain within the FILE structure acts as
 a pointer to the next entry within the list of files.</p>
-<p>The <code>_fileno</code> field within the FILE structure acts as the raw file descriptor for our
+<p>The _fileno field within the FILE structure acts as the raw file descriptor for our
 open file in which we want to operate on. Remember that this FILE structure simply
 acts as a stream wrapper which optimizes i/o operations via buffering.</p>
 <h1 id="the-file-plus-structure">The FILE Plus Structure</h1>
-<p>The <code>_IO_FILE</code> structure is also wrapped around another struct named <code>_IO_FILE_plus</code>.
+<p>The _IO_FILE structure is also wrapped around another struct named _IO_FILE_plus.
 It&rsquo;s purpose and implementation is fairly simply, we can see it&rsquo;s definition below.</p>
 <p><code>https://elixir.bootlin.com/glibc/glibc-2.31/source/libio/libioP.h#L324</code></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">_IO_FILE_plus</span>
@@ -254,13 +258,13 @@ It&rsquo;s purpose and implementation is fairly simply, we can see it&rsquo;s de
 </span></span><span class="line"><span class="cl">  <span class="n">IO_jump_t</span><span class="o">*</span> <span class="n">vtable</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></div><p>We can see that it contains a the FILE structure we had discussed before and a new
-field named <code>vtable</code>. This is identical to the concept of virtual tables within C++,
+field named vtable. This is identical to the concept of virtual tables within C++,
 as it allows for runtime polymorphism of class members. In other words, its a table
 of function pointers which is contained within mutable memory and can dynamically
 change at runtime.</p>
-<p>The <code>_IO_2_1_stderr_</code>, <code>_IO_2_1_stdout_</code> and <code>_IO_2_1_stdin_</code> FILE structures are
-of the type FILE_plus, as well as any other FILE structure returned by <code>fopen</code>.</p>
-<p>The following is the definition of the vtable&rsquo;s <code>IO_jump_t</code>.</p>
+<p>The _IO_2_1_stderr, _IO_2_1_stdout and _IO_2_1_stdin FILE structures are
+of the type FILE_plus, as well as any other FILE structure returned by fopen.</p>
+<p>The following is the definition of the vtable&rsquo;s IO_jump_t.</p>
 <p><code>https://elixir.bootlin.com/glibc/glibc-2.31/source/libio/libioP.h#L293</code></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// defined at: https://elixir.bootlin.com/glibc/glibc-2.31/source/libio/libioP.h#L122
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define JUMP_FIELD(TYPE, NAME) TYPE NAME
@@ -293,12 +297,12 @@ of the type FILE_plus, as well as any other FILE structure returned by <code>fop
 </span></span></code></pre></div><p>We can see that the type for the virtual table consists of function pointers for
 various operations and helper functions which may be performed on the FILE. The
 function that is called will be determined by the offset from the virtual table.</p>
-<p>Remember this, as this will come in handy later when we learn more about exploiting
+<p>Remember this, as it will come in handy later when we learn more about exploiting
 the FILE structure.</p>
 <h1 id="file-operations">FILE Operations</h1>
 <p>Now that we understand the general structure of FILE, lets understand the internal
 mechanisms.</p>
-<p>First, lets take a look at the <code>fread</code> operation, the following is an example of
+<p>First, lets take a look at the fread operation, the following is an example of
 it&rsquo;s usage as well as a function to write out the FILE structure&rsquo;s internal fields.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span>
@@ -347,18 +351,20 @@ Buffer End: 0x55dcd38a7c90
 </code></pre><p>We can see that the read pointer has been incremented by 8 bytes, which is the exact
 number of bytes read by <code>fread</code>. With this we know that each time we read from the
 FILE, it will increment the read pointer by the amount of bytes read. The next time
-we call fread on this file it will continue to read from the <code>_IO_read_ptr</code> pointer.</p>
-<p>Something else that we can notice is the fact that <code>_IO_read_end</code> is not the same as
-<code>_IO_buf_end</code>. With this, we can tell that the state of the FILE structure looks
+we call fread on this file it will continue to read from the _IO_read_ptr pointer.</p>
+<p>Something else that we can notice is the fact that _IO_read_end is not the same as
+_IO_buf_end. With this, we can tell that the state of the FILE structure looks
 similar to the diagram shown below (disregarding the write pointers).</p>
 <p><img src="/assets/img/file-struct-pwn-0.png" alt="file struct diagram"></p>
-<p>The same can be through of for <code>fwrite</code>, it will undergo a similar procedure except
+<p>The same can be through of for fwrite , it will undergo a similar procedure except
 the write fields will be updated.</p>
-<p>When <code>fopen</code> is called, it will initialize depending on the mode which was used to
+<p>When fopen is called, it will initialize depending on the mode which was used to
 open the file. At a high level, it will initialize the various fields of the FILE
 structure, including the population of the vtable field with a default virtual table.</p>
+<blockquote>
 <p>It is highly recommended that you view the source of fopen to gain a better
 understanding of its internal operations.</p>
+</blockquote>
 <p><code>https://elixir.bootlin.com/glibc/latest/source/libio/iofopen.c#L56</code></p>
 <p>The definition for this virtual table is shown below.</p>
 <p><code>https://elixir.bootlin.com/glibc/latest/source/libio/tst-vtables-common.c#L296</code></p>
@@ -390,7 +396,7 @@ understanding of its internal operations.</p>
 structure to gain various exploit primitives. The first technique we will be exploring
 will be an arbitrary read and write primitive via the FILE struct.</p>
 <h1 id="pc-hijack-via-file_plus-and-the-vtable">PC Hijack via FILE_plus and the vtable</h1>
-<h1 id="bypassing-vtable_check-and-validate_vtable-checks">Bypassing vtable_check and validate_vtable Checks</h1>
+<h1 id="bypassing-virtual-table-check">Bypassing virtual table check</h1>
 <h1 id="file-stream-oriented-programming">FILE Stream Oriented Programming</h1>
 
             </div>
