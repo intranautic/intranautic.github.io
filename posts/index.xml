@@ -6,7 +6,21 @@
     <description>Recent content in Posts on Intranautic</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 15 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pwnable.tw - Seethefile</title>
+      <link>https://intranautic.com/posts/pwnabletw-seethefile/</link>
+      <pubDate>Wed, 15 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://intranautic.com/posts/pwnabletw-seethefile/</guid>
+      <description>seethefile [250 pts]
+Can you see anything?
+Get a shell for me.
+seethefile libc.so.6
+This challenge relies on a technique known as FILE structure exploitation. I will not be covering the topic within this post, so I would recommend a read through my post on FILE structure exploitation.
+Arch: i386-32-little RELRO: Partial RELRO Stack: No canary found NX: NX enabled PIE: No PIE (0x8048000) We can see that there are no memory corruption mitigations enabled that seem out of the ordinary.</description>
+    </item>
+    
     <item>
       <title>FILE Structure Exploitation</title>
       <link>https://intranautic.com/posts/file-struct-pwn/</link>
@@ -15,7 +29,7 @@
       <guid>https://intranautic.com/posts/file-struct-pwn/</guid>
       <description>Introduction The technique known as FILE structure exploitation is a technique which aims to abuse the FILE struct within libc.
 This structure, as well as it&amp;rsquo;s associated set of functions, is used as a buffered input and output stream. This allows for more optimized i/o as it performs less read and writes, which allows for less context switching into the kernel.
-However, if not used correctly, the FILE structure can be abused to gain various exploit primitives.</description>
+However, if used incorrectly, the FILE structure can be abused to gain various exploit primitives.</description>
     </item>
     
   </channel>

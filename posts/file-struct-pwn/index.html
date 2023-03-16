@@ -57,7 +57,7 @@
         },
         "datePublished": "2023-03-14",
         "description": "",
-        "wordCount":  1389 ,
+        "wordCount":  1132 ,
         "mainEntityOfPage": "True",
         "dateModified": "2023-03-14",
         "image": {
@@ -174,8 +174,9 @@ abuse the FILE struct within libc.</p>
 <p>This structure, as well as it&rsquo;s associated set of functions, is used as a buffered
 input and output stream. This allows for more optimized i/o as it performs less
 read and writes, which allows for less context switching into the kernel.</p>
-<p>However, if not used correctly, the FILE structure can be abused to gain various
-exploit primitives. This is what we will be exploring today.</p>
+<p>However, if used incorrectly, the FILE structure can be abused to gain various
+exploit primitives. This class of memory corruption vulnerablilities are what we will
+be exploring today.</p>
 <p>But before we delve into the exploitation of the FILE structure, lets first take a
 look into it&rsquo;s internal implementation as well as its use cases.</p>
 <h1 id="the-file-structure">The FILE Structure</h1>
@@ -222,9 +223,6 @@ look into it&rsquo;s internal implementation as well as its use cases.</p>
 memory is indeed a FILE structure, and the flags which indicates the mode in which
 the file is opened. The mode determines which operations will be performed on the
 FILE structure.</p>
-<p>As of right now, the important fields to focus on are _IO_read_ptr, _IO_read_end,
-_IO_read_base, _IO_write_base, _IO_write_ptr, _IO_write_end, _IO_buf_base and
-_IO_buf_end.</p>
 <blockquote>
 <p>Something to note is the fact that in C, stdout, stdin and stderr are all FILE
 structures, meaning that they are also buffered. By default, these are line buffered,
@@ -232,9 +230,11 @@ but you can change it via setvbuf.</p>
 </blockquote>
 <p>Now, we had previously stated that buffering was a vital optimization that these FILE
 structures allow us to utilize. The kinds of buffering are explained below.</p>
-<p>unbuffered - Calls write system call as soon as possible, does not cache in buffer.
-line buffered - Writes when a newline is encountered or the buffer is full.
-fully buffered - Writes content of buffer only when the FILE buffer is full.</p>
+<ul>
+<li>unbuffered - calls write as soon as possible, does not cache in buffer.</li>
+<li>line buffered - writes when a newline is encountered or the buffer is full.</li>
+<li>fully buffered - writes content of buffer only when the FILE buffer is full.</li>
+</ul>
 <blockquote>
 <p>Another thing to note is the fact that each of the FILE strucutures within the process
 are chained together as a singly linked list. The global variable which hold the head
@@ -243,11 +243,18 @@ streams that had been explained above, as they are always present within a binar
 compile time. The definition for <code>_IO_list_all</code> is as shown below.</p>
 </blockquote>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">_IO_FILE_plus</span> <span class="o">*</span><span class="n">_IO_list_all</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">_IO_2_1_stderr_</span><span class="p">;</span>
-</span></span></code></pre></div><p>We can see that the field struct _IO_FILE *chain within the FILE structure acts as
+</span></span></code></pre></div><p>We can see that the field, struct _IO_FILE *chain, within the FILE structure acts as
 a pointer to the next entry within the list of files.</p>
 <p>The _fileno field within the FILE structure acts as the raw file descriptor for our
 open file in which we want to operate on. Remember that this FILE structure simply
 acts as a stream wrapper which optimizes i/o operations via buffering.</p>
+<h1 id="internals-of-file-operations">Internals of FILE Operations</h1>
+<p>Lets take a look into the internal operations of the FILE structure, as well as the
+functionality for the various pointers within its fields.</p>
+<h1 id="arbitrary-read-and-write-with-file-structure">Arbitrary Read and Write with FILE Structure</h1>
+<p>Now that we understand the FILE structure, we can explore how we can abuse this
+structure to gain various exploit primitives. The first technique we will be exploring
+will be an arbitrary read and write primitive via the FILE struct.</p>
 <h1 id="the-file-plus-structure">The FILE Plus Structure</h1>
 <p>The _IO_FILE structure is also wrapped around another struct named _IO_FILE_plus.
 It&rsquo;s purpose and implementation is fairly simply, we can see it&rsquo;s definition below.</p>
@@ -262,6 +269,8 @@ field named vtable. This is identical to the concept of virtual tables within C+
 as it allows for runtime polymorphism of class members. In other words, its a table
 of function pointers which is contained within mutable memory and can dynamically
 change at runtime.</p>
+<p>With the virtual table, we can abstract the implementation away from the object itself
+and allow the functionality to be swapped and replaced where needed.</p>
 <p>The _IO_2_1_stderr, _IO_2_1_stdout and _IO_2_1_stdin FILE structures are
 of the type FILE_plus, as well as any other FILE structure returned by fopen.</p>
 <p>The following is the definition of the vtable&rsquo;s IO_jump_t.</p>
@@ -299,65 +308,6 @@ various operations and helper functions which may be performed on the FILE. The
 function that is called will be determined by the offset from the virtual table.</p>
 <p>Remember this, as it will come in handy later when we learn more about exploiting
 the FILE structure.</p>
-<h1 id="file-operations">FILE Operations</h1>
-<p>Now that we understand the general structure of FILE, lets understand the internal
-mechanisms.</p>
-<p>First, lets take a look at the fread operation, the following is an example of
-it&rsquo;s usage as well as a function to write out the FILE structure&rsquo;s internal fields.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">dump_file_struct</span><span class="p">(</span><span class="n">FILE</span><span class="o">*</span> <span class="n">fp</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Magic: %#lx</span><span class="se">\n</span><span class="s">Flags: %#d</span><span class="se">\n</span><span class="s">Read Pointer: %#lx</span><span class="se">\n</span><span class="s">Read End: %#lx</span><span class="se">\n</span><span class="s">&#34;</span>
-</span></span><span class="line"><span class="cl">         <span class="s">&#34;Read Base: %#lx</span><span class="se">\n</span><span class="s">Write Base: %#lx</span><span class="se">\n</span><span class="s">Write Pointer: %#lx</span><span class="se">\n</span><span class="s">Write End: %#lx</span><span class="se">\n</span><span class="s">&#34;</span>
-</span></span><span class="line"><span class="cl">          <span class="s">&#34;Buffer Base: %#lx</span><span class="se">\n</span><span class="s">Buffer End: %#lx</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">fp</span><span class="o">-&gt;</span><span class="n">_flags</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffff</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">fp</span><span class="o">-&gt;</span><span class="n">_flags</span> <span class="o">&amp;</span> <span class="mh">0xffff</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">fp</span><span class="o">-&gt;</span><span class="n">_IO_read_ptr</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">fp</span><span class="o">-&gt;</span><span class="n">_IO_read_end</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">fp</span><span class="o">-&gt;</span><span class="n">_IO_read_base</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">fp</span><span class="o">-&gt;</span><span class="n">_IO_write_base</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">fp</span><span class="o">-&gt;</span><span class="n">_IO_write_ptr</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">fp</span><span class="o">-&gt;</span><span class="n">_IO_write_end</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">fp</span><span class="o">-&gt;</span><span class="n">_IO_buf_base</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">fp</span><span class="o">-&gt;</span><span class="n">_IO_buf_end</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="k">return</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">  <span class="n">FILE</span><span class="o">*</span> <span class="n">fp</span> <span class="o">=</span> <span class="nf">fopen</span><span class="p">(</span><span class="s">&#34;/dev/stdin&#34;</span><span class="p">,</span> <span class="s">&#34;r&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">fp</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Input 8 bytes: &#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;read %d bytes @ %p</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="nf">fread</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">),</span> <span class="mi">8</span><span class="p">,</span> <span class="n">fp</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">dump_file_struct</span><span class="p">(</span><span class="n">fp</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">fclose</span><span class="p">(</span><span class="n">fp</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">puts</span><span class="p">(</span><span class="s">&#34;Error, something went wrong..&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p>Lets run the example and check out the internal pointers held within the FILE structure.</p>
-<pre tabindex="0"><code>Input 8 bytes: AAAAAAAA
-read 8 bytes @ 0x7ffe5ee95550
-Magic: 0xfbad
-Flags: 9864
-Read Pointer: 0x55dcd38a7898
-Read End: 0x55dcd38a7899
-Read Base: 0x55dcd38a7890
-Write Base: 0x55dcd38a7890
-Write Pointer: 0x55dcd38a7890
-Write End: 0x55dcd38a7890
-Buffer Base: 0x55dcd38a7890
-Buffer End: 0x55dcd38a7c90
-</code></pre><p>We can see that the read pointer has been incremented by 8 bytes, which is the exact
-number of bytes read by <code>fread</code>. With this we know that each time we read from the
-FILE, it will increment the read pointer by the amount of bytes read. The next time
-we call fread on this file it will continue to read from the _IO_read_ptr pointer.</p>
-<p>Something else that we can notice is the fact that _IO_read_end is not the same as
-_IO_buf_end. With this, we can tell that the state of the FILE structure looks
-similar to the diagram shown below (disregarding the write pointers).</p>
-<p><img src="/assets/img/file-struct-pwn-0.png" alt="file struct diagram"></p>
-<p>The same can be through of for fwrite , it will undergo a similar procedure except
-the write fields will be updated.</p>
 <p>When fopen is called, it will initialize depending on the mode which was used to
 open the file. At a high level, it will initialize the various fields of the FILE
 structure, including the population of the vtable field with a default virtual table.</p>
@@ -366,7 +316,7 @@ structure, including the population of the vtable field with a default virtual t
 understanding of its internal operations.</p>
 </blockquote>
 <p><code>https://elixir.bootlin.com/glibc/latest/source/libio/iofopen.c#L56</code></p>
-<p>The definition for this virtual table is shown below.</p>
+<p>The definition for this default virtual table is shown below.</p>
 <p><code>https://elixir.bootlin.com/glibc/latest/source/libio/tst-vtables-common.c#L296</code></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">_IO_jump_t</span> <span class="n">jumps</span> <span class="o">=</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
@@ -391,12 +341,9 @@ understanding of its internal operations.</p>
 </span></span><span class="line"><span class="cl">  <span class="nf">JUMP_INIT</span> <span class="p">(</span><span class="n">showmanyc</span><span class="p">,</span> <span class="n">method_showmanyc</span><span class="p">),</span>
 </span></span><span class="line"><span class="cl">  <span class="nf">JUMP_INIT</span> <span class="p">(</span><span class="n">imbue</span><span class="p">,</span> <span class="n">method_imbue</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span></code></pre></div><h1 id="arbitrary-read-and-write-with-file-structure">Arbitrary Read and Write with FILE structure</h1>
-<p>Now that we understand the FILE structure, we can explore how we can abuse this
-structure to gain various exploit primitives. The first technique we will be exploring
-will be an arbitrary read and write primitive via the FILE struct.</p>
-<h1 id="pc-hijack-via-file_plus-and-the-vtable">PC Hijack via FILE_plus and the vtable</h1>
-<h1 id="bypassing-virtual-table-check">Bypassing virtual table check</h1>
+</span></span></code></pre></div><p>Next, we will see how we can abuse this virtual table to gain exploit primitives.</p>
+<h1 id="pc-hijack-via-file_plus-and-the-vtable">PC Hijack via FILE_plus and the Vtable</h1>
+<h1 id="bypassing-virtual-table-check-since-glibc-224">Bypassing Virtual Table Check Since GLIBC 2.24</h1>
 <h1 id="file-stream-oriented-programming">FILE Stream Oriented Programming</h1>
 
             </div>
