@@ -57,7 +57,7 @@
         },
         "datePublished": "2023-03-15",
         "description": "",
-        "wordCount":  1592 ,
+        "wordCount":  1582 ,
         "mainEntityOfPage": "True",
         "dateModified": "2023-03-15",
         "image": {
@@ -175,9 +175,8 @@ stroke-linejoin="round" class="feather feather-home">
 <p><a href="https://pwnable.tw/static/chall/seethefile">seethefile</a>
 <a href="https://pwnable.tw/static/libc/libc_32.so.6">libc.so.6</a></p>
 </blockquote>
-<p>This challenge relies on a technique known as FILE structure exploitation. I will
-not be covering the topic within this post, so I would recommend a read through
-my post on <a href="/posts/file-struct-pwn/">FILE structure exploitation</a>.</p>
+<p>This challenge relies on a technique known as <a href="/posts/file-struct-pwn/">FILE structure exploitation</a>. I will not be covering the topic within this post, so I would recommend
+a read.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="nl">Arch:</span>     <span class="nf">i386</span><span class="o">-</span><span class="mi">32</span><span class="o">-</span><span class="nv">little</span>
 </span></span><span class="line"><span class="cl"><span class="nl">RELRO:</span>    <span class="nf">Partial</span> <span class="nv">RELRO</span>
 </span></span><span class="line"><span class="cl"><span class="nl">Stack:</span>    <span class="nf">No</span> <span class="nv">canary</span> <span class="nv">found</span>
@@ -385,7 +384,6 @@ consistently, as we dont want to accidentally lock our process.</p>
 </span></span><span class="line"><span class="cl">  <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;exit()&#34;</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="n">sl</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;choice :&#39;</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">menu</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;---------------MENU---------------&#39;</span>
 </span></span><span class="line"><span class="cl"><span class="n">offset</span> <span class="o">=</span> <span class="mi">32</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="n">pause</span><span class="p">()</span>

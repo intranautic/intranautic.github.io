@@ -223,11 +223,9 @@ look into it&rsquo;s internal implementation as well as its use cases.</p>
 memory is indeed a FILE structure, and the flags which indicates the mode in which
 the file is opened. The mode determines which operations will be performed on the
 FILE structure.</p>
-<blockquote>
 <p>Something to note is the fact that in C, stdout, stdin and stderr are all FILE
 structures, meaning that they are also buffered. By default, these are line buffered,
 but you can change it via setvbuf.</p>
-</blockquote>
 <p>Now, we had previously stated that buffering was a vital optimization that these FILE
 structures allow us to utilize. The kinds of buffering are explained below.</p>
 <ul>
@@ -235,13 +233,11 @@ structures allow us to utilize. The kinds of buffering are explained below.</p>
 <li>line buffered - writes when a newline is encountered or the buffer is full.</li>
 <li>fully buffered - writes content of buffer only when the FILE buffer is full.</li>
 </ul>
-<blockquote>
 <p>Another thing to note is the fact that each of the FILE strucutures within the process
 are chained together as a singly linked list. The global variable which hold the head
 of the list is <code>_IO_list_all</code>. The head of the chain will point towards the standard
 streams that had been explained above, as they are always present within a binary at
 compile time. The definition for <code>_IO_list_all</code> is as shown below.</p>
-</blockquote>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">_IO_FILE_plus</span> <span class="o">*</span><span class="n">_IO_list_all</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">_IO_2_1_stderr_</span><span class="p">;</span>
 </span></span></code></pre></div><p>We can see that the field, struct _IO_FILE *chain, within the FILE structure acts as
 a pointer to the next entry within the list of files.</p>
@@ -311,10 +307,8 @@ the FILE structure.</p>
 <p>When fopen is called, it will initialize depending on the mode which was used to
 open the file. At a high level, it will initialize the various fields of the FILE
 structure, including the population of the vtable field with a default virtual table.</p>
-<blockquote>
 <p>It is highly recommended that you view the source of fopen to gain a better
 understanding of its internal operations.</p>
-</blockquote>
 <p><code>https://elixir.bootlin.com/glibc/latest/source/libio/iofopen.c#L56</code></p>
 <p>The definition for this default virtual table is shown below.</p>
 <p><code>https://elixir.bootlin.com/glibc/latest/source/libio/tst-vtables-common.c#L296</code></p>
