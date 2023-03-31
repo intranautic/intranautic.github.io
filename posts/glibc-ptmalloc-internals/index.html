@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name">Glibc PTMalloc Internals | Intranautic</title>
+<meta property="og:title" content="Glibc PTMalloc Internals | Intranautic" />
+<meta name="twitter:title" content="Glibc PTMalloc Internals | Intranautic" />
+<meta itemprop="name" content="Glibc PTMalloc Internals | Intranautic" />
+<meta name="application-name" content="Glibc PTMalloc Internals | Intranautic" />
+<meta property="og:site_name" content="My blog" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+
+
+  <meta itemprop="image" content="https://intranautic.com/" />
+  <meta property="og:image" content="https://intranautic.com/" />
+  <meta name="twitter:image" content="https://intranautic.com/" />
+  <meta name="twitter:image:src" content="https://intranautic.com/" />
+
+
+
+
+    
+    
+    
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:article:published_time" content=2023-03-23T00:00:00Z />
+    <meta property="article:published_time" content=2023-03-23T00:00:00Z />
+
+    
+
+    
+
+    <script defer type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "headline": "Glibc PTMalloc Internals",
+        "author": {
+        "@type": "Person",
+        "name": ""
+        },
+        "datePublished": "2023-03-23",
+        "description": "",
+        "wordCount":  5468 ,
+        "mainEntityOfPage": "True",
+        "dateModified": "2023-03-23",
+        "image": {
+        "@type": "imageObject",
+        "url": ""
+        },
+        "publisher": {
+        "@type": "Organization",
+        "name": "Intranautic"
+        }
+    }
+    </script>
+
+  <meta name="generator" content="Hugo 0.111.3">
+
+  
+
+  <link rel="canonical" href="https://intranautic.com/posts/glibc-ptmalloc-internals/"><link href="/sass/main.min.36e7ee4e3046bff5f058154410a73a98578dd678c08cd8c5c0b28bedca593f36.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+  
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/images/favicon/site.webmanifest">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="shortcut icon" href="/images/favicon/favicon.ico">
+  <meta name="msapplication-TileColor" content="#2b5797">
+  <meta name="msapplication-config" content="/images/favicon/browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <link rel="icon" type="image/svg+xml" href="/images/favicon/favicon.svg">
+
+  
+    </head><body data-theme = "dark" class="notransition">
+<script src="https://intranautic.com/js/themeLoader.min.4e9e1a253d543bbfec02e7f2460d9621e719fd739dc8a5256faa91cda6e12e03.js"></script><div class="navbar" role="navigation">
+  <nav class="menu" aria-label="Main Navigation">
+    <a href="/" class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title>Home</title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+    </a>
+    <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+    <label for="menu-trigger">
+      <span class="menu-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+      </span>
+    </label>
+
+    <div class="trigger">
+      <ul class="trigger-container">
+        
+        
+          <li>
+            <a 
+            class="menu-link "
+            href="/">
+            Home
+            </a>
+            
+          </li>
+        
+          <li>
+            <a 
+            class="menu-link active"
+            href="/posts/">
+            Posts
+            </a>
+            
+          </li>
+        
+          <li>
+            <a 
+            class="menu-link "
+            href="/about/">
+            About
+            </a>
+            
+          </li>
+        
+        <li class="menu-separator">
+          <span>|</span>
+        </li>
+      </ul>
+      <a id="mode" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+      </a>
+    </div>
+  </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title">Glibc PTMalloc Internals</h1>
+                
+                <div class="post-meta">
+                    <time datetime="2023-03-23T00:00:00&#43;00:00" itemprop="datePublished"> Mar 23, 2023 </time>
+                </div>
+            </header>
+            <div class="page-content">
+                <hr>
+<p>The GNU C Library is a complex library, and it&rsquo;s default memory allocator PTMalloc
+(Posix Thread aware malloc) is no exception to this rule. Within this blog post, I
+will attempt to document the internals of this allocator, as well as it&rsquo;s evolution
+throughout the years.</p>
+<p>This post is primarily an in depth analysis and a collection of notes which I have
+amassed throughout the years of being bombarded with heapnote challenges. I am creating
+this post partially for my sake as its become very difficult to keep track of the
+differences between each version of Glibc without some form of reference.</p>
+<p>I will not be covering any exploitation techniques within this post, as it only
+serves as a means of gaining a good understanding of the allocator. There will be
+more posts in the future which detail the various exploitation techniques which
+target the memory allocator.</p>
+<p>If I have incorrectly stated anything, please feel free to inform my of my error via
+one of my contacts below.</p>
+<p>We will first take a high level overview into the allocation algorithm as well as
+various optimizations and protections which have been implemented over the years.</p>
+<h2 id="overview">Overview</h2>
+<hr>
+<p>Lets first begin with a general definition of what the heap is and why it exists.</p>
+<p>The heap, not to be confused with the
+<a href="https://en.wikipedia.org/wiki/Heap_(data_structure)">heap data structure</a> is a
+means of efficiently allocating dynamic memory to a process. This means that during
+runtime, a process can request a chunk of designated memory to be allocated and
+returned. When the process no longer needs this chunk of memory, it can be freed,
+which deallocates the chunk and allows for it&rsquo;s reuse.</p>
+<p>There are a couple means of allocating memory, one such technique is to rely on the
+process stack to allocate local variables. This can be used, and is typically more
+efficient as opposed to relying on a dynamic alloctor; but the downside is the
+fact that it cannot dynamically change the size of the allocation at runtime. The
+local memory which resides on the call stack is also deallocated when the function
+returns and the previous stack frame is restored. This means that the memory is
+not global and cannot be accessed outside the bounds of the current function (besides
+nested functions).</p>
+<p>Another form of memory allocation is that of mmap, which directly maps entire pages
+of memory for the process to use. The downside to this is the fact that we cannot
+efficiently allocate chunks of memory less than a page in size, which would be very
+inefficient in both time and space.</p>
+<p>This is where the concept of dynamic memory management comes in, and how we can use
+memory allocators as an efficient means of allocating smaller dynamic and global chunks
+of memory efficiently.</p>
+<h2 id="heap">Heap</h2>
+<hr>
+<p>So how does the heap actually work within Glibc? We would think that the process may
+initially utilize the mmap system call to map a large region of memory which will be
+designated for our program heap but thats not the case.</p>
+<p>The region of memory which is designated for our process heap is actually allocated
+via the brk and sbrk system calls. These two system calls change the location of
+the program break, which serves to define the end of the process&rsquo;s data segment. By
+increasing the program break, we essentially allocate memory, while decreasing the
+break will deallocate.</p>
+<p>If ASLR is enabled on the system, the data segment within the process will be
+randomly placed within the virtual address space. This allows for the efficient
+randomization of the heap&rsquo;s base address.</p>
+<p>I can&rsquo;t think of any other reason as to why the brk/sbrk system called are utilized
+as opposed to mmap or some other alternative. Reading through the source of Glibc
+only provides the statement that &ldquo;By default, rely on sbrk&rdquo;.</p>
+<p>Something to keep in mind is the fact that malloc will actually utilize mmap if
+the size of our allocation is too large.</p>
+<h2 id="chunk">Chunk</h2>
+<hr>
+<p>We can refer to the term chunk as a unit of memory per allocation which is returned
+by the allocator. For example, when we call malloc, we are returned the address of
+the chunk designated for us by the allocator.</p>
+<p>Chunks within the PTMalloc allocator utilize metadata within their headers as a means
+of storing important information. The following is the definition of the malloc_chunk
+structure within Glibc.</p>
+<p>Something important to note is the fact that all allocations by PTMalloc are multiples
+of 8. Allocation requests which is not a multiple of 8 is rounded to the next largest
+multiple. The chunk size you request will be either larger than or equal to the size
+you request from the allocator.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">malloc_chunk</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">INTERNAL_SIZE_T</span> <span class="n">mchunk_prev_size</span><span class="p">;</span>  <span class="cm">/* Size of previous chunk (if free).  */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">INTERNAL_SIZE_T</span> <span class="n">mchunk_size</span><span class="p">;</span>       <span class="cm">/* Size in bytes, including overhead. */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">malloc_chunk</span><span class="o">*</span> <span class="n">fd</span><span class="p">;</span>         <span class="cm">/* double links -- used only if free. */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">malloc_chunk</span><span class="o">*</span> <span class="n">bk</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Only used for large blocks: pointer to next larger size.  */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">malloc_chunk</span><span class="o">*</span> <span class="n">fd_nextsize</span><span class="p">;</span> <span class="cm">/* double links -- used only if free. */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">malloc_chunk</span><span class="o">*</span> <span class="n">bk_nextsize</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>When we allocate a chunk of memory from our allocator, it will only return to us
+the pointer to the usable region of the chunk. The header of the structure shown
+above our usable region should not be accessed or modified by the user, but this
+doesnt necessarily mean that we can&rsquo;t.</p>
+<p>Looking at the structure of malloc_chunk above, the usable region of memory begins
+at the fd pointer. We can see that the fields mchunk_prev_size, fd, bk, fd_nextsize
+and bk_nextsize are used ONLY if free. These pointers serve to establish a doubly
+linked list of free chunks which are cached within something known as bins. We will
+take a deeper look into these caching bins later on within this post.</p>
+<p>This means that within each of our currently allocated chunks, the only field which
+is in use will be the mchunk_size field, which holds the size of the chunk, as well
+as various flags.</p>
+<p>Before we elaborate on these flags, lets first take a look at an ascii diagram to
+gain a better understanding of the chunk layout within memory.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">chunk-</span><span class="err">&gt;</span> <span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span>
+</span></span><span class="line"><span class="cl">	<span class="err">|</span>             <span class="nf">Size</span> <span class="no">of</span> <span class="no">previous</span> <span class="no">chunk</span><span class="p">,</span> <span class="no">if</span> <span class="no">unallocated</span> <span class="p">(</span><span class="no">P</span> <span class="no">clear</span><span class="p">)</span>   <span class="err">|</span>
+</span></span><span class="line"><span class="cl">	<span class="err">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-</span>
+</span></span><span class="line"><span class="cl">	<span class="err">|</span>             <span class="nf">Size</span> <span class="no">of</span> <span class="no">chunk</span><span class="p">,</span> <span class="no">in</span> <span class="no">bytes</span>                      <span class="err">|</span><span class="no">A</span><span class="err">|</span><span class="no">M</span><span class="err">|</span><span class="no">P</span><span class="err">|</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mem-</span><span class="err">&gt;</span> <span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span><span class="p">-</span><span class="err">+</span>
+</span></span><span class="line"><span class="cl">	<span class="err">|</span>             <span class="nf">User</span> <span class="no">data</span> <span class="no">starts</span> <span class="no">here...</span>                            <span class="p">.</span>
+</span></span><span class="line"><span class="cl">	<span class="err">.</span>                                                                 <span class="err">.</span>
+</span></span><span class="line"><span class="cl">	<span class="err">.</span>             <span class="err">(</span><span class="nf">malloc_usable_size</span><span class="p">()</span> <span class="no">bytes</span><span class="p">)</span>                        <span class="p">.</span>
+</span></span><span class="line"><span class="cl">        <span class="err">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+</span>
+</span></span></code></pre></div><p>We can see that the three bits within the diagram named A, M and P reside within the
+mchunk_size field of the header. These flags are stored on the three lower order bits
+of the mchunk_size field.</p>
+<p>Our first flag P (PREV_INUSE) is used for indicating whether or not the previous
+adjacent chunk is allocated. When a chunk is freed, malloc will rely on the
+PREV_INUSE flag of the following chunk to determine whether it should coalesce the
+newly freed chunk with the previous or next chunks.</p>
+<p>The next flag M (IS_MMAPPED) is fairly simple, as it only serves to indicate the
+method in which the chunk was allocated. If the chunk was too large to be allocated
+by the default implementation of malloc, then mmap will be utilized to map the
+memory required. This allows the allocator to keep track of the chunks method of
+allocation, and its subsequent deallocation.</p>
+<p>Then our last flag A (NON_MAIN_ARENA). This flag serves to indicate whether or
+not the chunk belongs to the main heap or not. By default PTMalloc will utilize
+a single global heap state for our allocator named the arena. However, when we
+are within a multithreaded environment the allocator must effectively manage not
+only the state of the main heap, but that of the other threads as well. I will
+elaborate on the arena further on as well.</p>
+<p>Lets now take a minute to visualize the layout of a chunk within memory. I am
+using <a href="https://github.com/pwndbg/pwndbg">pwndbg</a>. The following is a super
+quick demo script which simply allocates a single chunk and exits.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">void</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">malloc</span><span class="p">(</span><span class="mi">24</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Lets attach this to our debugger and see the state of the heap.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span> <span class="no">heap</span>
+</span></span><span class="line"><span class="cl"><span class="nf">Allocated</span> <span class="no">chunk</span> <span class="err">|</span> <span class="no">PREV_INUSE</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Addr:</span> <span class="err">0</span><span class="nf">x555555559000</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Size:</span> <span class="err">0</span><span class="nf">x291</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">Allocated</span> <span class="no">chunk</span> <span class="err">|</span> <span class="no">PREV_INUSE</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Addr:</span> <span class="err">0</span><span class="nf">x555555559290</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Size:</span> <span class="err">0</span><span class="nf">x21</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">Top</span> <span class="no">chunk</span> <span class="err">|</span> <span class="no">PREV_INUSE</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Addr:</span> <span class="err">0</span><span class="nf">x5555555592b0</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Size:</span> <span class="err">0</span><span class="nf">x20d51</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span> <span class="no">vis_heap_chunks</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">--</span> <span class="nf">snip</span> <span class="p">--</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x555555559280</span>  <span class="mi">0x0000000000000000</span>      <span class="mi">0x0000000000000000</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x555555559290</span>  <span class="mi">0x0000000000000000</span>      <span class="mi">0x0000000000000021</span>  <span class="err">&lt;</span><span class="p">--</span> <span class="no">our</span> <span class="no">chunk</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x5555555592a0</span>  <span class="mi">0x0000000000000000</span>      <span class="mi">0x0000000000000000</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x5555555592b0</span>  <span class="mi">0x0000000000000000</span>      <span class="mi">0x0000000000020d51</span>  <span class="err">&lt;</span><span class="p">--</span> <span class="no">top</span> <span class="no">chunk</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span> <span class="no">p</span> <span class="p">*(</span><span class="no">struct</span> <span class="no">malloc_chunk</span> <span class="p">*)</span><span class="mi">0x555555559290</span>
+</span></span><span class="line"><span class="cl"><span class="nf">$1</span> <span class="err">=</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">mchunk_prev_size</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">mchunk_size</span> <span class="err">=</span> <span class="mi">33</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">fd</span> <span class="err">=</span> <span class="mi">0x0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">bk</span> <span class="err">=</span> <span class="mi">0x0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">fd_nextsize</span> <span class="err">=</span> <span class="mi">0x0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">bk_nextsize</span> <span class="err">=</span> <span class="mi">0x20d51</span>
+</span></span><span class="line"><span class="cl"><span class="err">}</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span>
+</span></span></code></pre></div><p>As our chunk is still currently allocated, we can see that the field bk_nextsize
+is incorrectly populated with the size of the top chunk / wilderness. In our case,
+the only field which is being used by our allocated chunk is mchunk_size. We can
+also notice that we have a chunk of size 32 in total and a usable region of 24.
+The size is shown as 33 due to the PREV_INUSE flag being set in the lowermost bit
+of the mchunk_size field.</p>
+<h2 id="top-chunk--wilderness">Top Chunk / Wilderness</h2>
+<hr>
+<p>The top chunk (also referred to as the wilderness), is the chunk which borders
+the end of available memory on heap. We can also think of this chunk as a region
+of free memory which has not yet been allocated.</p>
+<p>This chunk is given special treatment, as it will never be inserted into any
+cache bins and is only used as a last resort when other caching mechanisms
+cannot provide an adequate chunk.</p>
+<p>If more memory is required on the heap, then the chunk will extend via the sbrk
+system call. We can think of the top chunk as the amount of memory left on the
+heap. The metadata on this top chunk will contain the size of the chunk, as well
+as the PREV_INUSE flag which is always set.</p>
+<h2 id="last-remainder-chunk">Last Remainder Chunk</h2>
+<hr>
+<p>Under certain conditions, when the user requests a chunk in which the cache bins
+cannot satisfy, a larger free chunk which has been cached can be split and returned
+to the user.</p>
+<p>The remainder of the chunk which has been split is known as the last remainder chunk,
+and will be placed within the chunk cache again. I will elaborate on this process
+at a later point in time when explaining the cache bins.</p>
+<h2 id="cache-bins">Cache Bins</h2>
+<hr>
+<p>Let&rsquo;s now take a closer look into the previously mentioned caching bins.</p>
+<p>These bins serve as a means of optimizing allocation speeds and reducing fragmentation
+on the heap by allowing the quick retrieval of chunks which were previously in
+use. There are in total 5 different kinds of bins which all serve separate purposes,
+which we will discuss.</p>
+<p>But why would we want to store recently freed chunks within these bins? These bins
+serve as a means of improving performance and reducing heap fragmentation. By
+caching the pointers to these freed chunks of memory, the allocator has the ability
+to quickly check the bins for cached chunks of the same size.</p>
+<p>There are various kinds of bins within the current implementation of PTMalloc.
+Let&rsquo;s take a look at their use cases, as well as various properties which make them
+unique.</p>
+<h3 id="tcache">Tcache</h3>
+<p>First, we have the tcache (Thread Local Cache), which was introduced within Glibc
+2.26. In terms of functionality, the tcache is very similar to the fastbin in
+the sense that it serves as a set of singly linked LIFO lists which are stored
+in size specific bins. Unlike the fastbin, the tcache has a specific limit on the
+quantity of chunks within each bin as it only allows (by default) 7 free chunks
+per bin.</p>
+<p>However, as the name implies, the tcache serves as a thread specific caching
+mechanism, meaning that there is a tcache per thread.</p>
+<p>The following are relevant definitions for the tcache.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">tcache_entry</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">tcache_entry</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">tcache_entry</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">tcache_perthread_struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// since glibc 2.30 counts type is uint16_t, used to be unsigned char
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">uint16_t</span> <span class="n">counts</span><span class="p">[</span><span class="n">TCACHE_MAX_BINS</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="n">tcache_entry</span> <span class="o">*</span><span class="n">entries</span><span class="p">[</span><span class="n">TCACHE_MAX_BINS</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">tcache_perthread_struct</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="n">__thread</span> <span class="n">tcache_perthread_struct</span> <span class="o">*</span><span class="n">tcache</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span></code></pre></div><p>The purpose of this bin is to provide a faster means of accessing cached chunks
+within multithreaded environments, as there is no longer a need to lock the global
+arena state when accessing these thread local caches. Something important to note
+is the fact that the tcache takes priority over all the other bins, it will be
+the first bin to be accessed in the event of an allocation, and the first candidate
+to cache a chunk if it is of size for the tcache.</p>
+<p>There are 64 tcache bins in total with each bin being a maximum of 7 entries in
+length. Each of the tcache bins store a fixed size chunk determined by the index
+of the bin. The tcache is capable of containing free chunks between the sizes of
+16 to 512 and 32 to 1024 on 32 and 64 bit systems respectively.</p>
+<h3 id="fastbin">Fastbin</h3>
+<p>The fastbin is a set of singly linked LIFO lists which are stored within size
+specific bins. There are 10 fastbins and each bin will only contain entries of the
+same size. The size of the bin is determined by it&rsquo;s index, ranging from 16 to 88
+and 32 to 176 on 32 and 64 bit systems respectively.</p>
+<p>As each entry within the fastbin are all the same size, there is no need to access
+from the middle of the list, so each entry only utilizes its fd pointer (which points
+to the next entry within the fastbin). An fd pointer of NULL indicates the end of the
+singly linked list.</p>
+<p>Chunks held within the fastbin are treated as allocated chunks from the point of
+view of the allocator. The chunks held within the fastbin all keep the PREV_INUSE
+flag set which prevents them from being consolidated with other free chunks. This
+is done at the cost of additional fragmentation, but the result is that of minimal
+logic which causes free to be faster.</p>
+<p>To explicitly consolidate the fastbin, we must use a specialized version of free
+called malloc_consolidate, which releases all free chunks within the fastbin and
+coalesces them with other adjacent freed chunks.</p>
+<p>The function malloc_consolidate is only called under two scenarios. The first is
+when a requested allocation of a chunk is larger than FASTBIN_CONSOLIDATION_THRESHOLD.
+This macro is defined as the following.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define FASTBIN_CONSOLIDATION_THRESHOLD  (65536UL)
+</span></span></span></code></pre></div><p>The next scenario in which malloc_consolidate is called is when an allocation request
+is too large to be satisfied by the fastbin and smallbin. In this case the allocator
+will attempt to consolidate the fastbin with adjacent free chunks in order to satisfy
+the request.</p>
+<h3 id="small-bin">Small Bin</h3>
+<p>There are 62 small bins, where each are cyclic, doubly linked list with sizes ranging
+from 16 to 504 and 32 to 1008 on 32 and 64 bit systems respectively. The size of chunk
+each bin contains depends on the index of the bin, like the fastbin and tcache. The
+smallbin follows a FIFO order of operation, which means that entry insertions occur at
+the head of the doubly linked list, and removals take place at the tail. Each small
+bin only contains entries of the same size.</p>
+<p>The small bin belongs to a bin known as the normal bin. The normal bin is split into
+two kinds of bins, the small and large bin.</p>
+<p>As we might have noticed, the size of freed chunks that the small bin contains also
+overlaps with that of the fastbin and tcache. This is primarily due to the fact that
+no freed chunks can directly be placed within the fastbin, it must first go through
+the unsorted bin.</p>
+<h3 id="large-bin">Large Bin</h3>
+<p>The large bin (like the small bin), is also referred to as a normal bin.</p>
+<p>There are 63 large bins which each maintain a doubly linked list with operations
+being performed in a FIFO manner similar to that of the small bin. However, unlike
+the small bin, the large bin as the ability to contain chunks of different sizes.
+The sizes within the bins must be within a specific range however.</p>
+<p>The large bins are divided into six groups, each with a separate range of free
+chunks which they contain. The sizes in which the large bins contain are
+approximately logarithmically spaced. What follows is a table which lists the
+size ranges of each group of large bin, as well as the quantity of bins that
+belong to each group.</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Quantity of Bins</th>
+<th>Spacing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>32 bins</td>
+<td>64 bytes</td>
+</tr>
+<tr>
+<td>2</td>
+<td>16 bins</td>
+<td>512 bytes</td>
+</tr>
+<tr>
+<td>3</td>
+<td>8 bins</td>
+<td>4096 bytes</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4 bins</td>
+<td>32768 bytes</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2 bins</td>
+<td>262144 bytes</td>
+</tr>
+<tr>
+<td>6</td>
+<td>1 bin</td>
+<td>what&rsquo;s left / infinite</td>
+</tr>
+<tr>
+<td>total: 63 large bins</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>So the range in which the large bin is capable of holding in total is between
+sizes 512 bytes to 128 kilobytes, which is when the memory allocator uses mmap
+to directly map chunks.</p>
+<h3 id="unsorted-bin">Unsorted Bin</h3>
+<p>The unsorted bin is also a circular, doubly linked list which holds free chunks of
+any size. There is only one unsorted bin and acts as a sort of queue for the small
+and large bins. The only free chunks which make it into the normal bins are those that
+come from the unsorted bin. The unsorted bin is also referred to as a normal bin
+as it is held within the same buffer as the large and small bins within the heap
+state.</p>
+<p>When chunks that are freed are too large or the tcache or fastbin, they get placed
+within the unsorted bin. This bin will hold the chunk until the next allocation
+request from malloc, which will check to see if the size of the chunk within the bin
+is a perfect match. This functionality provides the allocator one chance to use the
+chunk before it is sorted into the small and large bins.</p>
+<p>If the allocation size is less than the chunk present within the unsorted bin, then
+the allocator will break off that portion of the chunk and return it to the user. The
+remainder will be placed back within the unsorted bin to undergo the same process. If
+the allocation demand is larger than the chunk size within the unsorted bin however,
+then the chunk will then be moved into either the small or large bin depending on
+its size. A chunk will be placed within the small bin if it is less than 512 bytes,
+else the unsorted bin will place it within the large bin.</p>
+<p>Let&rsquo;s take a look at the following code as an example to help better visualize the
+process which the unsorted bin undergoes.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span><span class="o">*</span> <span class="n">chunk</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="mi">1040</span><span class="p">);</span> <span class="c1">// allocate our chunk large than fastbin &amp; tcache size
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span><span class="o">*</span> <span class="n">_</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="mi">24</span><span class="p">);</span> <span class="c1">// prevent consolidation with top chunk
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nf">free</span><span class="p">(</span><span class="n">chunk</span><span class="p">);</span> <span class="c1">// place within unsorted bin
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Now let&rsquo;s debug this and check out the layout of the heap, as well as where the
+chunk we allocated has ended up. If everything went smoothly, then the chunk should
+have been placed within the unsorted bin.</p>
+<p>Let&rsquo;s place a breakpoint on _exit and check out the state of the heap.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">Breakpoint</span> <span class="mi">2</span><span class="p">,</span> <span class="no">__GI__exit</span> <span class="p">(</span><span class="no">status</span><span class="err">=</span><span class="no">status@entry</span><span class="err">=</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="err">27</span>      <span class="err">{</span>
+</span></span><span class="line"><span class="cl"><span class="nl">LEGEND:</span> <span class="nf">STACK</span> <span class="err">|</span> <span class="no">HEAP</span> <span class="err">|</span> <span class="no">CODE</span> <span class="err">|</span> <span class="no">DATA</span> <span class="err">|</span> <span class="no">RWX</span> <span class="err">|</span> <span class="no">RODATA</span>
+</span></span><span class="line"><span class="cl"><span class="err">────────────[</span> <span class="nf">REGISTERS</span> <span class="err">/</span> <span class="no">show-flags</span> <span class="no">off</span> <span class="err">/</span> <span class="no">show-compact-regs</span> <span class="no">off</span> <span class="p">]</span><span class="err">──────</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">RAX</span>  <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">RBX</span>  <span class="mi">0x7ffff7f7d108</span> <span class="p">(</span><span class="no">__exit_funcs_lock</span><span class="p">)</span> <span class="err">◂—</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">RCX</span>  <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">RDX</span>  <span class="mi">0x7ffff7f8b640</span> <span class="err">◂—</span> <span class="mi">0x7ffff7f8b640</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">RDI</span>  <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">RSI</span>  <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">R8</span>   <span class="mi">0x7fffffffdae0</span> <span class="err">◂—</span> <span class="mi">0x100000000</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">R9</span>   <span class="mi">0x7fffffffda6f</span> <span class="err">◂—</span> <span class="mi">0x7ffff7ffda0800</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">R10</span>  <span class="mi">0x7fffffffd9f0</span> <span class="err">—▸</span> <span class="mi">0x7ffff7ffe2c0</span> <span class="err">—▸</span> <span class="mi">0x555555554000</span> <span class="err">◂—</span> <span class="mi">0x10102464c457f</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">R11</span>  <span class="mi">0x7fffffffda70</span> <span class="err">—▸</span> <span class="mi">0x7ffff7ffda08</span> <span class="p">(</span><span class="no">_rtld_global</span><span class="err">+</span><span class="mi">2568</span><span class="p">)</span> <span class="err">◂—</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">R12</span>  <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">R13</span>  <span class="mi">0x7ffff7f7b660</span> <span class="p">(</span><span class="no">__exit_funcs</span><span class="p">)</span> <span class="err">◂—</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">R14</span>  <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">R15</span>  <span class="mi">0x7ffff7f7d120</span> <span class="p">(</span><span class="no">initial</span><span class="p">)</span> <span class="err">◂—</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">RBP</span>  <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">*</span><span class="nf">RSP</span>  <span class="mi">0x7fffffffdb38</span> <span class="err">—▸</span> <span class="mi">0x7ffff7dde4e7</span> <span class="p">(</span><span class="no">__run_exit_handlers</span><span class="err">+</span><span class="mi">423</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl"><span class="p">*</span><span class="no">RIP</span>  <span class="mi">0x7ffff7e74f20</span> <span class="p">(</span><span class="no">_exit</span><span class="p">)</span> <span class="err">◂—</span> <span class="no">endbr64</span>
+</span></span><span class="line"><span class="cl"><span class="err">─────────────────────[</span> <span class="nf">DISASM</span> <span class="err">/</span> <span class="no">x86-64</span> <span class="err">/</span> <span class="no">set</span> <span class="no">emulate</span> <span class="no">on</span> <span class="p">]</span><span class="err">────────────────</span>
+</span></span><span class="line"><span class="cl"> <span class="err">►</span> <span class="err">0</span><span class="nf">x7ffff7e74f20</span> <span class="err">&lt;</span><span class="no">_exit</span><span class="err">&gt;</span>       <span class="no">endbr64</span>
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7e74f24</span> <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">4</span><span class="err">&gt;</span>     <span class="no">mov</span>    <span class="no">rsi</span><span class="p">,</span> <span class="no">qword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">rip</span> <span class="err">+</span> <span class="mi">0x105e25</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7e74f2b</span> <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">11</span><span class="err">&gt;</span>    <span class="no">mov</span>    <span class="no">edx</span><span class="p">,</span> <span class="mi">0xe7</span>
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7e74f30</span> <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">16</span><span class="err">&gt;</span>    <span class="no">jmp</span>    <span class="no">_exit</span><span class="err">+</span><span class="mi">25</span>                <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">25</span><span class="err">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">↓</span>
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7e74f39</span> <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">25</span><span class="err">&gt;</span>    <span class="no">mov</span>    <span class="no">eax</span><span class="p">,</span> <span class="no">edx</span>
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7e74f3b</span> <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">27</span><span class="err">&gt;</span>    <span class="no">syscall</span>
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7e74f3d</span> <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">29</span><span class="err">&gt;</span>    <span class="no">cmp</span>    <span class="no">rax</span><span class="p">,</span> <span class="p">-</span><span class="mi">0x1000</span>
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7e74f43</span> <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">35</span><span class="err">&gt;</span>    <span class="no">jbe</span>    <span class="no">_exit</span><span class="err">+</span><span class="mi">24</span>                <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">24</span><span class="err">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7e74f45</span> <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">37</span><span class="err">&gt;</span>    <span class="no">neg</span>    <span class="no">eax</span>
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7e74f47</span> <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">39</span><span class="err">&gt;</span>    <span class="no">mov</span>    <span class="no">dword</span> <span class="no">ptr</span> <span class="no">fs</span><span class="p">:[</span><span class="no">rsi</span><span class="p">],</span> <span class="no">eax</span>
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7e74f4a</span> <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">42</span><span class="err">&gt;</span>    <span class="no">jmp</span>    <span class="no">_exit</span><span class="err">+</span><span class="mi">24</span>                <span class="err">&lt;</span><span class="no">_exit</span><span class="err">+</span><span class="mi">24</span><span class="err">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="err">──────────────────────────────[</span> <span class="nf">SOURCE</span> <span class="p">(</span><span class="no">CODE</span><span class="p">)</span> <span class="p">]</span><span class="err">──────────────────────────</span>
+</span></span><span class="line"><span class="cl">   <span class="err">22</span> <span class="c1">#include &lt;abort-instr.h&gt;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>   <span class="err">23</span>
+</span></span><span class="line"><span class="cl">   <span class="err">24</span>
+</span></span><span class="line"><span class="cl">   <span class="err">25</span> <span class="nf">void</span>
+</span></span><span class="line"><span class="cl">   <span class="err">26</span> <span class="nf">_exit</span> <span class="p">(</span><span class="no">int</span> <span class="no">status</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="err">►</span> <span class="err">27</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">   <span class="err">28</span>   <span class="nf">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">   <span class="err">29</span>     <span class="err">{</span>
+</span></span><span class="line"><span class="cl">   <span class="err">30</span>       <span class="nf">INLINE_SYSCALL</span> <span class="p">(</span><span class="no">exit_group</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="no">status</span><span class="p">)</span><span class="c1">;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>   <span class="err">31</span>
+</span></span><span class="line"><span class="cl">   <span class="err">32</span> <span class="c1">#ifdef ABORT_INSTRUCTION
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="err">─────────────────────────────────[</span> <span class="nf">STACK</span> <span class="p">]</span><span class="err">──────────────────────────────</span>
+</span></span><span class="line"><span class="cl"><span class="err">02:0010│</span> <span class="err">0</span><span class="nf">x7fffffffdb48</span> <span class="err">—▸</span> <span class="mi">0x7ffff7e38e63</span> <span class="p">(</span><span class="no">free</span><span class="err">+</span><span class="mi">115</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">03</span><span class="p">:</span><span class="mi">0018</span><span class="err">│</span> <span class="mi">0x7fffffffdb50</span> <span class="err">◂—</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">04:0020│</span> <span class="err">0</span><span class="nf">x7fffffffdb58</span> <span class="err">◂—</span> <span class="mi">0x100000000</span>
+</span></span><span class="line"><span class="cl"><span class="err">05:0028│</span> <span class="err">0</span><span class="nf">x7fffffffdb60</span> <span class="err">—▸</span> <span class="mi">0x7fffffffdcb8</span> <span class="err">—▸</span> <span class="mi">0x7fffffffe069</span> 
+</span></span><span class="line"><span class="cl"><span class="mi">06</span><span class="p">:</span><span class="mi">0030</span><span class="err">│</span> <span class="mi">0x7fffffffdb68</span> <span class="err">—▸</span> <span class="mi">0x7fffffffdcb8</span> <span class="err">—▸</span> <span class="mi">0x7fffffffe069</span>
+</span></span><span class="line"><span class="cl"><span class="err">07:0038│</span> <span class="err">0</span><span class="nf">x7fffffffdb70</span> <span class="err">◂—</span> <span class="mi">0x1</span>
+</span></span><span class="line"><span class="cl"><span class="err">──────────────────────────────[</span> <span class="nf">BACKTRACE</span> <span class="p">]</span><span class="err">─────────────────────────────</span>
+</span></span><span class="line"><span class="cl"> <span class="err">►</span> <span class="nf">f</span> <span class="mi">0</span>   <span class="mi">0x7ffff7e74f20</span> <span class="no">_exit</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">1</span>   <span class="mi">0x7ffff7dde4e7</span> <span class="no">__run_exit_handlers</span><span class="err">+</span><span class="mi">423</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">2</span>   <span class="mi">0x7ffff7dde5b0</span> <span class="no">internal_addseverity</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">3</span>   <span class="mi">0x7ffff7dc6797</span> <span class="no">__libc_start_call_main</span><span class="err">+</span><span class="mi">135</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">4</span>   <span class="mi">0x7ffff7dc684a</span> <span class="no">__libc_start_main</span><span class="err">+</span><span class="mi">138</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">5</span>   <span class="mi">0x555555555075</span> <span class="no">_start</span><span class="err">+</span><span class="mi">37</span>
+</span></span><span class="line"><span class="cl"><span class="err">─────────────────────────────────────────────────────────────────────────</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span> <span class="no">bins</span>
+</span></span><span class="line"><span class="cl"><span class="nf">tcachebins</span>
+</span></span><span class="line"><span class="cl"><span class="nf">empty</span>
+</span></span><span class="line"><span class="cl"><span class="nf">fastbins</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nl">x20:</span> <span class="err">0</span><span class="nf">x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nl">x30:</span> <span class="err">0</span><span class="nf">x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nl">x40:</span> <span class="err">0</span><span class="nf">x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nl">x50:</span> <span class="err">0</span><span class="nf">x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nl">x60:</span> <span class="err">0</span><span class="nf">x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nl">x70:</span> <span class="err">0</span><span class="nf">x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nl">x80:</span> <span class="err">0</span><span class="nf">x0</span>
+</span></span><span class="line"><span class="cl"><span class="nf">unsortedbin</span>
+</span></span><span class="line"><span class="cl"><span class="nl">all:</span> <span class="err">0</span><span class="nf">x555555559290</span> <span class="err">—▸</span> <span class="mi">0x7ffff7f7bb00</span> <span class="p">(</span><span class="no">main_arena</span><span class="err">+</span><span class="mi">96</span><span class="p">)</span> <span class="err">◂—</span> <span class="mi">0x555555559290</span>
+</span></span><span class="line"><span class="cl"><span class="nf">smallbins</span>
+</span></span><span class="line"><span class="cl"><span class="nf">empty</span>
+</span></span><span class="line"><span class="cl"><span class="nf">largebins</span>
+</span></span><span class="line"><span class="cl"><span class="nf">empty</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span> <span class="no">heap</span>
+</span></span><span class="line"><span class="cl"><span class="nf">Allocated</span> <span class="no">chunk</span> <span class="err">|</span> <span class="no">PREV_INUSE</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Addr:</span> <span class="err">0</span><span class="nf">x555555559000</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Size:</span> <span class="err">0</span><span class="nf">x291</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">Free</span> <span class="no">chunk</span> <span class="p">(</span><span class="no">unsortedbin</span><span class="p">)</span> <span class="err">|</span> <span class="no">PREV_INUSE</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Addr:</span> <span class="err">0</span><span class="nf">x555555559290</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Size:</span> <span class="err">0</span><span class="nf">x421</span>
+</span></span><span class="line"><span class="cl"><span class="nl">fd:</span> <span class="err">0</span><span class="nf">x7ffff7f7bb00</span>
+</span></span><span class="line"><span class="cl"><span class="nl">bk:</span> <span class="err">0</span><span class="nf">x7ffff7f7bb00</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">Allocated</span> <span class="no">chunk</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Addr:</span> <span class="err">0</span><span class="nf">x5555555596b0</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Size:</span> <span class="err">0</span><span class="nf">x20</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">Top</span> <span class="no">chunk</span> <span class="err">|</span> <span class="no">PREV_INUSE</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Addr:</span> <span class="err">0</span><span class="nf">x5555555596d0</span>
+</span></span><span class="line"><span class="cl"><span class="nl">Size:</span> <span class="err">0</span><span class="nf">x20931</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span>
+</span></span></code></pre></div><p>Nice, our chunk ended up within the unsorted bin.</p>
+<h2 id="arena">Arena</h2>
+<hr>
+<p>The arena generally acts as a state for the allocator and heap. This is the structure
+which contains the bins, as well as other important fields such as a mutex which
+serializes access on multithreaded processes.</p>
+<p>Let&rsquo;s now take a look at the definition of the arena within Glibc.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">malloc_state</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Serialize access.  */</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">__libc_lock_define</span> <span class="p">(,</span> <span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Flags (formerly in max_fast).  */</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Fastbins */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mfastbinptr</span> <span class="n">fastbinsY</span><span class="p">[</span><span class="n">NFASTBINS</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Base of the topmost chunk -- not otherwise kept in a bin */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mchunkptr</span> <span class="n">top</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* The remainder from the most recent split of a small request */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mchunkptr</span> <span class="n">last_remainder</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Normal bins packed as described above */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mchunkptr</span> <span class="n">bins</span><span class="p">[</span><span class="n">NBINS</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">2</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Bitmap of bins */</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">binmap</span><span class="p">[</span><span class="n">BINMAPSIZE</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Linked list */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">malloc_state</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Linked list for free arenas.  Access to this field is serialized
+</span></span></span><span class="line"><span class="cl"><span class="cm">     by free_list_lock in arena.c.  */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">malloc_state</span> <span class="o">*</span><span class="n">next_free</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Number of threads attached to this arena.  0 if the arena is on
+</span></span></span><span class="line"><span class="cl"><span class="cm">     the free list.  Access to this field is serialized by
+</span></span></span><span class="line"><span class="cl"><span class="cm">     free_list_lock in arena.c.  */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">INTERNAL_SIZE_T</span> <span class="n">attached_threads</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Memory allocated from the system in this arena.  */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">INTERNAL_SIZE_T</span> <span class="n">system_mem</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">INTERNAL_SIZE_T</span> <span class="n">max_system_mem</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>I will now give a brief overview of each field within the structure, I recommend
+viewing the source of Glibc to gain a much more whole understanding of the concept.</p>
+<p>The first field within the structure is the mutex which we know serializes access
+to the structure. The next field flags is a signed 32 bit integer which holds
+additional information about the state of the arena, the flags are as follows.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">   FASTCHUNKS_BIT held in max_fast indicates that there are probably
+</span></span></span><span class="line"><span class="cl"><span class="cm">   some fastbin chunks. It is set true on entering a chunk into any
+</span></span></span><span class="line"><span class="cl"><span class="cm">   fastbin, and cleared only in malloc_consolidate.
+</span></span></span><span class="line"><span class="cl"><span class="cm">   The truth value is inverted so that have_fastchunks will be true
+</span></span></span><span class="line"><span class="cl"><span class="cm">   upon startup (since statics are zero-filled), simplifying
+</span></span></span><span class="line"><span class="cl"><span class="cm">   initialization checks.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#define FASTCHUNKS_BIT (1U)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define have_fastchunks(M) (((M)-&gt;flags &amp; FASTCHUNKS_BIT) == 0)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define clear_fastchunks(M) catomic_or(&amp;(M)-&gt;flags, FASTCHUNKS_BIT)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define set_fastchunks(M) catomic_and(&amp;(M)-&gt;flags, ~FASTCHUNKS_BIT)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">   NONCONTIGUOUS_BIT indicates that MORECORE does not return contiguous
+</span></span></span><span class="line"><span class="cl"><span class="cm">   regions.  Otherwise, contiguity is exploited in merging together,
+</span></span></span><span class="line"><span class="cl"><span class="cm">   when possible, results from consecutive MORECORE calls.
+</span></span></span><span class="line"><span class="cl"><span class="cm">   The initial value comes from MORECORE_CONTIGUOUS, but is
+</span></span></span><span class="line"><span class="cl"><span class="cm">   changed dynamically if mmap is ever used as an sbrk substitute.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#define NONCONTIGUOUS_BIT (2U)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define contiguous(M) (((M)-&gt;flags &amp; NONCONTIGUOUS_BIT) == 0)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define noncontiguous(M) (((M)-&gt;flags &amp; NONCONTIGUOUS_BIT) != 0)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define set_noncontiguous(M) ((M)-&gt;flags |= NONCONTIGUOUS_BIT)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define set_contiguous(M) ((M)-&gt;flags &amp;= ~NONCONTIGUOUS_BIT)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* ARENA_CORRUPTION_BIT is set if a memory corruption was detected on the
+</span></span></span><span class="line"><span class="cl"><span class="cm">   arena.  Such an arena is no longer used to allocate chunks.  Chunks
+</span></span></span><span class="line"><span class="cl"><span class="cm">   allocated in that arena before detecting corruption are not freed.  */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#define ARENA_CORRUPTION_BIT (4U)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define arena_is_corrupt(A) (((A)-&gt;flags &amp; ARENA_CORRUPTION_BIT))
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define set_arena_corrupt(A) ((A)-&gt;flags |= ARENA_CORRUPTION_BIT)
+</span></span></span></code></pre></div><p>The next field within the arena is a buffer of pointers to the fastbins of the
+arena. The top field will contain a pointer to the top chunk of the heap and
+last_remainder will also point to the last remainder chunk.</p>
+<p>The field bins is interesting, as it contains the unsorted, small and large bins
+within a single field. We can see that the comment above refers to each of these
+bins as the normal bins.</p>
+<p>Subsequently, the field binmap is another optimization which simply holds information
+on the state of each bin as to prevent manually searching through the large and small
+bins to find free chunks.</p>
+<p>Directly after this, we have the next and next_free fields within the arena, which
+seems to contain pointers to other arenas. As we know, we can have multiple heaps
+within a single process and as a result, we have multiple heap states. These pointers
+serve as singly linked lists to the next arena. The next field is a cyclic singly
+linked list which will point to all of the non main arenas which belong to the main
+arena and the next_free field will point to a non circular list of free arenas, which
+are arenas with no threads attached.</p>
+<p>The next fields are well documented within the source, attached_threads will hold
+the number of threads attached to the arena; and the system_mem and max_system_mem
+will contain the memory allocated and the largest amount of memory from the system
+within the arena.</p>
+<h2 id="heap-info">Heap Info</h2>
+<hr>
+<p>The heap_info structure serves as a means of coordinating several heaps within
+the entirety of our process. This structure primarily holds important information
+of the heap, as well as acting as a singly linked list which points to the previous
+heap_info structure.</p>
+<p>What follows is the definition of the structure within Glibc.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_heap_info</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mstate</span> <span class="n">ar_ptr</span><span class="p">;</span> <span class="cm">/* Arena for this heap. */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">_heap_info</span> <span class="o">*</span><span class="n">prev</span><span class="p">;</span> <span class="cm">/* Previous heap. */</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">size_t</span> <span class="n">size</span><span class="p">;</span>   <span class="cm">/* Current size in bytes. */</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">size_t</span> <span class="n">mprotect_size</span><span class="p">;</span> <span class="cm">/* Size in bytes that has been mprotected
+</span></span></span><span class="line"><span class="cl"><span class="cm">                           PROT_READ|PROT_WRITE.  */</span>
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Make sure the following data is properly aligned, particularly
+</span></span></span><span class="line"><span class="cl"><span class="cm">     that sizeof (heap_info) + 2 * SIZE_SZ is a multiple of
+</span></span></span><span class="line"><span class="cl"><span class="cm">     MALLOC_ALIGNMENT. */</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="n">pad</span><span class="p">[</span><span class="o">-</span><span class="mi">6</span> <span class="o">*</span> <span class="n">SIZE_SZ</span> <span class="o">&amp;</span> <span class="n">MALLOC_ALIGN_MASK</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">heap_info</span><span class="p">;</span>
+</span></span></code></pre></div><h2 id="unlink-operation">Unlink Operation</h2>
+<hr>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* Take a chunk off a bin list.  */</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span>
+</span></span><span class="line"><span class="cl"><span class="nf">unlink_chunk</span> <span class="p">(</span><span class="n">mstate</span> <span class="n">av</span><span class="p">,</span> <span class="n">mchunkptr</span> <span class="n">p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nf">chunksize</span> <span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">!=</span> <span class="nf">prev_size</span> <span class="p">(</span><span class="nf">next_chunk</span> <span class="p">(</span><span class="n">p</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">malloc_printerr</span> <span class="p">(</span><span class="s">&#34;corrupted size vs. prev_size&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">mchunkptr</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mchunkptr</span> <span class="n">bk</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">bk</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nf">__builtin_expect</span> <span class="p">(</span><span class="n">fd</span><span class="o">-&gt;</span><span class="n">bk</span> <span class="o">!=</span> <span class="n">p</span> <span class="o">||</span> <span class="n">bk</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">!=</span> <span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">malloc_printerr</span> <span class="p">(</span><span class="s">&#34;corrupted double-linked list&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">fd</span><span class="o">-&gt;</span><span class="n">bk</span> <span class="o">=</span> <span class="n">bk</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">bk</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">in_smallbin_range</span> <span class="p">(</span><span class="nf">chunksize_nomask</span> <span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span><span class="o">-&gt;</span><span class="n">bk_nextsize</span> <span class="o">!=</span> <span class="n">p</span>
+</span></span><span class="line"><span class="cl">	  <span class="o">||</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">bk_nextsize</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span> <span class="o">!=</span> <span class="n">p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">malloc_printerr</span> <span class="p">(</span><span class="s">&#34;corrupted double-linked list (not small)&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">fd</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">	  <span class="k">if</span> <span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span> <span class="o">==</span> <span class="n">p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	    <span class="n">fd</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span> <span class="o">=</span> <span class="n">fd</span><span class="o">-&gt;</span><span class="n">bk_nextsize</span> <span class="o">=</span> <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	  <span class="k">else</span>
+</span></span><span class="line"><span class="cl">	    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	      <span class="n">fd</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	      <span class="n">fd</span><span class="o">-&gt;</span><span class="n">bk_nextsize</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">bk_nextsize</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	      <span class="n">p</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span><span class="o">-&gt;</span><span class="n">bk_nextsize</span> <span class="o">=</span> <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	      <span class="n">p</span><span class="o">-&gt;</span><span class="n">bk_nextsize</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span> <span class="o">=</span> <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">else</span>
+</span></span><span class="line"><span class="cl">	  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	    <span class="n">p</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span><span class="o">-&gt;</span><span class="n">bk_nextsize</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">bk_nextsize</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	    <span class="n">p</span><span class="o">-&gt;</span><span class="n">bk_nextsize</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="malloc-algorithm">Malloc Algorithm</h2>
+<hr>
+<p>Memory allocators typically follow a very specific and simple design and algorithm.
+However in the case of PTMalloc, it serves as the default userspace memory allocator
+for every application, meaning that it should provide a consistent balance across
+all factors.</p>
+<p>Due to this, the design of PTMalloc is overtly complex and (in my opinion) inelegant.
+PTMalloc attempts to maintain maximum performance whilst also reducing fragmentation on
+the heap. It achieves this by reusing chunks which have been freed by the allocator
+or by consolidating chunks and attempting to reusing those.</p>
+<p>The precise steps differ from Glibc version to version, in this post I will be
+covering the algorithm of version 2.31. The best reference for the exact steps of
+malloc is by referring to the source code. This post will attempt to construct a
+general outline of the process. There will most likely only be slight variations
+due to recent addition of new exploit mitigations in later versions.</p>
+<p>As we have previously stated, the allocator will attempt to use all the previously
+cached chunks within each of the bins as a means of optimizing allocation speeds
+and reducing fragmentation on the heap. What follows is the high-level abstracted
+order in which malloc will search for chunks within the bins. Keep in mind that
+there is a more convoluted algorithm which lies underneath this, which we will cover.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">Tcache</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Fastbin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Small</span> <span class="no">Bin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Unsorted</span> <span class="no">Bin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Large</span> <span class="no">Bin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Top</span> <span class="no">Chunk</span>
+</span></span></code></pre></div><p>Let&rsquo;s now dive into a high level description of the exact steps in which malloc takes
+to allocate a chunk of memory. There are two functions which are responsible for the
+allocation of memory when we call malloc, these are __libc_malloc and _int_malloc.</p>
+<h3 id="__libc_malloc">__libc_malloc</h3>
+<p><code>https://elixir.bootlin.com/glibc/glibc-2.31/source/malloc/malloc.c#L3021</code></p>
+<ol>
+<li>Check if the heap has been initialized, if not then it will initialize.</li>
+<li>Then it will check if a malloc hook has been defined. If so, it will call it with
+a few debugging parameters.</li>
+<li>If the tcache has been enabled at compile time, it will convert the requested size
+of bytes into the apropriate tcache bin index and check for an entry. If there is
+a free chunk within the tcache which fits the description, it will return the chunk.
+Keep in mind that the tcache was introduced in Glibc 2.26, meaning that prior versions
+of PTMalloc won&rsquo;t have this portion of code.</li>
+<li>Then, if glibc has been compiled to support only a single thread, then it will
+return a chunk returned from a call to _int_malloc on the main arena. However, by
+default this option is disabled so it will not execute this path. Instead, it will
+call arena_get, which locks the arena to allow for thread safe interactions between
+arenas which may potentially be shared among threads. It will then make a call to
+_int_malloc with the arena.</li>
+<li>If the result of _int_malloc and the arena pointer is not null, then it will
+attempt to find another arena to retry allocation.</li>
+<li>Finally, if the arena pointer is not null then it will unlock the mutex which
+synchronizes the arena, and returns the allocated chunk.</li>
+</ol>
+<h3 id="_int_malloc">_int_malloc</h3>
+<p><code>https://elixir.bootlin.com/glibc/glibc-2.31/source/malloc/malloc.c#L3511</code></p>
+<ol>
+<li>Check if the requested size is within viable range to be allocated and convert
+it into an internal representation (adding SIZE_SZ / alignment / padding).</li>
+<li>Next, check the arena pointer which was passed as an argument, if the arena is
+null then it will fall back to sysmalloc to allocate a chunk from mmap.</li>
+<li>If the size is within the range of the fastbin, then it will check the contents
+of the corresponding fastbin for a free chunk. While its checking the contents of
+the fastbin, it will also perform a procedure known as tcache stashing. This term
+simply refers to the process of moving all the chunks from the fastbin into the
+tcache. The tcache stash operation is only performed under the condition that while
+the fast bin is not empty and the tcache is not full.</li>
+<li>Then if the request is within the size of the small bin (less than 512), it will
+then check the small bin for cached chunks. If the tcache is enabled, then the
+small bin search will also perform a tcache stash, the same operation as the fastbin.</li>
+<li>Else if the request is not within the range of the fast bin or the smalll bin, then
+we attempt to check if it is within the range of the large bin. Then it will make a
+call to malloc_consolidate, which consolidates all of the fastbins with their adjacent
+free chunks and places them within the unsorted bin. This reduces fragmentation on
+the heap which is caused by the fastbins.</li>
+<li></li>
+</ol>
+<p>Keep in mind, it is not necessary to know the entire step-by-step process in which
+malloc takes to allocate chunks for us, just a general understanding of the allocator
+should do just fine. However I would still recommend that you read through the source
+just to familiarize yourself with it.</p>
+<h2 id="free-algorithm">Free Algorithm</h2>
+<hr>
+<h2 id="glibc-versions">Glibc Versions</h2>
+<hr>
+<p>Lets now take a look at the various changes the allocator has undergone over the
+years of its use within Glibc. I will omit the versions Glibc which do not have a
+significant impact on the core implementations of the allocator for the sake of
+brevity.</p>
+<h3 id="gnu-libc-223">GNU Libc 2.23</h3>
+<h3 id="gnu-libc-224">GNU Libc 2.24</h3>
+<h3 id="gnu-libc-227">GNU Libc 2.27</h3>
+<h3 id="gnu-libc-231">GNU Libc 2.31</h3>
+<h3 id="gnu-libc-232">GNU Libc 2.32</h3>
+<h3 id="gnu-libc-233">GNU Libc 2.33</h3>
+<h3 id="gnu-libc-234">GNU Libc 2.34</h3>
+<h3 id="gnu-libc-235">GNU Libc 2.35</h3>
+<h3 id="gnu-libc-236">GNU Libc 2.36</h3>
+<h2 id="conclusion">Conclusion</h2>
+<hr>
+<p>That should be all as of now, I will try my best to continue updating this blog post
+as more renditions of Glibc are released but no guarantees. I have provided additional
+references below. I would highly recommend reading through the source code of the
+allocator as it provides great documentation on its implementation.</p>
+<p>I will also be detailing various techniques which specifically target the metadata
+of PTMalloc to gain various exploit primitives, so stay tuned for that.</p>
+<p>Thanks for reading and I hope that this has been helpful, good luck 👋.</p>
+<h2 id="references">References</h2>
+<hr>
+<pre tabindex="0"><code>https://ctf-wiki.mahaloz.re/
+https://sourceware.org/glibc/wiki/MallocInternals
+https://heap-exploitation.dhavalkapil.com/
+https://0x434b.dev/overview-of-glibc-heap-exploitation-techniques/
+https://sploitfun.wordpress.com/2015/02/10/understanding-glibc-malloc/
+https://elixir.bootlin.com/glibc/latest/source
+</code></pre>
+            </div>
+        </article>
+    </main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+<a href="https://github.com/intranautic" target="_blank" rel="noopener noreferrer me" title="Github">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+</a>
+<a href="https://twitter.com/intranautic" target="_blank" rel="noopener noreferrer me" title="Twitter">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+    </path>
+</svg>
+</a>
+<a href="https://keybase.io/intranautic" target="_blank" rel="noopener noreferrer me" title="Keybase">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 71 76.3" version="1.1" fill="currentColor" stroke="none">
+    <path
+        d="M6.68 73.99c-.6-1.3-1.4-3.1-1.8-4l-.6-1.7-2 2.2-2 2.2-.2-4.2c-.3-6 .2-12.2 1.2-16.6 2.3-9.8 9.5-18.7 18.8-23.4l2.1-1-.5-1.5c-.3-.8-.6-2.5-.7-3.6l-.2-2.1-2.1-.2c-3.2-.3-4.9-1.2-6-3.5-.6-1.2-.6-1.4-.4-4.6.2-4.2.5-5.1 1.8-6.5 1.6-1.8 2.7-2.1 6.7-1.9 2.9.2 3.5.3 4.8.9.8.4 1.5.8 1.6.8.1 0 1-1.1 2.1-2.6l1.9-2.7 1.2.7c.7.4 1.5.9 1.9 1.1l.7.4-.6 1.5c-.3.8-.7 2.2-.8 2.9l-.2 1.4 1.7.2c6.1.6 10.7 4.3 12.4 9.9.5 1.8.5 5.3 0 7-.5 1.6-.5 1.7-.1 1.7.7 0 5.4 2.3 7.3 3.5 3.7 2.4 8 6.6 10.4 10.2 4.5 6.7 6.4 14 5.6 22-.4 4.8-1.3 8.6-2.9 12.3l-.6 1.4h-5l1.2-2.4c1.3-2.6 2.3-6.2 2.8-9.4.3-2.2.4-8.2.1-9.3l-.2-.7-1.3 1.4c-3.2 3.5-7.9 4.5-14.2 2.8-5.4-1.4-7.6-1.7-12.7-1.7-3.9 0-5.2.1-7.3.6-5.8 1.3-9.9 3.2-15.6 7.3-2.1 1.5-3.8 2.7-3.9 2.7-.1 0 .2-1 .6-2.3.4-1.3 1.1-3.4 1.5-4.8l.8-2.5-.9.9c-.5.5-1.9 1.9-3.1 3.2l-2.1 2.3.5 1.9c.6 2.5 2 5.6 3.5 7.9.6 1 1.1 1.8 1.1 1.9s-1.2.1-2.6.1h-2.6l-1.1-2.1zm8.8-24.2c4.8-5.1 8.7-9.2 8.8-9.2.1.1-.4 1.6-.9 3.3-3.3 10.4-4 12.4-3.9 12.5 0 0 1.2-.4 2.5-.9 8.5-3.7 18.4-4.2 28.9-1.4 4.7 1.2 6.5 1.2 8.8 0 1.3-.7 1.8-1.1 2.4-2.1 1.1-1.7 1.2-4.1.5-6.3-1.7-4.8-8.3-11-14.5-13.7-3.2-1.4-3.4-1.4-4.1-.7l-.6.6 2.6 3.2c1.4 1.7 2.9 3.6 3.1 4.1.6 1.2.7 3.1.1 4.3-.8 1.7-3.2 2.9-5.1 2.5-.8-.2-1.1-.1-1.9.5-2.2 1.6-4.6 1.2-6.6-1.2-1.6-1.8-2-2.7-2.1-4.5 0-.9-.3-2-.5-2.4-.3-.6-.4-1.3-.4-2.2l.1-1.4-1.3-.3c-1.8-.5-3.9-1.5-5.1-2.4-.6-.4-1.1-.8-1.3-.8s-1.5.6-2.9 1.3c-9.7 5-16 14.3-17 24.8-.1 1-.2 2.3-.3 2.8l-.1.9 1.1-1.1c.5-.5 4.9-5.1 9.7-10.2zm25.9-7.4c.9-.7 1.7-1.3 1.9-1.3.1 0 .4.3.7.7.5.8 1.4.8 1.8.1.3-.5.3-.6-5.6-7.8-3.5-4.3-4.2-5-4.7-5-1.2.1-.9 1 1 3.3l1.8 2.2-1 .8c-1.1 1-1.2 1.2-.5 1.8.5.5.6.4 1.6-.3l1.1-.7.7.6c.4.3.6.8.6.9 0 .2-.8.9-1.7 1.7-.9.7-1.6 1.5-1.6 1.7 0 .3.5 1.1 1.4 2.2.3.6.8.4 2.5-.9zm-10.3-14.2c.6-1.8 2.6-3.2 4.6-3.2 1.1 0 2.7.9 3.8 2.1l1 1.2.9-1.1c2.5-2.8 2.8-6.7.8-10.1-1.5-2.5-4.3-4-8.2-4.4-2.1-.2-2.6-.4-3.7-1.5l-.8-.8-.4.6c-.8 1.2-2.5 5.1-3 6.6-.7 2.3-.4 5.9.5 7.7.9 1.7 3.3 4 4 3.7.1.1.3-.3.5-.8zm-8.9-13.6c.2-.5.7-1.8 1.2-2.8.5-1 .9-2 .9-2.3 0-.9-1-1.3-3.7-1.5-2.4-.2-2.6-.1-3.1.4-.4.4-.6.9-.6 1.6 0 .6-.1 1.7-.2 2.6-.2 2.1.1 2.5 2.2 2.8 3.1.2 3 .2 3.3-.8zm-3.1-2.4c0-1.7.2-1.9 1.6-1.9h1.3v2.8h-2.8v-.9zm6.3 58.3c-.6-.6-.8-1-.8-2 0-1.9 1.1-3 2.9-3 1.7 0 2.9 1.2 2.9 2.9 0 1.8-1.1 2.8-3 2.9-1 0-1.4-.2-2-.8zm19.3.3a2.93 2.93 0 011.8-5.3c1.8 0 2.8 1.1 2.9 3 0 1.1-.1 1.4-.8 2s-1 .8-2 .8c-.9 0-1.5-.2-1.9-.5z" />
+</svg>
+</a>
+<a href="mailto:intranautic@gmail.com" target="_blank" rel="noopener noreferrer me" title="Email">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+    <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+</a>
+<a href="/pgp.txt" target="_blank" rel="noopener noreferrer me" title="Pgp">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg>
+</a>
+<a href="/index.xml" target="_blank" rel="noopener noreferrer me" title="Rss">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11a9 9 0 0 1 9 9" />
+    <path d="M4 4a16 16 0 0 1 16 16" />
+    <circle cx="5" cy="19" r="1" />
+</svg>
+</a></div>
+    <small class="footer_copyright">
+        © 2023 Intranautic.
+    </small>
+</footer>
+
+<script src="https://intranautic.com/js/themeSwitchnMenu.min.2a402288242b6930b175a0722c267e2353055739b3975834df35e56d00dd8f50.js"></script></body>
+</html>
