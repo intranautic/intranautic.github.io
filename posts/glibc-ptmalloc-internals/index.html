@@ -53,7 +53,7 @@
         },
         "datePublished": "2023-03-23",
         "description": "",
-        "wordCount":  5468 ,
+        "wordCount":  5551 ,
         "mainEntityOfPage": "True",
         "dateModified": "2023-03-23",
         "image": {
@@ -395,10 +395,13 @@ arena state when accessing these thread local caches. Something important to not
 is the fact that the tcache takes priority over all the other bins, it will be
 the first bin to be accessed in the event of an allocation, and the first candidate
 to cache a chunk if it is of size for the tcache.</p>
+<p>We can see the structure named tcache_perthread_struct, which serves as the global
+state which stores important information on each threads tcache. Each thread will
+have a tcache_perthread_struct, hence the name.</p>
 <p>There are 64 tcache bins in total with each bin being a maximum of 7 entries in
 length. Each of the tcache bins store a fixed size chunk determined by the index
 of the bin. The tcache is capable of containing free chunks between the sizes of
-16 to 512 and 32 to 1024 on 32 and 64 bit systems respectively.</p>
+16 to 520 and 32 to 1032 on 32 and 64 bit systems respectively.</p>
 <h3 id="fastbin">Fastbin</h3>
 <p>The fastbin is a set of singly linked LIFO lists which are stored within size
 specific bins. There are 10 fastbins and each bin will only contain entries of the
@@ -862,8 +865,10 @@ small bin search will also perform a tcache stash, the same operation as the fas
 <li>Else if the request is not within the range of the fast bin or the smalll bin, then
 we attempt to check if it is within the range of the large bin. Then it will make a
 call to malloc_consolidate, which consolidates all of the fastbins with their adjacent
-free chunks and places them within the unsorted bin. This reduces fragmentation on
-the heap which is caused by the fastbins.</li>
+free chunks and places them within the unsorted bin. Due to the fact that the next
+bins which will be searched for free chunks will be larger sized bins, consolidating
+the fastbin chunks increases the chances of finding a chunk. This also reduces
+fragmentation on the heap which is caused by the fastbins lack of consolidation.</li>
 <li></li>
 </ol>
 <p>Keep in mind, it is not necessary to know the entire step-by-step process in which
@@ -878,6 +883,8 @@ just to familiarize yourself with it.</p>
 years of its use within Glibc. I will omit the versions Glibc which do not have a
 significant impact on the core implementations of the allocator for the sake of
 brevity.</p>
+<p>I will only be covering the significant changes to the allocator and additional
+information which may be relevant.</p>
 <h3 id="gnu-libc-223">GNU Libc 2.23</h3>
 <h3 id="gnu-libc-224">GNU Libc 2.24</h3>
 <h3 id="gnu-libc-227">GNU Libc 2.27</h3>
