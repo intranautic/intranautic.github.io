@@ -53,7 +53,7 @@
         },
         "datePublished": "2023-03-23",
         "description": "",
-        "wordCount":  5551 ,
+        "wordCount":  6259 ,
         "mainEntityOfPage": "True",
         "dateModified": "2023-03-23",
         "image": {
@@ -416,6 +416,11 @@ view of the allocator. The chunks held within the fastbin all keep the PREV_INUS
 flag set which prevents them from being consolidated with other free chunks. This
 is done at the cost of additional fragmentation, but the result is that of minimal
 logic which causes free to be faster.</p>
+<p>As a result of this desire for performance, when freeing and caching chunks into
+the fast bin, the allocator will only check for a double free on the top chunk, as
+opposed to traversing the entire singly linked list for duplicates. This has various
+security implications which allow attackers to abuse this bin to gain arbitrary
+write primitives.</p>
 <p>To explicitly consolidate the fastbin, we must use a specialized version of free
 called malloc_consolidate, which releases all free chunks within the fastbin and
 coalesces them with other adjacent freed chunks.</p>
@@ -500,6 +505,9 @@ belong to each group.</p>
 <p>So the range in which the large bin is capable of holding in total is between
 sizes 512 bytes to 128 kilobytes, which is when the memory allocator uses mmap
 to directly map chunks.</p>
+<p>The previously discussed fd_nextsize and bk_nextsize pointers within the chunk
+are utilized within the large bin. They provide pointers to the next chunk which
+is within the large bin.</p>
 <h3 id="unsorted-bin">Unsorted Bin</h3>
 <p>The unsorted bin is also a circular, doubly linked list which holds free chunks of
 any size. There is only one unsorted bin and acts as a sort of queue for the small
@@ -760,6 +768,11 @@ heap_info structure.</p>
 </span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">heap_info</span><span class="p">;</span>
 </span></span></code></pre></div><h2 id="unlink-operation">Unlink Operation</h2>
 <hr>
+<p>As previously stated, the freed chunks which are cached into bins are held as linked
+lists. However, when retrieving such freed chunks and returning them from the allocator,
+we also need a mechanism to remove such chunks from their free list. This process is
+contained within the unlink_chunk function (previously a macro).</p>
+<p>The function is defined as follows.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* Take a chunk off a bin list.  */</span>
 </span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span>
 </span></span><span class="line"><span class="cl"><span class="nf">unlink_chunk</span> <span class="p">(</span><span class="n">mstate</span> <span class="n">av</span><span class="p">,</span> <span class="n">mchunkptr</span> <span class="n">p</span><span class="p">)</span>
@@ -820,7 +833,7 @@ cached chunks within each of the bins as a means of optimizing allocation speeds
 and reducing fragmentation on the heap. What follows is the high-level abstracted
 order in which malloc will search for chunks within the bins. Keep in mind that
 there is a more convoluted algorithm which lies underneath this, which we will cover.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">Tcache</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Fastbin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Small</span> <span class="no">Bin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Unsorted</span> <span class="no">Bin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Large</span> <span class="no">Bin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Top</span> <span class="no">Chunk</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">Tcache</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Fastbin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Small</span> <span class="no">Bin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Unsorted</span> <span class="no">Bin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Large</span> <span class="no">Bin</span> <span class="p">-</span><span class="err">&gt;</span> <span class="no">Top</span> <span class="no">Chunk</span> <span class="err">/</span> <span class="no">Mmap</span>
 </span></span></code></pre></div><p>Let&rsquo;s now dive into a high level description of the exact steps in which malloc takes
 to allocate a chunk of memory. There are two functions which are responsible for the
 allocation of memory when we call malloc, these are __libc_malloc and _int_malloc.</p>
@@ -862,21 +875,68 @@ the fast bin is not empty and the tcache is not full.</li>
 <li>Then if the request is within the size of the small bin (less than 512), it will
 then check the small bin for cached chunks. If the tcache is enabled, then the
 small bin search will also perform a tcache stash, the same operation as the fastbin.</li>
-<li>Else if the request is not within the range of the fast bin or the smalll bin, then
-we attempt to check if it is within the range of the large bin. Then it will make a
-call to malloc_consolidate, which consolidates all of the fastbins with their adjacent
-free chunks and places them within the unsorted bin. Due to the fact that the next
-bins which will be searched for free chunks will be larger sized bins, consolidating
-the fastbin chunks increases the chances of finding a chunk. This also reduces
-fragmentation on the heap which is caused by the fastbins lack of consolidation.</li>
-<li></li>
+<li>Else, if and only if the request is not within the range of the fast bin or the smalll
+bin, then we attempt to check if it is within the range of the large bin. If so, it will
+make a call to malloc_consolidate, which consolidates all of the fastbins with their
+adjacent free chunks and places them within the unsorted bin. Due to the fact that the
+next bins which will be searched for free chunks will be larger sized bins, consolidating
+the fastbin chunks increases the chances of finding a larger chunk. This also reduces
+fragmentation on the heap which is caused by the fastbins lack of consolidation. This
+option is taken if the chunk size is over 1024 bytes.</li>
+<li>Next, it will check and sort the entries within the unsorted bin. Please refer to
+the <a href="#unsorted-bin">unsorted bin section</a> of this post as reference of its internal operations.</li>
+<li>Then it will check the contents of the large bin. Remember, these bins consist of doubly
+linked lists which hold a logarithmically spaced range of free chunks.</li>
+<li>Finally, if no chunks can be found within all the bins, then the allocator will resort
+to either mmap&rsquo;ing the chunk, or splitting one off the top chunk. This is only used as a
+last case scenario due to the fact that using previously allocated chunks as opposed to
+allocating new ones reduces fragmentation, and by product reduces heap usage. It also serves
+as a faster mechanism of allocation.</li>
 </ol>
 <p>Keep in mind, it is not necessary to know the entire step-by-step process in which
 malloc takes to allocate chunks for us, just a general understanding of the allocator
 should do just fine. However I would still recommend that you read through the source
 just to familiarize yourself with it.</p>
+<p>The following is a high level diagram which covers the general process of the allocation
+algorithm.</p>
+<p><img src="/assets/img/a/malloc-diagram.png" alt="malloc diagram"></p>
 <h2 id="free-algorithm">Free Algorithm</h2>
 <hr>
+<p>We have discussed the memory allocation algorithm and what purpose the caching bins serve in the
+process, but lets now take a look at how these chunks get there in the first place. Im sure you
+know but when we deallocate a chunk of dynamically allocated memory, there is an operation known
+as free which handles the deallocation process.</p>
+<p>Here we will be discussing the step by step process in which the PTMalloc allocator takes to
+deallocate a chunk.</p>
+<h3 id="__libc_free">__libc_free</h3>
+<p><code>https://elixir.bootlin.com/glibc/glibc-2.31/source/malloc/malloc.c#L3085</code></p>
+<ol>
+<li>Check for a free hook, if present it will call the hook with a few debugging parameters.</li>
+<li>Then check if the pointer to our chunk is null, if so then it will simply return and do
+nothing. Calling free with a null pointer will have no effect.</li>
+<li>Next, check if the chunk has it&rsquo;s IS_MMAP bit set, if so then simply deallocate the chunk
+with munmap and return.</li>
+<li>Else, if tcache has not yet been initialized, then initialize the tcache. Find the arena
+in which the chunk belongs to and pass the chunk and the arena to the internal _int_free
+mechanism, which will handle the primary caching and deallocation mechanism. After this,
+return.</li>
+</ol>
+<h3 id="_int_free">_int_free</h3>
+<p><code>https://elixir.bootlin.com/glibc/glibc-2.31/source/malloc/malloc.c#L4153</code></p>
+<ol>
+<li>First, we perform a few security checks to ensure the validity of the chunk we want to
+free. It checks whether or not the pointer to the chunk is valid by checking to see if
+it is less than the end of the address space, as the allocator never wraps around. It
+then checks whether or not the chunk size is at least larger than MINSIZE or a multiple
+of MALLOC_ALIGNMENT. This ensures that the chunk passed to free is of valid size.</li>
+<li>If the tcache is present within the version of glibc, it will check to see whether or not
+the chunk is already within the tcache bin. It does this check to ensure that a double free
+vulnerability does not go unchecked. If a duplicate chunk is found, it will abort the process.</li>
+<li>However, if there is no duplicate within the tcache and the tcache bin for the chunk is
+not full, then insert the free chunk into the tcache.</li>
+<li>Else, if free cannot place the chunk within the tcache and the chunk size falls within the
+bounds of the fastbin .</li>
+</ol>
 <h2 id="glibc-versions">Glibc Versions</h2>
 <hr>
 <p>Lets now take a look at the various changes the allocator has undergone over the
@@ -884,7 +944,9 @@ years of its use within Glibc. I will omit the versions Glibc which do not have 
 significant impact on the core implementations of the allocator for the sake of
 brevity.</p>
 <p>I will only be covering the significant changes to the allocator and additional
-information which may be relevant.</p>
+information which may be relevant to its development. Please consider this portion
+of the post as more of a reference as opposed to an explanation of these various
+additions.</p>
 <h3 id="gnu-libc-223">GNU Libc 2.23</h3>
 <h3 id="gnu-libc-224">GNU Libc 2.24</h3>
 <h3 id="gnu-libc-227">GNU Libc 2.27</h3>
