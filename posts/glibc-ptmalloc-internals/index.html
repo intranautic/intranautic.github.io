@@ -9,7 +9,7 @@
 <meta name="twitter:title" content="Glibc PTMalloc Internals | Intranautic" />
 <meta itemprop="name" content="Glibc PTMalloc Internals | Intranautic" />
 <meta name="application-name" content="Glibc PTMalloc Internals | Intranautic" />
-<meta property="og:site_name" content="My blog" />
+<meta property="og:site_name" content="The Information Machine" />
 
 <meta name="description" content="">
 <meta itemprop="description" content="" />
@@ -53,7 +53,7 @@
         },
         "datePublished": "2023-03-23",
         "description": "",
-        "wordCount":  6259 ,
+        "wordCount":  6592 ,
         "mainEntityOfPage": "True",
         "dateModified": "2023-03-23",
         "image": {
@@ -942,20 +942,117 @@ bounds of the fastbin .</li>
 <p>Lets now take a look at the various changes the allocator has undergone over the
 years of its use within Glibc. I will omit the versions Glibc which do not have a
 significant impact on the core implementations of the allocator for the sake of
-brevity.</p>
+brevity. We will only be listing Glibc versions 2.23 through 2.36.</p>
 <p>I will only be covering the significant changes to the allocator and additional
 information which may be relevant to its development. Please consider this portion
 of the post as more of a reference as opposed to an explanation of these various
 additions.</p>
-<h3 id="gnu-libc-223">GNU Libc 2.23</h3>
-<h3 id="gnu-libc-224">GNU Libc 2.24</h3>
-<h3 id="gnu-libc-227">GNU Libc 2.27</h3>
-<h3 id="gnu-libc-231">GNU Libc 2.31</h3>
-<h3 id="gnu-libc-232">GNU Libc 2.32</h3>
-<h3 id="gnu-libc-233">GNU Libc 2.33</h3>
-<h3 id="gnu-libc-234">GNU Libc 2.34</h3>
-<h3 id="gnu-libc-235">GNU Libc 2.35</h3>
-<h3 id="gnu-libc-236">GNU Libc 2.36</h3>
+<p>What follows is a table which contains all the relevant security checks and mechanisms
+implemented through the development of the allocator, as well as a brief description of
+them. To see the full implementation of each of these checks, you can search for the
+error string within the source.</p>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Check</th>
+<th>Error</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>_int_malloc</td>
+<td>verify that the entry being removed from fastbin is within size range.</td>
+<td>malloc(): memory corruption (fast)</td>
+<td>2.23+</td>
+</tr>
+<tr>
+<td>_int_malloc</td>
+<td>check the size of the entries within the unsorted bin. verify that size is less than or equals 2 * SIZE_SZ and larger than av-&gt;system_mem.</td>
+<td>malloc(): memory corruption</td>
+<td>2.23+</td>
+</tr>
+<tr>
+<td>unlink</td>
+<td>verify that the fd and bk pointers of the chunk we want to remove from the free list dont point to itself.</td>
+<td>corrupted double-linked list</td>
+<td>2.23+</td>
+</tr>
+<tr>
+<td>unlink</td>
+<td>if the chunk is not within the small bin range, check if the fd_nextsize and bk_nextsize point to itself.</td>
+<td>corrupted double-linked list (not small)</td>
+<td>2.23+</td>
+</tr>
+<tr>
+<td>unlink</td>
+<td>check if the current chunks size is equal to the mchunk_prev_size field of the next chunk. this check essentially ensures that the size of the current chunk is valid according to the free list.</td>
+<td>corrupted size vs. prev_size</td>
+<td>2.26+</td>
+</tr>
+<tr>
+<td>_int_malloc</td>
+<td>when removing a chunk from the small bin, check to see if the chunk is actually part of the free list. it does this by ensuring that the victim-&gt;bk-&gt;fd is equal to victim.</td>
+<td>malloc(): smallbin double linked list corrupted</td>
+<td>2.27+</td>
+</tr>
+<tr>
+<td>_int_malloc</td>
+<td>when splitting a chunk in the unsorted bin and inserting the last remainder chunk back into the free list, check if next chunks bk pointer is equal to the current chunk.</td>
+<td>malloc(): corrupted unsorted chunks</td>
+<td>2.27+</td>
+</tr>
+<tr>
+<td>_int_free</td>
+<td>check to see if the cached chunk within the fastbin has a valid size</td>
+<td>free(): invalid next size (fast)</td>
+<td>2.27+</td>
+</tr>
+<tr>
+<td>_int_free</td>
+<td>verify that the</td>
+<td>double free or corruption (fasttop)</td>
+<td>2.27+</td>
+</tr>
+<tr>
+<td>_int_free</td>
+<td>a</td>
+<td>invalid fastbin entry (free)</td>
+<td>2.27+</td>
+</tr>
+<tr>
+<td>_int_free</td>
+<td>a</td>
+<td>double free or corruption (top)</td>
+<td>2.27+</td>
+</tr>
+<tr>
+<td>_int_free</td>
+<td>a</td>
+<td>double free or corruption (out)</td>
+<td>2.27+</td>
+</tr>
+<tr>
+<td>_int_free</td>
+<td>a</td>
+<td>double free or corruption (!prev)</td>
+<td>2.27+</td>
+</tr>
+<tr>
+<td>_int_free</td>
+<td>a</td>
+<td>free(): invalid next size (normal)</td>
+<td>2.27+</td>
+</tr>
+<tr>
+<td>_int_free</td>
+<td>a</td>
+<td>free(): corrupted unsorted chunks</td>
+<td>2.27+</td>
+</tr>
+</tbody>
+</table>
 <h2 id="conclusion">Conclusion</h2>
 <hr>
 <p>That should be all as of now, I will try my best to continue updating this blog post
@@ -968,11 +1065,12 @@ of PTMalloc to gain various exploit primitives, so stay tuned for that.</p>
 <h2 id="references">References</h2>
 <hr>
 <pre tabindex="0"><code>https://ctf-wiki.mahaloz.re/
-https://sourceware.org/glibc/wiki/MallocInternals
+https://sourceware.org/glibc/wiki/MallocInternals/
 https://heap-exploitation.dhavalkapil.com/
 https://0x434b.dev/overview-of-glibc-heap-exploitation-techniques/
 https://sploitfun.wordpress.com/2015/02/10/understanding-glibc-malloc/
-https://elixir.bootlin.com/glibc/latest/source
+https://elixir.bootlin.com/glibc/latest/source/
+https://github.com/shellphish/how2heap/
 </code></pre>
             </div>
         </article>
