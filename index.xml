@@ -6,11 +6,11 @@
     <description>Recent content in Home on Intranautic</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 08 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Glibc PTMalloc Internals</title>
       <link>https://intranautic.com/posts/glibc-ptmalloc-internals/</link>
-      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 08 Dec 2022 00:00:00 +0000</pubDate>
       
       <guid>https://intranautic.com/posts/glibc-ptmalloc-internals/</guid>
       <description>The GNU C Library is a complex library, and it&amp;rsquo;s default memory allocator PTMalloc (Posix Thread aware malloc) is no exception to this rule. Within this blog post, I will attempt to document the internals of this allocator, as well as it&amp;rsquo;s evolution throughout the years.
