@@ -53,7 +53,7 @@
         },
         "datePublished": "2022-12-08",
         "description": "",
-        "wordCount":  6592 ,
+        "wordCount":  6795 ,
         "mainEntityOfPage": "True",
         "dateModified": "2022-12-08",
         "image": {
@@ -935,7 +935,13 @@ vulnerability does not go unchecked. If a duplicate chunk is found, it will abor
 <li>However, if there is no duplicate within the tcache and the tcache bin for the chunk is
 not full, then insert the free chunk into the tcache.</li>
 <li>Else, if free cannot place the chunk within the tcache and the chunk size falls within the
-bounds of the fastbin .</li>
+bounds of the fast bin, then insert.</li>
+<li>If none of the previous conditions are met, then we check if the chunk is has not been
+allocated via mmap. If so, then we will then attempt to place the chunk into the unsorted
+bin. The chunks within the unsorted bin are not placed into the regular bin until they
+have been given one chance in malloc.</li>
+<li>Else if the region of memory has been allocated via mmap, then deallocate the region
+via munmap and return.</li>
 </ol>
 <h2 id="glibc-versions">Glibc Versions</h2>
 <hr>
@@ -1011,43 +1017,37 @@ error string within the source.</p>
 </tr>
 <tr>
 <td>_int_free</td>
-<td>verify that the</td>
+<td>checks that the chunk on the top of the fastbin is not the same as the chunk being inserted. this is used to prevent consecutive double frees from occurring.</td>
 <td>double free or corruption (fasttop)</td>
 <td>2.27+</td>
 </tr>
 <tr>
 <td>_int_free</td>
-<td>a</td>
+<td>checks that the size of the fast bin chunk at the top is the same size as the chunk that we are inserting into the free list.</td>
 <td>invalid fastbin entry (free)</td>
 <td>2.27+</td>
 </tr>
 <tr>
 <td>_int_free</td>
-<td>a</td>
+<td>verifies that the chunk we want to free is not a pointer to the top chunk.</td>
 <td>double free or corruption (top)</td>
 <td>2.27+</td>
 </tr>
 <tr>
 <td>_int_free</td>
-<td>a</td>
+<td>check whether the chunk we want to free is within the boundaries of the heap arena.</td>
 <td>double free or corruption (out)</td>
 <td>2.27+</td>
 </tr>
 <tr>
 <td>_int_free</td>
-<td>a</td>
+<td>check if the chunk we want to free is in use via the IS_INUSE bit.</td>
 <td>double free or corruption (!prev)</td>
 <td>2.27+</td>
 </tr>
 <tr>
 <td>_int_free</td>
-<td>a</td>
-<td>free(): invalid next size (normal)</td>
-<td>2.27+</td>
-</tr>
-<tr>
-<td>_int_free</td>
-<td>a</td>
+<td>when placing chunks into the unsorted bin, verify that the next chunk&rsquo;s bk pointer is equal to the current chunk. this simply checks if the free list which the unsorted bin is maintaining has not been corrupted.</td>
 <td>free(): corrupted unsorted chunks</td>
 <td>2.27+</td>
 </tr>
