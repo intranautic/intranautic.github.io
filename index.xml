@@ -6,7 +6,21 @@
     <description>Recent content in Home on Intranautic</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 03 Jan 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pwnable.tw: Secret Garden</title>
+      <link>https://intranautic.com/posts/pwnabletw-secretgarden/</link>
+      <pubDate>Tue, 03 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://intranautic.com/posts/pwnabletw-secretgarden/</guid>
+      <description>Secret Garden [350 pts]
+Find the flag in the garden.
+nc chall.pwnable.tw 10203
+secretgarden libc.so secretgarden.bndb
+Initial Analysis When initially executing the binary, we can see that we are prompted with the following menu.
+☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ Secret Garden ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ 1 .</description>
+    </item>
+    
     <item>
       <title>Glibc PTMalloc Internals</title>
       <link>https://intranautic.com/posts/glibc-ptmalloc-internals/</link>
