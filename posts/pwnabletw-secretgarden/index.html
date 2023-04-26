@@ -164,7 +164,8 @@ stroke-linejoin="round" class="feather feather-home">
                 </div>
             </header>
             <div class="page-content">
-                <blockquote>
+                <hr>
+<blockquote>
 <p>Secret Garden [350 pts]</p>
 <p>Find the flag in the garden.</p>
 <p>nc chall.pwnable.tw 10203</p>
@@ -173,6 +174,7 @@ stroke-linejoin="round" class="feather feather-home">
 <a href="/assets/files/secretgarden.bndb">secretgarden.bndb</a></p>
 </blockquote>
 <h2 id="initial-analysis">Initial Analysis</h2>
+<hr>
 <p>When initially executing the binary, we can see that we are prompted with the following
 menu.</p>
 <pre tabindex="0"><code>☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆
@@ -216,6 +218,7 @@ flower is no longer alive, and will then free the name field of the flower.</p>
 the remove_flower option. However, we can only clear all the flowers in the garden in
 bulk.</p>
 <h2 id="exploitation">Exploitation</h2>
+<hr>
 <p>This binary has a few vulnerabilties which we can leverage, the first of which is a use
 after free in the remove_flower option. When the name field of the flower is freed, the
 pointer is not zeroed out. This allows us to free the chunk any arbitrary amount of times
