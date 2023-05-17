@@ -6,7 +6,17 @@
     <description>Recent content in Posts on Intranautic</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 03 Jan 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 27 Feb 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Sigreturn Oriented Programming</title>
+      <link>https://intranautic.com/posts/sigreturn-oriented-programming/</link>
+      <pubDate>Mon, 27 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://intranautic.com/posts/sigreturn-oriented-programming/</guid>
+      <description>Throughout the years, there have been a multitude of techniques which arose to take advantage of and exploit various mechanisms present within software. One such technique takes advantage of the signal handling routine of Unix based operating systems to gain arbitrary code execution.
+Within this post, I will be covering the technique known as sigreturn oriented programming, as well as various properties it possesses which allows us to construct a weird machine.</description>
+    </item>
+    
     <item>
       <title>Pwnable.tw: Secret Garden</title>
       <link>https://intranautic.com/posts/pwnabletw-secretgarden/</link>

