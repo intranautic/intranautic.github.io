@@ -6,7 +6,22 @@
     <description>Recent content in Home on Intranautic</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 27 Feb 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 02 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pwnable.tw: Unexploitable</title>
+      <link>https://intranautic.com/posts/pwnabletw-unexploitable/</link>
+      <pubDate>Sun, 02 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://intranautic.com/posts/pwnabletw-unexploitable/</guid>
+      <description>unexploitable [500 pts]
+The original challenge is on pwnable.kr and it is solvable.
+This time we fix the vulnerability and now we promise that the service is unexploitable.
+nc chall.pwnable.tw 10403
+unexploitable libc.so
+Initial Analysis By running checksec, we can view the protections and memory corruption mitigations enabled on this binary.
+Arch: amd64-64-little RELRO: Partial RELRO Stack: No canary found NX: NX enabled PIE: No PIE (0x400000) As we can see, the only protection enable is NX, which means the stack is non executable.</description>
+    </item>
+    
     <item>
       <title>Sigreturn Oriented Programming</title>
       <link>https://intranautic.com/posts/sigreturn-oriented-programming/</link>
