@@ -53,7 +53,7 @@
         },
         "datePublished": "2023-06-21",
         "description": "",
-        "wordCount":  1459 ,
+        "wordCount":  1368 ,
         "mainEntityOfPage": "True",
         "dateModified": "2023-06-21",
         "image": {
@@ -279,17 +279,7 @@ or exits.</p>
 interpreted as a noreturn, it would be semantically correct to wrap the false branch in
 an else scope. However this isn&rsquo;t the case in the example provided, which is what
 this optimization pass intends to mend.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">  <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>                <span class="o">|</span>         <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">cond</span><span class="p">)</span>                     <span class="o">|</span>           <span class="k">if</span> <span class="p">(</span><span class="n">cond</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">      <span class="nf">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>                    <span class="o">|</span>             <span class="nf">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                                  <span class="o">|</span>           <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">while</span><span class="p">(;;)</span> <span class="p">{</span>                   <span class="o">|</span>             <span class="k">while</span> <span class="p">(;;)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="p">...</span>                         <span class="o">|</span>               <span class="p">...</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>                             <span class="o">|</span>             <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>                     <span class="o">|</span>           <span class="p">}</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span>                               <span class="o">|</span>           <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                                  <span class="o">|</span>         <span class="p">}</span>
-</span></span></code></pre></div><table>
+<table>
 <thead>
 <tr>
 <th style="text-align:center">CFG #1</th>
@@ -297,6 +287,10 @@ this optimization pass intends to mend.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:center"><img src="/assets/img/sefcom-example1.png" alt=""></td>
+<td style="text-align:center"><img src="/assets/img/sefcom-example2.png" alt=""></td>
+</tr>
 <tr>
 <td style="text-align:center"><img src="/assets/img/graph3.png" alt=""></td>
 <td style="text-align:center"><img src="/assets/img/graph4.png" alt=""></td>
@@ -315,17 +309,7 @@ angr and how it lifts comparisons into a higher level intermediate representatio
 <p>Whatever causes the issue, the core problem remains that it affects the accuracy of our
 decompilation. The following is an example which demonstrates how the sign of a comparison
 could potentially affect Control Flow Analysis and the resulting CFG.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">  <span class="cm">/* Original Source Code: */</span>   <span class="o">|</span>         <span class="cm">/* Decompilation Output: */</span>
-</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>              <span class="o">|</span>         <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">cond</span><span class="p">)</span>                   <span class="o">|</span>           <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">cond</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>              <span class="o">|</span>             <span class="k">while</span> <span class="p">(;;)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">while</span><span class="p">(;;)</span> <span class="p">{</span>         <span class="o">--------------&gt;</span>         <span class="p">...</span>
-</span></span><span class="line"><span class="cl">      <span class="p">...</span>                       <span class="o">|</span>             <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>                           <span class="o">|</span>           <span class="p">}</span> <span class="k">else</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>                   <span class="o">|</span>             <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span>                             <span class="o">|</span>           <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                                <span class="o">|</span>         <span class="p">}</span>
-</span></span></code></pre></div><table>
+<table>
 <thead>
 <tr>
 <th style="text-align:center">Original Source CFG</th>
@@ -333,6 +317,10 @@ could potentially affect Control Flow Analysis and the resulting CFG.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:center"><img src="/assets/img/sefcom-original.png" alt=""></td>
+<td style="text-align:center"><img src="/assets/img/sefcom-decomp.png" alt=""></td>
+</tr>
 <tr>
 <td style="text-align:center"><img src="/assets/img/graph1.png" alt=""></td>
 <td style="text-align:center"><img src="/assets/img/graph2.png" alt=""></td>
