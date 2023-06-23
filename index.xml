@@ -6,7 +6,17 @@
     <description>Recent content in Home on Intranautic</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 02 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 21 Jun 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SEFCOM Research Internship Part 1</title>
+      <link>https://intranautic.com/posts/research-internship-part-1/</link>
+      <pubDate>Wed, 21 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://intranautic.com/posts/research-internship-part-1/</guid>
+      <description>This summer I am attending a high school research internship at the SEFCOM lab with Zion Basque (mahaloz) serving as my mentor. This is the first part in a series of blog posts in which I document my work and findings throughout the course of the internship.
+My current work within the internship has largely centered around implementing additional optimization and simplification passes to the angr decompiler with the goal of improving structuring decisions in decompilation.</description>
+    </item>
+    
     <item>
       <title>Pwnable.tw: Unexploitable</title>
       <link>https://intranautic.com/posts/pwnabletw-unexploitable/</link>
@@ -63,7 +73,7 @@ This post is primarily an in depth analysis and a collection of notes which I ha
       
       <guid>https://intranautic.com/about/</guid>
       <description>Hello, I’m Intranautic. 👋
-My interests include programming, compiler theory, theoretical computer science, program analysis, vulnerability research and playing CTFs.
+My interests include programming, compiler theory, theoretical computer science, program analysis, vulnerability research and playing CTFs ∈ {pwn, rev} with Shellphish.
 Feel free to look around, this site is primarily a place to store and archive challenge writeups, explanations, notes on topics I’m currently researching, or just rants.
 If you want to reach out to me, you can do so via one of the contacts below or directly via discord @ intranautic#9885.</description>
     </item>
