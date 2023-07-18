@@ -53,7 +53,7 @@
         },
         "datePublished": "2023-07-09",
         "description": "",
-        "wordCount":  1339 ,
+        "wordCount":  2546 ,
         "mainEntityOfPage": "True",
         "dateModified": "2023-07-09",
         "image": {
@@ -259,11 +259,20 @@ level language we are targeting).</li>
 <li>Additional optimizations and simplification passes are also performed at this stage
 to improve the recovered source code.</li>
 </ul>
-<h2 id="problems-encountered">Problems Encountered</h2>
+<h2 id="structured-c-code-formatting">Structured C Code Formatting</h2>
 <p>The work that I&rsquo;ve currently completed within the internship concerns itself with improving
 decompilation output via optimizations and simplification passes within the angr decompiler.
 The purpose behind these passes was to increase the accuracy of the original source by
 affecting structuring decisions within the decompiler.</p>
+<p>My first tasks generally revolved improving the structured C code generation by implementing
+simplification passes which served to refactor the output to adopt a more C-style format.
+The features I had implemented are <a href="https://github.com/angr/angr/pull/4013">cstyle_ifs</a> and
+<a href="https://github.com/angr/angr/pull/3990">cstyle_nullcmp</a>, both of which serve to reformat
+the resulting structured C code.</p>
+<h2 id="control-flow-structuring">Control Flow Structuring</h2>
+<p>The next feature I had implemented concerns itself with implementing an optimization to
+improving structuring decisions, but before we proceed I would first like to establish some
+prerequisites.</p>
 <p>There are a few semantically sound ways of structuring a CFG, each with varying tradeoffs
 and accuracy. The problem of Control Flow Structuring in this case concerns itself with what
 decisions to make and when.</p>
@@ -306,7 +315,7 @@ and handle another case shown below.</p>
 comparison into a semantically equivalent alternative in an optimization pass. It
 could also be due to the underlying implementation of the binary analysis framework
 angr and how it lifts comparisons into a higher level intermediate representation.</p>
-<p>Whatever causes the issue, the core problem remains that it affects the accuracy of our
+<p>Whichever causes the issue, the core problem remains that it affects the accuracy of our
 decompilation. The following is an example which demonstrates how the sign of a comparison
 could potentially affect Control Flow Analysis and the resulting CFG.</p>
 <table>
@@ -328,19 +337,377 @@ could potentially affect Control Flow Analysis and the resulting CFG.</p>
 </tbody>
 </table>
 <p>As we can see, the resulting structure of the decompilation does not resemble the original
-source program. The optimization pass I implemented undoes the flip present within the
-provided case and allows the simplification pass to reduce the redundant else scope as
-previously shown above.</p>
-<p>The next simplification pass I implemented was a minor adjustment in the way that the
-angr decompiler represents null comparisons. It will convert null comparisons such
-as the following: <code>if (x == 0)</code> or <code>if (x != 0)</code> into <code>if (!x)</code> and <code>if (x)</code>,
-respectively.</p>
-<p>This feature strives to improves the readability of the resulting decompilation as it
-reduces the size of the output in boolean comparisons and conditions.</p>
+source program. They are semantically equivalent, however in this scenario, we can consider
+the structuring decision made by the decompiler to be incorrect.</p>
+<p>This is what my feature attempts to mediate and in doing so allows the resulting structured
+C code generation to resemble the original source. So how is this optimization implemented
+and how does it work?</p>
+<p>Lets use the following example as a means of demonstrating the process in which the
+optimization pass takes.</p>
+<hr>
+<blockquote>
+<p>Original decompilation output</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">putchar</span><span class="p">(</span><span class="sc">&#39;a&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><hr>
+<blockquote>
+<p>The optimization flips the true and false branches of the condition node and negates the
+condition within the comparison iff the else branch does not contain any successors.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">argc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">putchar</span><span class="p">(</span><span class="sc">&#39;a&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><hr>
+<blockquote>
+<p>Now due to the fact that the <code>true</code> branch does not return, it will never fall through
+so the <code>else</code> statement is redundant. Due to this property we can completely remove the else
+branch.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">argc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">putchar</span><span class="p">(</span><span class="sc">&#39;a&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="metrics">Metrics</h2>
+<p>The example provided is very minute, however when analyzing large binaries, such a feature
+scales by reducing complexity of the resulting decompilation and in turn saving the reverse
+engineer time and cognitive load.</p>
+<p>We can utilize two relevant metrics for evaluating impact of this feature.</p>
+<ol>
+<li>The total sum of instances in which the feature triggers.</li>
+<li>The accuracy of the decompilation to the original source.</li>
+</ol>
+<p>We can measure the first quantitative metric by instrumenting the feature within angr and
+running against the coreutils test suite, this feature was triggered a total of <code>496</code> times.</p>
+<p>To briefly demonstrate the impact of the feature, I will be comparing between Angr and
+Binary Ninja&rsquo;s decompilers with the original source to measure correctness and accuracy.</p>
+<hr>
+<blockquote>
+<p>Original reformatted source of <code>od.o:skip</code></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">bool</span> <span class="nf">skip</span><span class="p">(</span><span class="kt">uintmax_t</span> <span class="n">n_skip</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">ok</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">in_errno</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">n_skip</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">in_stream</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">stat</span> <span class="n">file_stats</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">fstat</span><span class="p">(</span><span class="nf">fileno</span><span class="p">(</span><span class="n">in_stream</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">file_stats</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">bool</span> <span class="n">usable_size</span> <span class="o">=</span> <span class="nf">usable_st_size</span><span class="p">(</span><span class="o">&amp;</span><span class="n">file_stats</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">usable_size</span> <span class="o">&amp;&amp;</span> <span class="nf">ST_BLKSIZE</span><span class="p">(</span><span class="n">file_stats</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">file_stats</span><span class="p">.</span><span class="n">st_size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">((</span><span class="kt">uintmax_t</span><span class="p">)</span><span class="n">file_stats</span><span class="p">.</span><span class="n">st_size</span> <span class="o">&lt;</span> <span class="n">n_skip</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="n">n_skip</span> <span class="o">-=</span> <span class="n">file_stats</span><span class="p">.</span><span class="n">st_size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">(</span><span class="nf">fseeko</span><span class="p">(</span><span class="n">in_stream</span><span class="p">,</span> <span class="n">n_skip</span><span class="p">,</span> <span class="n">SEEK_CUR</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">in_errno</span> <span class="o">=</span> <span class="n">errno</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ok</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="n">n_skip</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">usable_size</span> <span class="o">&amp;&amp;</span> <span class="nf">fseeko</span><span class="p">(</span><span class="n">in_stream</span><span class="p">,</span> <span class="n">n_skip</span><span class="p">,</span> <span class="n">SEEK_CUR</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">n_skip</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="n">BUFSIZ</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">size_t</span> <span class="n">n_bytes_read</span><span class="p">,</span> <span class="n">n_bytes_to_read</span> <span class="o">=</span> <span class="n">BUFSIZ</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">n_skip</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">(</span><span class="n">n_skip</span> <span class="o">&lt;</span> <span class="n">n_bytes_to_read</span><span class="p">)</span> <span class="n">n_bytes_to_read</span> <span class="o">=</span> <span class="n">n_skip</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">n_bytes_read</span> <span class="o">=</span> <span class="nf">fread</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_bytes_to_read</span><span class="p">,</span> <span class="n">in_stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="n">n_skip</span> <span class="o">-=</span> <span class="n">n_bytes_read</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">(</span><span class="n">n_bytes_read</span> <span class="o">!=</span> <span class="n">n_bytes_to_read</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nf">ferror</span><span class="p">(</span><span class="n">in_stream</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="n">in_errno</span> <span class="o">=</span> <span class="n">errno</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="n">ok</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="n">n_skip</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nf">feof</span><span class="p">(</span><span class="n">in_stream</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">              <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">n_skip</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">error</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">errno</span><span class="p">,</span> <span class="s">&#34;%s&#34;</span><span class="p">,</span> <span class="nf">quotef</span><span class="p">(</span><span class="n">input_filename</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ok</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ok</span> <span class="o">&amp;=</span> <span class="nf">check_and_close</span><span class="p">(</span><span class="n">in_errno</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ok</span> <span class="o">&amp;=</span> <span class="nf">open_next_file</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">n_skip</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">die</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nf">_</span><span class="p">(</span><span class="s">&#34;cannot skip past end of combined input&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">ok</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><hr>
+<blockquote>
+<p>Binary Ninja Decompilation of <code>od.o:skip</code></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">uint64_t</span> <span class="nf">skip</span><span class="p">(</span><span class="kt">int64_t</span> <span class="n">arg1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int64_t</span> <span class="n">var_1028</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int64_t</span> <span class="n">var_1028_1</span> <span class="o">=</span> <span class="n">var_1028</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int64_t</span> <span class="n">var_2028</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int64_t</span> <span class="n">var_2028_1</span> <span class="o">=</span> <span class="n">var_2028</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span><span class="o">*</span> <span class="n">fsbase</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int64_t</span> <span class="n">rax</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int64_t</span><span class="o">*</span><span class="p">)((</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">fsbase</span> <span class="o">+</span> <span class="mh">0x28</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int64_t</span> <span class="n">rbp_1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int32_t</span> <span class="n">r12_1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">arg1</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rbp_1</span> <span class="o">=</span> <span class="n">arg1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int32_t</span> <span class="n">r13_1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">r12_1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">uint64_t</span> <span class="n">r14_2</span> <span class="o">=</span> <span class="n">in_stream</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">r14_2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">void</span> <span class="n">var_20c8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="nf">fstat</span><span class="p">(((</span><span class="kt">uint64_t</span><span class="p">)</span><span class="nf">fileno</span><span class="p">(</span><span class="n">r14_2</span><span class="p">)),</span> <span class="o">&amp;</span><span class="n">var_20c8</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int64_t</span> <span class="n">rax_14</span> <span class="o">=</span> <span class="nf">quotearg_n_style_colon</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">input_filename</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">r12_1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">error</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">((</span><span class="kt">uint64_t</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="kt">int32_t</span><span class="o">*</span><span class="p">)</span><span class="nf">__errno_location</span><span class="p">()),</span> <span class="o">&amp;</span><span class="p">.</span><span class="n">LC40</span><span class="p">,</span> <span class="n">rax_14</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int32_t</span> <span class="n">var_20b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">char</span> <span class="n">rax_13</span> <span class="o">=</span> <span class="n">usable_st_size</span><span class="p">.</span><span class="n">isra</span><span class="mf">.0</span><span class="p">(</span><span class="n">var_20b0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int64_t</span> <span class="n">var_2098</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int64_t</span> <span class="n">rdx_3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rax_13</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">rdx_3</span> <span class="o">=</span> <span class="mh">0x200</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="kt">int64_t</span> <span class="n">var_2090</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">((</span><span class="n">var_2090</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mh">0x1fffffffffffffff</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rdx_3</span> <span class="o">=</span> <span class="n">var_2090</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">(</span><span class="n">var_2098</span> <span class="o">&gt;</span> <span class="n">rdx_3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">var_2098</span> <span class="o">&lt;</span> <span class="n">rbp_1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="n">rbp_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">rbp_1</span> <span class="o">-</span> <span class="n">var_2098</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nf">rpl_fseeko</span><span class="p">(</span><span class="n">r14_2</span><span class="p">,</span> <span class="n">rbp_1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="n">rbp_1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">else</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="n">r12_1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="n">rbp_1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="n">r13_1</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int32_t</span><span class="o">*</span><span class="p">)</span><span class="nf">__errno_location</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">((</span><span class="n">rax_13</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="p">(</span><span class="n">rax_13</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">var_2098</span> <span class="o">&lt;=</span> <span class="n">rdx_3</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="kt">int32_t</span> <span class="n">rax_4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">(</span><span class="n">rax_13</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rax_4</span> <span class="o">=</span> <span class="nf">rpl_fseeko</span><span class="p">(</span><span class="n">r14_2</span><span class="p">,</span> <span class="n">rbp_1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">rax_4</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="n">rbp_1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">((</span><span class="n">rax_13</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="p">(</span><span class="n">rax_13</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">rax_4</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">int64_t</span> <span class="n">rbx_1</span> <span class="o">=</span> <span class="mh">0x2000</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">while</span> <span class="p">(</span><span class="n">rbp_1</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="k">if</span> <span class="p">(</span><span class="n">rbx_1</span> <span class="o">&gt;</span> <span class="n">rbp_1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">              <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">rbx_1</span> <span class="o">=</span> <span class="n">rbp_1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span>
+</span></span><span class="line"><span class="cl">              <span class="kt">void</span> <span class="n">var_2038</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="kt">int64_t</span> <span class="n">rax_5</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">                <span class="nf">__fread_unlocked_chk</span><span class="p">(</span><span class="o">&amp;</span><span class="n">var_2038</span><span class="p">,</span> <span class="mh">0x2000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rbx_1</span><span class="p">,</span> <span class="n">in_stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">              <span class="n">rbp_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">rbp_1</span> <span class="o">-</span> <span class="n">rax_5</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">              <span class="k">if</span> <span class="p">(</span><span class="n">rbx_1</span> <span class="o">!=</span> <span class="n">rax_5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">              <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">uint64_t</span> <span class="n">r14_1</span> <span class="o">=</span> <span class="n">in_stream</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nf">ferror_unlocked</span><span class="p">(</span><span class="n">r14_1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                  <span class="n">r12_1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                  <span class="n">rbp_1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                  <span class="n">r13_1</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int32_t</span><span class="o">*</span><span class="p">)</span><span class="nf">__errno_location</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">                  <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="nf">feof_unlocked</span><span class="p">(</span><span class="n">r14_1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                  <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">rbp_1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="n">r12_1</span> <span class="o">=</span> <span class="p">((</span><span class="n">r12_1</span> <span class="o">&amp;</span> <span class="nf">check_and_close</span><span class="p">(</span><span class="n">r13_1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="nf">open_next_file</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">rbp_1</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">error</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nf">dcgettext</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#34;cannot skip past end of combined…&#34;</span><span class="p">,</span> <span class="mi">5</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(((</span><span class="n">arg1</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">rbp_1</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="n">arg1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">r12_1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">rax</span> <span class="o">!=</span> <span class="o">*</span><span class="p">(</span><span class="kt">int64_t</span><span class="o">*</span><span class="p">)((</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">fsbase</span> <span class="o">+</span> <span class="mh">0x28</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">__stack_chk_fail</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* no return */</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="p">((</span><span class="kt">uint64_t</span><span class="p">)</span><span class="n">r12_1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><hr>
+<blockquote>
+<p>Angr Decompilation of <code>od.o:skip</code></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">in_stream</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">input_filename</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">skip</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">a0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="n">v0</span><span class="p">;</span>  <span class="c1">// [bp-0x20c8]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">char</span> <span class="n">v1</span><span class="p">;</span>  <span class="c1">// [bp-0x20b0]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">v2</span><span class="p">;</span>  <span class="c1">// [bp-0x2098]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">v3</span><span class="p">;</span>  <span class="c1">// [bp-0x2090]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">char</span> <span class="n">v4</span><span class="p">;</span>  <span class="c1">// [bp-0x2038]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">v5</span><span class="p">;</span>  <span class="c1">// [bp-0x2028]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">v6</span><span class="p">;</span>  <span class="c1">// [bp-0x1028]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span><span class="o">*</span> <span class="n">v8</span><span class="p">;</span>  <span class="c1">// rbp
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span><span class="o">*</span> <span class="n">v9</span><span class="p">;</span>  <span class="c1">// r13, Other Possible Types: unsigned long long
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">v10</span><span class="p">;</span>  <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">v11</span><span class="p">;</span>  <span class="c1">// rcx
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">v12</span><span class="p">;</span>  <span class="c1">// rbx
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">v13</span><span class="p">;</span>  <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">v14</span><span class="p">;</span>  <span class="c1">// r12, Other Possible Types: void*
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">v15</span><span class="p">;</span>  <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="n">v6</span> <span class="o">=</span> <span class="n">v6</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v5</span> <span class="o">=</span> <span class="n">v5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">a0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v8</span> <span class="o">=</span> <span class="n">a0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v9</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v14</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">in_stream</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">fstat</span><span class="p">(</span><span class="nf">fileno</span><span class="p">(</span><span class="n">in_stream</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">v0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">v14</span> <span class="o">=</span> <span class="nf">quotearg_n_style_colon</span><span class="p">(</span><span class="mh">0x0</span><span class="p">,</span> <span class="mh">0x3</span><span class="p">,</span> <span class="n">input_filename</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="o">*</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">v14</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">error</span><span class="p">(</span><span class="mh">0x0</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="nf">__errno_location</span><span class="p">()),</span> <span class="s">&#34;%s&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="n">v10</span> <span class="o">=</span> <span class="n">usable_st_size</span><span class="p">.</span><span class="n">isra</span><span class="mf">.0</span><span class="p">(</span><span class="o">*</span><span class="p">((</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">v1</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="n">v10</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="n">v11</span> <span class="o">=</span> <span class="n">v2</span><span class="p">,</span> <span class="n">v2</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">v3</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="mi">2305843009213693951</span><span class="o">?</span> <span class="nl">v3</span> <span class="p">:</span> <span class="mh">0x200</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">((</span><span class="kt">char</span><span class="p">)</span><span class="n">v10</span> <span class="o">||</span> <span class="nf">rpl_fseeko</span><span class="p">(</span><span class="n">in_stream</span><span class="p">,</span> <span class="n">v8</span><span class="p">,</span> <span class="mh">0x1</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v12</span> <span class="o">=</span> <span class="mh">0x2000</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">v8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">              <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">v12</span> <span class="o">=</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">v12</span> <span class="o">&lt;=</span> <span class="n">v8</span><span class="p">)</span><span class="o">?</span> <span class="nl">v8</span> <span class="p">:</span> <span class="n">v12</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">v13</span> <span class="o">=</span> <span class="nf">__fread_unlocked_chk</span><span class="p">(</span><span class="o">&amp;</span><span class="n">v4</span><span class="p">,</span> <span class="mh">0x2000</span><span class="p">,</span> <span class="mh">0x1</span><span class="p">,</span> <span class="n">v12</span><span class="p">,</span> <span class="n">in_stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">v8</span> <span class="o">-=</span> <span class="n">v13</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">v12</span> <span class="o">==</span> <span class="n">v13</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">              <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nf">ferror_unlocked</span><span class="p">(</span><span class="n">in_stream</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="n">v14</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="n">v8</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="o">*</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">v9</span><span class="p">)</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="nf">__errno_location</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">              <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nf">feof_unlocked</span><span class="p">(</span><span class="n">in_stream</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v8</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">v11</span> <span class="o">&lt;</span> <span class="n">v8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v8</span> <span class="o">-=</span> <span class="n">v11</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">rpl_fseeko</span><span class="p">(</span><span class="n">in_stream</span><span class="p">,</span> <span class="n">v8</span><span class="p">,</span> <span class="mh">0x1</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v8</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">v14</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">v8</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">v9</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="nf">__errno_location</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">v8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">v15</span> <span class="o">=</span> <span class="nf">check_and_close</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">v9</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">v14</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">v14</span> <span class="o">&amp;</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">v15</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">v14</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">v14</span> <span class="o">&amp;</span> <span class="nf">open_next_file</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">v8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">error</span><span class="p">(</span><span class="mh">0x1</span><span class="p">,</span> <span class="mh">0x0</span><span class="p">,</span> <span class="nf">dcgettext</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="s">&#34;cannot skip past end of combined input&#34;</span><span class="p">,</span> <span class="mh">0x5</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">v14</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>By comparing each side by side, we can see that the structuring of the angr decompiler now
+that the feature has been implemented largely resembles that of the source code. Thanks
+to the removal of the redundant else scope, we have decompilation which is much more
+correct and accurate.</p>
+<p>The <a href="https://github.com/angr/angr/pull/4004">simplified_else</a> optimizations implementation
+is contained with this merged pull request if you would like more details.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>In the future I plan on further advancing my knowledge in specific Control Flow Structuring
-analyses and algorithms which exist within the public domain. I plan to document my findings
-and progress in the next part of this series.</p>
+<p>I want to thank my amazing mentor Zion and the amazing people at SEFCOM for providing me the
+opportunity to study under their guidance.</p>
+<p>Throughout the course of the internship I&rsquo;ve been able to learn a great deal about the field
+of decompilation as well as getting hands on with the internals of Angr.</p>
 <p>Thanks for reading! (<em>´▽`</em>)</p>
 <h2 id="references">References</h2>
 <div class="footnotes" role="doc-endnotes">
