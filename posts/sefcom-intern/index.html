@@ -53,7 +53,7 @@
         },
         "datePublished": "2023-07-09",
         "description": "",
-        "wordCount":  2547 ,
+        "wordCount":  2628 ,
         "mainEntityOfPage": "True",
         "dateModified": "2023-07-09",
         "image": {
@@ -165,13 +165,15 @@ stroke-linejoin="round" class="feather feather-home">
             </header>
             <div class="page-content">
                 <hr>
-<p>This summer I am attending a high school research internship at the
-<a href="https://sefcom.asu.edu/">SEFCOM</a> lab with Zion Basque <a href="https://twitter.com/mahal0z">(mahaloz)</a>
-serving as my mentor. Within this post I will document my work and findings throughout the
-course of the internship, as well as various insights I have acquired as a result.</p>
-<p>My current work within the internship has largely centered around implementing additional
-optimization and simplification passes to the <a href="https://github.com/angr/angr">angr</a> decompiler
-with the goal of improving structuring decisions in decompilation.</p>
+<p>This summer I had decided to attend a high school research internship at the
+<a href="https://sefcom.asu.edu/">SEFCOM</a> lab with Zion Basque also known as
+<a href="https://twitter.com/mahal0z">mahaloz</a> serving as my mentor. Within this post I will
+document my work and findings throughout the course of the internship, as well as
+various insights I have acquired as a result.</p>
+<p>My work throughout the course of the internship has largely centered around implementing
+additional  optimization and simplification passes in the <a href="https://github.com/angr/angr">angr</a>
+decompiler with the goal of correctness and improving control flow structuring decisions in
+decompilation.</p>
 <h2 id="background">Background</h2>
 <p>As a bit of background, decompilation<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> is the process of translating and deoptimizing low
 level code into higher level constructs. This allows a human to more efficiently analyze
@@ -260,19 +262,33 @@ level language we are targeting).</li>
 to improve the recovered source code.</li>
 </ul>
 <h2 id="structured-c-code-formatting">Structured C Code Formatting</h2>
-<p>The work that I&rsquo;ve currently completed within the internship concerns itself with improving
-decompilation output via optimizations and simplification passes within the angr decompiler.
-The purpose behind these passes was to increase the accuracy of the original source by
-affecting structuring decisions within the decompiler.</p>
 <p>My first tasks generally revolved improving the structured C code generation by implementing
 simplification passes which served to refactor the output to adopt a more C-style format.
 The features I had implemented are <a href="https://github.com/angr/angr/pull/4013">cstyle_ifs</a> and
 <a href="https://github.com/angr/angr/pull/3990">cstyle_nullcmp</a>, both of which serve to reformat
 the resulting structured C code.</p>
+<p>Each of these reformatting don&rsquo;t actually affect structuring decisions, below is an
+example of both features.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>This code is fine, but we can also represent it in a semantically equivalent form as
+follows which follows a more C-style format.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>We can see converts the condition to utilize the unary negation operator and removes the
+braces in the presence of a single statement. Each are fairly simple aesthetic features,
+but it makes the resulting decompilation look much more readable in my opinion.</p>
 <h2 id="control-flow-structuring">Control Flow Structuring</h2>
 <p>The next feature I had implemented concerns itself with implementing an optimization to
-improving structuring decisions, but before we proceed I would first like to establish some
-prerequisites.</p>
+improving structuring decisions which serve to improve the accuracy and correctness, but
+before we proceed I would first like to establish some prerequisites.</p>
 <p>There are a few semantically sound ways of structuring a CFG, each with varying tradeoffs
 and accuracy. The problem of Control Flow Structuring in this case concerns itself with what
 decisions to make and when.</p>
@@ -390,8 +406,8 @@ engineer time and cognitive load.</p>
 </ol>
 <p>We can measure the first quantitative metric by instrumenting the feature within angr and
 running against the coreutils test suite, this feature was triggered a total of <code>496</code> times.</p>
-<p>To briefly demonstrate the impact of the feature, I will be comparing between Angr and
-Binary Ninja&rsquo;s decompilers with the original source to measure correctness and accuracy.</p>
+<p>For our second metric, we can measure accuracy of our decompilation by comparing between angr
+and Binary Ninja&rsquo;s decompilers with the original source to measure correctness and accuracy.</p>
 <hr>
 <blockquote>
 <p>Original reformatted source of <code>od.o:skip</code></p>
@@ -704,8 +720,8 @@ correct and accurate.</p>
 <p>The <a href="https://github.com/angr/angr/pull/4004">simplified_else</a> optimizations implementation
 is contained with this merged pull request if you would like more details.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>I want to thank my amazing mentor Zion as well as the people at SEFCOM for providing me the
-opportunity to study under their guidance.</p>
+<p>Lastly I want to thank my amazing mentor Zion as well as the people at SEFCOM for providing
+me the opportunity to study under their guidance.</p>
 <p>Throughout the course of the internship I&rsquo;ve been able to learn a great deal about the field
 of decompilation, as well as enabling me to work on the internals angr.</p>
 <p>Thanks for reading! (<em>´▽`</em>)</p>
