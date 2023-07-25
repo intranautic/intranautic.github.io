@@ -53,7 +53,7 @@
         },
         "datePublished": "2023-07-09",
         "description": "",
-        "wordCount":  2588 ,
+        "wordCount":  2667 ,
         "mainEntityOfPage": "True",
         "dateModified": "2023-07-09",
         "image": {
@@ -67,7 +67,7 @@
     }
     </script>
 
-  <meta name="generator" content="Hugo 0.112.3">
+  <meta name="generator" content="Hugo 0.115.4">
 
   
 
@@ -400,12 +400,34 @@ engineer time and cognitive load.</p>
 <p>We can utilize two relevant metrics for evaluating impact of this feature.</p>
 <ol>
 <li>The total sum of instances in which the feature triggers.</li>
-<li>The accuracy of the decompilation to the original source.</li>
+<li>The quantity of scopes present within decompilation.</li>
 </ol>
 <p>We can measure the first quantitative metric by instrumenting the feature within angr and
 running against the coreutils test suite, this feature was triggered a total of <code>496</code> times.</p>
-<p>For our second metric, we can measure accuracy of our decompilation by comparing between angr
-and Binary Ninja&rsquo;s decompilers with the original source to measure correctness and accuracy.</p>
+<p>The next metric can be evaluated by comparing the results of the angr decompiler with that of
+Binary Ninja&rsquo;s commercially licensed decompiler. The results were attained by putting both
+decompilers up against the coreutils test suite and measuring the quantity of scopes present
+within the decompilation.</p>
+<table>
+<thead>
+<tr>
+<th>Original Source</th>
+<th>Binary Ninja</th>
+<th>Angr Decompiler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7259</td>
+<td>19513</td>
+<td>14821</td>
+</tr>
+</tbody>
+</table>
+<p>In total, we beat Binary Ninja in this metric by a total margin of 4692 scopes, which is
+quantitatively more accurate to the original source code of the coreutils test suite.</p>
+<p>We can also measure accuracy of our decompilation by comparing between angr and Binary Ninja&rsquo;s
+decompilers with the original source to measure correctness.</p>
 <hr>
 <blockquote>
 <p>Original reformatted source of <code>od.o:skip</code></p>
