@@ -14,7 +14,7 @@
       
       <guid>https://intranautic.com/posts/sefcom-intern/</guid>
       <description>This summer I had decided to attend a high school research internship at the SEFCOM lab with Zion Basque also known as mahaloz serving as my mentor. Within this post I will document my work and findings throughout the course of the internship, as well as various insights I have acquired as a result.
-My work throughout the course of the internship has largely centered around implementing additional optimization and simplification passes in the angr decompiler with the goal of correctness and improving control flow structuring decisions in decompilation.</description>
+My work throughout the course of the internship was largely centered around implementing simplifcation passes with the goal of improving readability.</description>
     </item>
     
     <item>
