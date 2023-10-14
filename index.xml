@@ -39,7 +39,7 @@ Arch: amd64-64-little RELRO: Partial RELRO Stack: No canary found NX: NX enabled
       
       <guid>https://intranautic.com/posts/sigreturn-oriented-programming/</guid>
       <description>Throughout the years, there have been a multitude of techniques which arose to take advantage of and exploit various mechanisms present within software. One such technique takes advantage of the signal handling routine of Unix based operating systems to gain arbitrary code execution.
-Within this post, I will be covering the technique known as sigreturn oriented programming, as well as various properties it possesses which allows us to construct a weird machine.</description>
+Within this post, I will be covering the technique known as sigreturn oriented programming, but first we need to gain a fundamental understanding of what signals are and their implementation within Unix based systems.</description>
     </item>
     
     <item>
@@ -75,7 +75,7 @@ This post is primarily an in depth analysis and a collection of notes which I ha
       <description>Hello, I’m Intranautic. (￣▽￣)ノ
 My interests include programming, compiler theory, theoretical computer science, program analysis, vulnerability research and playing CTFs ∈ {pwn, rev} with Shellphish.
 Feel free to look around, this site is primarily a place to store and archive challenge writeups, explanations, notes on topics I’m currently researching, or just rants.
-If you want to reach out to me, you can do so via one of the contacts below or directly via discord @ intranautic#9885.</description>
+If you want to reach out to me, you can do so via one of the contacts below or directly via discord @intranautic.</description>
     </item>
     
   </channel>
