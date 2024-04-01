@@ -6,22 +6,20 @@
     <description>Recent content in Posts on Intranautic</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 09 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://intranautic.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 09 Jul 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://intranautic.com/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>SEFCOM Research Internship</title>
       <link>https://intranautic.com/posts/sefcom-intern/</link>
       <pubDate>Sun, 09 Jul 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://intranautic.com/posts/sefcom-intern/</guid>
       <description>This summer I had decided to attend a high school research internship at the SEFCOM lab with Zion Basque also known as mahaloz serving as my mentor. Within this post I will document my work and findings throughout the course of the internship, as well as various insights I have acquired as a result.
 My work throughout the course of the internship was largely centered around implementing simplifcation passes with the goal of improving readability.</description>
     </item>
-    
     <item>
       <title>Pwnable.tw: Unexploitable</title>
       <link>https://intranautic.com/posts/pwnabletw-unexploitable/</link>
       <pubDate>Sun, 02 Apr 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://intranautic.com/posts/pwnabletw-unexploitable/</guid>
       <description>unexploitable [500 pts]
 The original challenge is on pwnable.kr and it is solvable.
@@ -31,22 +29,18 @@ unexploitable libc.so
 Initial Analysis By running checksec, we can view the protections and memory corruption mitigations enabled on this binary.
 Arch: amd64-64-little RELRO: Partial RELRO Stack: No canary found NX: NX enabled PIE: No PIE (0x400000) As we can see, the only protection enable is NX, which means the stack is non executable.</description>
     </item>
-    
     <item>
       <title>Sigreturn Oriented Programming</title>
       <link>https://intranautic.com/posts/sigreturn-oriented-programming/</link>
       <pubDate>Mon, 27 Feb 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://intranautic.com/posts/sigreturn-oriented-programming/</guid>
       <description>Throughout the years, there have been a multitude of techniques which arose to take advantage of and exploit various mechanisms present within software. One such technique takes advantage of the signal handling routine of Unix based operating systems to gain arbitrary code execution.
-Within this post, I will be covering the technique known as sigreturn oriented programming, but first we need to gain a fundamental understanding of what signals are and their implementation within Unix based systems.</description>
+Within this post, I will be covering the technique known as sigreturn oriented programming, as well as various properties it possesses which allows us to construct a weird machine.</description>
     </item>
-    
     <item>
       <title>Pwnable.tw: Secret Garden</title>
       <link>https://intranautic.com/posts/pwnabletw-secretgarden/</link>
       <pubDate>Tue, 03 Jan 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://intranautic.com/posts/pwnabletw-secretgarden/</guid>
       <description>Secret Garden [350 pts]
 Find the flag in the garden.
@@ -55,16 +49,13 @@ secretgarden libc.so secretgarden.bndb
 Initial Analysis When initially executing the binary, we can see that we are prompted with the following menu.
 ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ Secret Garden ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ 1 .</description>
     </item>
-    
     <item>
       <title>Glibc PTMalloc Internals</title>
       <link>https://intranautic.com/posts/glibc-ptmalloc-internals/</link>
       <pubDate>Thu, 08 Dec 2022 00:00:00 +0000</pubDate>
-      
       <guid>https://intranautic.com/posts/glibc-ptmalloc-internals/</guid>
       <description>The GNU C Library is a complex library, and it&amp;rsquo;s default memory allocator PTMalloc (Posix Thread aware malloc) is no exception to this rule. Within this blog post, I will attempt to document the internals of this allocator, as well as it&amp;rsquo;s evolution throughout the years.
 This post is primarily an in depth analysis and a collection of notes which I have amassed throughout the years of being bombarded with heapnote challenges.</description>
     </item>
-    
   </channel>
 </rss>

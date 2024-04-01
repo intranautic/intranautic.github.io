@@ -67,7 +67,7 @@
     }
     </script>
 
-  <meta name="generator" content="Hugo 0.119.0">
+  <meta name="generator" content="Hugo 0.120.1">
 
   
 
@@ -165,27 +165,14 @@ stroke-linejoin="round" class="feather feather-home">
             </header>
             <div class="page-content">
                 <hr>
-<p>This summer I had decided to attend a high school research internship at the
-<a href="https://sefcom.asu.edu/">SEFCOM</a> lab with Zion Basque also known as
-<a href="https://twitter.com/mahal0z">mahaloz</a> serving as my mentor. Within this post I will
-document my work and findings throughout the course of the internship, as well as
-various insights I have acquired as a result.</p>
-<p>My work throughout the course of the internship was largely centered around implementing
-simplifcation passes with the goal of improving readability. I had implemented it within
-the <a href="https://github.com/angr/angr">angr</a> decompiler.</p>
+<p>This summer I had decided to attend a high school research internship at the <a href="https://sefcom.asu.edu/">SEFCOM</a> lab with Zion Basque also known as
+<a href="https://twitter.com/mahal0z">mahaloz</a> serving as my mentor. Within this post I will document my work and findings throughout the course of the internship, as well as various insights I have acquired as a result.</p>
+<p>My work throughout the course of the internship was largely centered around implementing simplifcation passes with the goal of improving readability. I had implemented it within the <a href="https://github.com/angr/angr">angr</a> decompiler.</p>
 <h2 id="background">Background</h2>
-<p>As a bit of background, decompilation<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> is the process of lifting and simplifying low
-level code into higher level constructs. This allows a human to more efficiently analyze
-such abstractions which serves to aid in the process of static binary analysis and source
-code recovery.</p>
-<p>In the directed and lossy process of compilation, information is invariably lost as a result
-such as type information, comments, preprocessor directives (inlined and expanded before
-compilation), symbol names (when stripped) and more.</p>
-<p>Aggressive optimizations are known to potentially mutate the original structure and control
-flow of the program into an entirely separate CFG, yet still manage to preserve the same
-semantic properties as the original, making decompilation more difficult<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
-<p>This can lead to less accurate decompilation output due to the fact that structuring relies
-heavily on the accuracy of Control Flow Recovery.</p>
+<p>As a bit of background, decompilation<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> is the process of lifting and simplifying low level code into higher level constructs. This allows a human to more efficiently analyze such abstractions which serves to aid in the process of static binary analysis and source code recovery.</p>
+<p>In the directed and lossy process of compilation, information is invariably lost as a result such as type information, comments, preprocessor directives (inlined and expanded before compilation), symbol names (when stripped) and more.</p>
+<p>Aggressive optimizations are known to potentially mutate the original structure and control flow of the program into an entirely separate CFG, yet still manage to preserve the same semantic properties as the original, making decompilation more difficult<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>.</p>
+<p>This can lead to less accurate decompilation output due to the fact that structuring relies heavily on the accuracy of Control Flow Recovery.</p>
 <p>The decompilation process generally follows a similar pipeline documented below.</p>
 <ol>
 <li>Lifting Phase</li>
@@ -790,7 +777,7 @@ of decompilation, as well as enabling me to work on the internals angr.</p>
 </svg>
 </a></div>
     <small class="footer_copyright">
-        © 2023 Intranautic.
+        © 2024 Intranautic.
     </small>
 </footer>
 
