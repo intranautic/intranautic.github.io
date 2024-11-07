@@ -19,6 +19,8 @@
 <meta property="og:locale" content="en-us" />
 <meta name="language" content="en-us" />
 
+  <link rel="alternate" hreflang="en" href="https://intranautic.com/posts/glibc-ptmalloc-internals/" title="" />
+
 
 
   <meta itemprop="image" content="https://intranautic.com/" />
@@ -32,7 +34,6 @@
     
     
     
-    
 
     <meta property="og:type" content="article" />
     <meta property="og:article:published_time" content=2022-12-08T00:00:00Z />
@@ -42,36 +43,14 @@
 
     
 
-    <script defer type="application/ld+json">
-    {
-        "@context": "http://schema.org",
-        "@type": "Article",
-        "headline": "Glibc PTMalloc Internals",
-        "author": {
-        "@type": "Person",
-        "name": ""
-        },
-        "datePublished": "2022-12-08",
-        "description": "",
-        "wordCount":  6795 ,
-        "mainEntityOfPage": "True",
-        "dateModified": "2022-12-08",
-        "image": {
-        "@type": "imageObject",
-        "url": ""
-        },
-        "publisher": {
-        "@type": "Organization",
-        "name": "Intranautic"
-        }
-    }
-    </script>
 
-  <meta name="generator" content="Hugo 0.120.1">
+
+
+  <meta name="generator" content="Hugo 0.134.2">
 
   
 
-  <link rel="canonical" href="https://intranautic.com/posts/glibc-ptmalloc-internals/"><link href="/sass/main.min.c77c7ad0a46dcfb51094685f36f8e514ea028149c999c501d10d677e86ba8b95.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+  <link rel="canonical" href="https://intranautic.com/posts/glibc-ptmalloc-internals/"><link href="/sass/main.min.3b44fe6994688f9ba825d879b8c72754ccf0ed1a5da171db5a4d27a4e9747c31.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
 
   
 
@@ -89,8 +68,7 @@
   <link rel="icon" type="image/svg+xml" href="/images/favicon/favicon.svg">
 
   
-    </head><body data-theme = "dark" class="notransition">
-<script src="https://intranautic.com/js/themeLoader.min.4e9e1a253d543bbfec02e7f2460d9621e719fd739dc8a5256faa91cda6e12e03.js"></script><div class="navbar" role="navigation">
+    </head><body data-theme = "dark" class="notransition"><div class="navbar" role="navigation">
   <nav class="menu" aria-label="Main Navigation">
     <a href="/" class="logo">
       <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
@@ -116,7 +94,7 @@ stroke-linejoin="round" class="feather feather-home">
             <a 
             class="menu-link "
             href="/">
-            Home
+            /home
             </a>
             
           </li>
@@ -125,7 +103,7 @@ stroke-linejoin="round" class="feather feather-home">
             <a 
             class="menu-link active"
             href="/posts/">
-            Posts
+            /posts
             </a>
             
           </li>
@@ -134,21 +112,12 @@ stroke-linejoin="round" class="feather feather-home">
             <a 
             class="menu-link "
             href="/about/">
-            About
+            /about
             </a>
             
           </li>
         
-        <li class="menu-separator">
-          <span>|</span>
-        </li>
       </ul>
-      <a id="mode" href="#">
-        <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
-<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
-        <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
-<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
-      </a>
     </div>
   </nav>
 </div>
@@ -457,50 +426,50 @@ approximately logarithmically spaced. What follows is a table which lists the
 size ranges of each group of large bin, as well as the quantity of bins that
 belong to each group.</p>
 <table>
-<thead>
-<tr>
-<th>Group</th>
-<th>Quantity of Bins</th>
-<th>Spacing</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>32 bins</td>
-<td>64 bytes</td>
-</tr>
-<tr>
-<td>2</td>
-<td>16 bins</td>
-<td>512 bytes</td>
-</tr>
-<tr>
-<td>3</td>
-<td>8 bins</td>
-<td>4096 bytes</td>
-</tr>
-<tr>
-<td>4</td>
-<td>4 bins</td>
-<td>32768 bytes</td>
-</tr>
-<tr>
-<td>5</td>
-<td>2 bins</td>
-<td>262144 bytes</td>
-</tr>
-<tr>
-<td>6</td>
-<td>1 bin</td>
-<td>what&rsquo;s left / infinite</td>
-</tr>
-<tr>
-<td>total: 63 large bins</td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th style="text-align: left">Group</th>
+          <th style="text-align: left">Quantity of Bins</th>
+          <th style="text-align: left">Spacing</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">1</td>
+          <td style="text-align: left">32 bins</td>
+          <td style="text-align: left">64 bytes</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2</td>
+          <td style="text-align: left">16 bins</td>
+          <td style="text-align: left">512 bytes</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">3</td>
+          <td style="text-align: left">8 bins</td>
+          <td style="text-align: left">4096 bytes</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">4</td>
+          <td style="text-align: left">4 bins</td>
+          <td style="text-align: left">32768 bytes</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">5</td>
+          <td style="text-align: left">2 bins</td>
+          <td style="text-align: left">262144 bytes</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">6</td>
+          <td style="text-align: left">1 bin</td>
+          <td style="text-align: left">what&rsquo;s left / infinite</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">total: 63 large bins</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left"></td>
+      </tr>
+  </tbody>
 </table>
 <p>So the range in which the large bin is capable of holding in total is between
 sizes 512 bytes to 128 kilobytes, which is when the memory allocator uses mmap
@@ -958,100 +927,100 @@ implemented through the development of the allocator, as well as a brief descrip
 them. To see the full implementation of each of these checks, you can search for the
 error string within the source.</p>
 <table>
-<thead>
-<tr>
-<th>Symbol</th>
-<th>Check</th>
-<th>Error</th>
-<th>Version</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>_int_malloc</td>
-<td>verify that the entry being removed from fastbin is within size range.</td>
-<td>malloc(): memory corruption (fast)</td>
-<td>2.23+</td>
-</tr>
-<tr>
-<td>_int_malloc</td>
-<td>check the size of the entries within the unsorted bin. verify that size is less than or equals 2 * SIZE_SZ and larger than av-&gt;system_mem.</td>
-<td>malloc(): memory corruption</td>
-<td>2.23+</td>
-</tr>
-<tr>
-<td>unlink</td>
-<td>verify that the fd and bk pointers of the chunk we want to remove from the free list dont point to itself.</td>
-<td>corrupted double-linked list</td>
-<td>2.23+</td>
-</tr>
-<tr>
-<td>unlink</td>
-<td>if the chunk is not within the small bin range, check if the fd_nextsize and bk_nextsize point to itself.</td>
-<td>corrupted double-linked list (not small)</td>
-<td>2.23+</td>
-</tr>
-<tr>
-<td>unlink</td>
-<td>check if the current chunks size is equal to the mchunk_prev_size field of the next chunk. this check essentially ensures that the size of the current chunk is valid according to the free list.</td>
-<td>corrupted size vs. prev_size</td>
-<td>2.26+</td>
-</tr>
-<tr>
-<td>_int_malloc</td>
-<td>when removing a chunk from the small bin, check to see if the chunk is actually part of the free list. it does this by ensuring that the victim-&gt;bk-&gt;fd is equal to victim.</td>
-<td>malloc(): smallbin double linked list corrupted</td>
-<td>2.27+</td>
-</tr>
-<tr>
-<td>_int_malloc</td>
-<td>when splitting a chunk in the unsorted bin and inserting the last remainder chunk back into the free list, check if next chunks bk pointer is equal to the current chunk.</td>
-<td>malloc(): corrupted unsorted chunks</td>
-<td>2.27+</td>
-</tr>
-<tr>
-<td>_int_free</td>
-<td>check to see if the cached chunk within the fastbin has a valid size</td>
-<td>free(): invalid next size (fast)</td>
-<td>2.27+</td>
-</tr>
-<tr>
-<td>_int_free</td>
-<td>checks that the chunk on the top of the fastbin is not the same as the chunk being inserted. this is used to prevent consecutive double frees from occurring.</td>
-<td>double free or corruption (fasttop)</td>
-<td>2.27+</td>
-</tr>
-<tr>
-<td>_int_free</td>
-<td>checks that the size of the fast bin chunk at the top is the same size as the chunk that we are inserting into the free list.</td>
-<td>invalid fastbin entry (free)</td>
-<td>2.27+</td>
-</tr>
-<tr>
-<td>_int_free</td>
-<td>verifies that the chunk we want to free is not a pointer to the top chunk.</td>
-<td>double free or corruption (top)</td>
-<td>2.27+</td>
-</tr>
-<tr>
-<td>_int_free</td>
-<td>check whether the chunk we want to free is within the boundaries of the heap arena.</td>
-<td>double free or corruption (out)</td>
-<td>2.27+</td>
-</tr>
-<tr>
-<td>_int_free</td>
-<td>check if the chunk we want to free is in use via the IS_INUSE bit.</td>
-<td>double free or corruption (!prev)</td>
-<td>2.27+</td>
-</tr>
-<tr>
-<td>_int_free</td>
-<td>when placing chunks into the unsorted bin, verify that the next chunk&rsquo;s bk pointer is equal to the current chunk. this simply checks if the free list which the unsorted bin is maintaining has not been corrupted.</td>
-<td>free(): corrupted unsorted chunks</td>
-<td>2.27+</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th style="text-align: left">Symbol</th>
+          <th style="text-align: left">Check</th>
+          <th style="text-align: left">Error</th>
+          <th style="text-align: left">Version</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">_int_malloc</td>
+          <td style="text-align: left">verify that the entry being removed from fastbin is within size range.</td>
+          <td style="text-align: left">malloc(): memory corruption (fast)</td>
+          <td style="text-align: left">2.23+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">_int_malloc</td>
+          <td style="text-align: left">check the size of the entries within the unsorted bin. verify that size is less than or equals 2 * SIZE_SZ and larger than av-&gt;system_mem.</td>
+          <td style="text-align: left">malloc(): memory corruption</td>
+          <td style="text-align: left">2.23+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">unlink</td>
+          <td style="text-align: left">verify that the fd and bk pointers of the chunk we want to remove from the free list dont point to itself.</td>
+          <td style="text-align: left">corrupted double-linked list</td>
+          <td style="text-align: left">2.23+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">unlink</td>
+          <td style="text-align: left">if the chunk is not within the small bin range, check if the fd_nextsize and bk_nextsize point to itself.</td>
+          <td style="text-align: left">corrupted double-linked list (not small)</td>
+          <td style="text-align: left">2.23+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">unlink</td>
+          <td style="text-align: left">check if the current chunks size is equal to the mchunk_prev_size field of the next chunk. this check essentially ensures that the size of the current chunk is valid according to the free list.</td>
+          <td style="text-align: left">corrupted size vs. prev_size</td>
+          <td style="text-align: left">2.26+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">_int_malloc</td>
+          <td style="text-align: left">when removing a chunk from the small bin, check to see if the chunk is actually part of the free list. it does this by ensuring that the victim-&gt;bk-&gt;fd is equal to victim.</td>
+          <td style="text-align: left">malloc(): smallbin double linked list corrupted</td>
+          <td style="text-align: left">2.27+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">_int_malloc</td>
+          <td style="text-align: left">when splitting a chunk in the unsorted bin and inserting the last remainder chunk back into the free list, check if next chunks bk pointer is equal to the current chunk.</td>
+          <td style="text-align: left">malloc(): corrupted unsorted chunks</td>
+          <td style="text-align: left">2.27+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">_int_free</td>
+          <td style="text-align: left">check to see if the cached chunk within the fastbin has a valid size</td>
+          <td style="text-align: left">free(): invalid next size (fast)</td>
+          <td style="text-align: left">2.27+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">_int_free</td>
+          <td style="text-align: left">checks that the chunk on the top of the fastbin is not the same as the chunk being inserted. this is used to prevent consecutive double frees from occurring.</td>
+          <td style="text-align: left">double free or corruption (fasttop)</td>
+          <td style="text-align: left">2.27+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">_int_free</td>
+          <td style="text-align: left">checks that the size of the fast bin chunk at the top is the same size as the chunk that we are inserting into the free list.</td>
+          <td style="text-align: left">invalid fastbin entry (free)</td>
+          <td style="text-align: left">2.27+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">_int_free</td>
+          <td style="text-align: left">verifies that the chunk we want to free is not a pointer to the top chunk.</td>
+          <td style="text-align: left">double free or corruption (top)</td>
+          <td style="text-align: left">2.27+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">_int_free</td>
+          <td style="text-align: left">check whether the chunk we want to free is within the boundaries of the heap arena.</td>
+          <td style="text-align: left">double free or corruption (out)</td>
+          <td style="text-align: left">2.27+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">_int_free</td>
+          <td style="text-align: left">check if the chunk we want to free is in use via the IS_INUSE bit.</td>
+          <td style="text-align: left">double free or corruption (!prev)</td>
+          <td style="text-align: left">2.27+</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">_int_free</td>
+          <td style="text-align: left">when placing chunks into the unsorted bin, verify that the next chunk&rsquo;s bk pointer is equal to the current chunk. this simply checks if the free list which the unsorted bin is maintaining has not been corrupted.</td>
+          <td style="text-align: left">free(): corrupted unsorted chunks</td>
+          <td style="text-align: left">2.27+</td>
+      </tr>
+  </tbody>
 </table>
 <h2 id="conclusion">Conclusion</h2>
 <hr>
@@ -1061,7 +1030,7 @@ references below. I would highly recommend reading through the source code of th
 allocator as it provides great documentation on its implementation.</p>
 <p>I will also be detailing various techniques which specifically target the metadata
 of PTMalloc to gain various exploit primitives, so stay tuned for that.</p>
-<p>Thanks for reading and I hope that this has been helpful, good luck ヾ(<em>&lsquo;▽&rsquo;</em>).</p>
+<p>Thanks for reading and I hope that this has been helpful, good luck ヾ(<em>&rsquo;▽&rsquo;</em>).</p>
 <h2 id="references">References</h2>
 <hr>
 <pre tabindex="0"><code>https://ctf-wiki.mahaloz.re/
@@ -1135,11 +1104,11 @@ https://github.com/shellphish/how2heap/
     <path d="M4 4a16 16 0 0 1 16 16" />
     <circle cx="5" cy="19" r="1" />
 </svg>
-</a></div>
+</a>
+</div>
     <small class="footer_copyright">
         © 2024 Intranautic.
     </small>
 </footer>
-
-<script src="https://intranautic.com/js/themeSwitchnMenu.min.2a402288242b6930b175a0722c267e2353055739b3975834df35e56d00dd8f50.js"></script></body>
+</body>
 </html>

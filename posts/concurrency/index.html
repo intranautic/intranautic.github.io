@@ -4,22 +4,22 @@
 <meta http-equiv="content-type" content="text/html">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title itemprop="name">About | Intranautic</title>
-<meta property="og:title" content="About | Intranautic" />
-<meta name="twitter:title" content="About | Intranautic" />
-<meta itemprop="name" content="About | Intranautic" />
-<meta name="application-name" content="About | Intranautic" />
+<title itemprop="name">Concurrency: Primer and Patterns | Intranautic</title>
+<meta property="og:title" content="Concurrency: Primer and Patterns | Intranautic" />
+<meta name="twitter:title" content="Concurrency: Primer and Patterns | Intranautic" />
+<meta itemprop="name" content="Concurrency: Primer and Patterns | Intranautic" />
+<meta name="application-name" content="Concurrency: Primer and Patterns | Intranautic" />
 <meta property="og:site_name" content="The Information Machine" />
 
-<meta name="description" content="Hello, I&#39;m Intranautic">
-<meta itemprop="description" content="Hello, I&#39;m Intranautic" />
-<meta property="og:description" content="Hello, I&#39;m Intranautic" />
-<meta name="twitter:description" content="Hello, I&#39;m Intranautic" />
+<meta name="description" content="">
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
 
 <meta property="og:locale" content="en-us" />
 <meta name="language" content="en-us" />
 
-  <link rel="alternate" hreflang="en" href="https://intranautic.com/about/" title="" />
+  <link rel="alternate" hreflang="en" href="https://intranautic.com/posts/concurrency/" title="" />
 
 
 
@@ -31,12 +31,26 @@
 
 
 
+    
+    
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:article:published_time" content=2024-01-08T00:00:00Z />
+    <meta property="article:published_time" content=2024-01-08T00:00:00Z />
+
+    
+
+    
+
+
+
 
   <meta name="generator" content="Hugo 0.134.2">
 
   
 
-  <link rel="canonical" href="https://intranautic.com/about/"><link href="/sass/main.min.3b44fe6994688f9ba825d879b8c72754ccf0ed1a5da171db5a4d27a4e9747c31.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+  <link rel="canonical" href="https://intranautic.com/posts/concurrency/"><link href="/sass/main.min.3b44fe6994688f9ba825d879b8c72754ccf0ed1a5da171db5a4d27a4e9747c31.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
 
   
 
@@ -87,7 +101,7 @@ stroke-linejoin="round" class="feather feather-home">
         
           <li>
             <a 
-            class="menu-link "
+            class="menu-link active"
             href="/posts/">
             /posts
             </a>
@@ -96,7 +110,7 @@ stroke-linejoin="round" class="feather feather-home">
         
           <li>
             <a 
-            class="menu-link active"
+            class="menu-link "
             href="/about/">
             /about
             </a>
@@ -112,27 +126,61 @@ stroke-linejoin="round" class="feather feather-home">
     <main class="page-content" aria-label="Content">
         <article>
             <header class="header">
-                <h1 class="header-title">About</h1>
+                <h1 class="header-title">Concurrency: Primer and Patterns</h1>
                 
                 <div class="post-meta">
-                    <time datetime="0001-01-01T00:00:00&#43;00:00" itemprop="datePublished"> Jan 1, 0001 </time>
+                    <time datetime="2024-01-08T00:00:00&#43;00:00" itemprop="datePublished"> Jan 8, 2024 </time>
                 </div>
             </header>
             <div class="page-content">
-                <p>Hello, I’m Intranautic. (￣▽￣)ノ</p>
-<p>My interests include programming, compiler theory, theoretical computer science,
-program analysis, vulnerability research and playing CTFs ∈ {pwn, rev} with Shellphish.</p>
-<p>Feel free to look around, this site is primarily a place to store and archive challenge writeups, explanations, notes on topics I’m currently researching, or just rants.</p>
-<p>If you want to reach out to me, you can do so via one of the contacts below or directly
-via discord @intranautic.</p>
-<h2 id="publications">Publications</h2>
+                <hr>
+<h2 id="preface">Preface</h2>
+<p>I decided to write this as a means of both consolidating my own intuition of concurrency as well as provide an all-encompassing and intuitive perspective on the topic.</p>
+<p>My goal is to provide a bottom-up approach to understanding concurrency, as oftentimes one is first introduced to the topic via high-level concurrent patterns without first formalising their intuition on the concept.</p>
+<p>I&rsquo;ll be covering both the practical and theoretical aspects of concurrent programming and implementation patterns, as well as how these systems and models interact. I hope that in providing a structured and generally intuitive explication, we can both exercise and better establish our understandings of concurrency.</p>
+<h2 id="motivation">Motivation</h2>
+<p>As we all know, programming as a discipline and computation as a science has experienced tremendous growth throughout the decades. Such developments in computing has lead to drastically larger and more efficient volumes of computational power and complexity. This, as a result, necessitates a plethora of programmatic patterns and constructs to optimally utilize the available resources in a scalable and maintainable manner.</p>
+<p>Gone are the days in which computing was confined to pen and paper: that of computational automata, formal systems and well-defined arithmetic. Today, modern computing has developed hundreds of thousands of innovative advancements; with it, the introduction of time-sharing/multi-tasking and multi-core/parallel processing.</p>
+<p>However, alongside emerges a new set of complexities which the programmer must now contend with. As a result, concurrent patterns began to emerge allowing for powerful primitives and solutions to various programmatic and control structuring problems which cant be adequately expressed via synchronous and procedural styles. This post aims to provide a complete and self contained primer on the fundamental concepts and techniques used to implement concurrency, as well as its major applications.</p>
+<p>A common motivating example occurs when an i/o bound condition is reached, during which our computation cannot progress as it stalls until the completion of a data operation. The effective latency and throughput of our program is therefore bottlenecked by the data bandwidth, a problem which concurrency serves to mitigate.</p>
+<h2 id="foundations">Foundations</h2>
+<p>Every programming language and its associated ecosystem serves to target a abstract machine:<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> the model in which our program will operate within. Such abstract machines can be formally defined as computational automata. However, the specifics will be omitted due to irrelevance. Formal automata serve as the most abstract models of computation, serendipidously enabling utility in a mathematical context while simultaneously ignoring the physical aspects of the hardware we are intimately concerned with.</p>
+<p>What we are interested in is the modern process architectures which generally follow the well known Von Neumann Model<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, disregarding the more specialized/parallelized computing systems. Keep in mind that modern hardware at the lowest level bears little resemblance to this architecture, rather serving to model the space in which our programmable &ldquo;machine&rdquo; operates within userland.</p>
+<p>The most fundamental control flow model we are all familiar with are synchronous routines (which are technically asynchronous, we will delve into why later). If you havent already familiarized yourself with the underlying execution model and control flow mechanisms of computer architecture you should do so. All concepts will be presented at a high level so the various discrepancies between the vast sea of ISAs should be mitigated.</p>
+<p>Within a synchronous routine, there are two distinct parties involved: that of the caller (the routine invoking the call) and the callee (the subroutine being called). In order to allow for such control flow, the program utilizes the call stack to store the local frame as well as the return address. Each invoked routine will contain a frame which resides on the call stack, when the routine returns the previous context is restored and execution resumes.</p>
+<p>This model of control flow is asymmetric, wherein the caller can only invoke the callee subroutine in a directed manner. Keep in mind that if even if the callee invokes the routine of the caller, it will allocate a new frame and therefore a new routine, thereby making it asymmetric.</p>
+<h2 id="what-is-concurrency">What is Concurrency?</h2>
+<p>Parallelism and concurrency are two very intertwined concepts, often being applied in tandem leading to more confusion. There are many such definitions for concurrency which apply to a single subset or model but do not encapsulate the concept in total fidelity. One such example is the following exerpt from &ldquo;C++ Concurrency in Action&rdquo; (Williams, 2012, 1.1 What is concurrency?).</p>
 <blockquote>
-<p>Ahoy SAILR! There is No Need to DREAM of C: A Compiler-Aware Structuring Algorithm for Binary Decompilation</p>
-<p>Zion Leonahenahe Basque, Ati Priya Bajaj, Wil Gibbs, Jude O’Kain, Derron Miao, Tiffany Bao, Adam Doupé, Yan Shoshitaishvili, Ruoyu Wang</p>
-<p>Proceedings of the USENIX Security Symposium, Philadelphia, USA August 2024.</p>
-<p><a href="https://github.com/mahaloz/angr-sailr">github</a>
-<a href="https://www.usenix.org/system/files/sec23winter-prepub-301-basque.pdf">pdf</a></p>
+<p>&ldquo;At the simplest and most basic level, concurrency is about two or more separate activities happening at the same time. We encounter concurrency as a natural part of life; we can walk and talk at the same time or perform different actions with each hand, and of course we each go about our lives independently of each other—you can watch football while I go swimming, and so on.&rdquo;</p>
 </blockquote>
+<p>There is an important distinction to be made from parallelism, which is the effective simultaneous execution of multiple threads within the process. A concurrent program can be single-threaded, event-driven or in the books example, parallelized; with the important distinction being that concurrency doesn&rsquo;t imply parallelism.</p>
+<p>More strictly, concurrency is the decomposition of a program, algorithm or routines execution structure into individual units which can operate independently while producing deterministic results. Put simply, it is the ability to compute independent units on overlapping time quantums as opposed to executing synchronously.</p>
+<p>The books purpose is to provide a pragmatic perspective on concurrent programming as the C++ STL often utilizes parallelism to achieve concurrency to preserve the programming model. This is done as a single-threaded concurrent model would require non-blocking i/o operations and an event-driven/synchronous model of execution Therefore, it is understandable to loosely define a subset of concurrency, but this practice often leads to greater confusion and a fundamental misconception within the reader.</p>
+<h2 id="flynns-taxonomy">Flynn&rsquo;s Taxonomy</h2>
+<h2 id="time-and-multitasking">Time and Multitasking</h2>
+<h2 id="coroutines">Coroutines</h2>
+<h2 id="functional-programming-and-concurrency">Functional Programming and Concurrency</h2>
+<h2 id="continuations">Continuations</h2>
+<h2 id="generators">Generators</h2>
+<h2 id="producers-and-consumers">Producers and Consumers</h2>
+<h2 id="futures-and-promises">Futures and Promises</h2>
+<h2 id="channels-and-pipelines">Channels and Pipelines</h2>
+<h2 id="event-loops">Event Loops</h2>
+<h2 id="reactor-and-proactor-pattern">Reactor and Proactor pattern</h2>
+<h2 id="conclusion">Conclusion</h2>
+<h2 id="references">References</h2>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://en.wikipedia.org/wiki/Abstract_machine">https://en.wikipedia.org/wiki/Abstract_machine</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://en.wikipedia.org/wiki/Von_Neumann_architecture">https://en.wikipedia.org/wiki/Von_Neumann_architecture</a>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
 
             </div>
         </article>

@@ -2,17 +2,47 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://intranautic.com/posts/ecc-cryptography/</loc>
+    <lastmod>2024-03-21T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://intranautic.com/</loc>
-    <lastmod>2023-07-09T00:00:00+00:00</lastmod>
+    <lastmod>2024-03-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://intranautic.com/posts/</loc>
-    <lastmod>2023-07-09T00:00:00+00:00</lastmod>
+    <lastmod>2024-03-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://intranautic.com/posts/concurrency/</loc>
+    <lastmod>2024-01-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://intranautic.com/posts/operational-semantics/</loc>
+    <lastmod>2023-11-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://intranautic.com/posts/dataflow-analysis/</loc>
+    <lastmod>2023-11-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://intranautic.com/posts/ret2dlresolve/</loc>
+    <lastmod>2023-11-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://intranautic.com/posts/move-semantics/</loc>
+    <lastmod>2023-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://intranautic.com/posts/sefcom-intern/</loc>
     <lastmod>2023-07-09T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://intranautic.com/posts/file-struct-pwn/</loc>
+    <lastmod>2023-05-02T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://intranautic.com/posts/symbolic-execution/</loc>
+    <lastmod>2023-04-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://intranautic.com/posts/dynamic-taint-analysis/</loc>
+    <lastmod>2023-04-28T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://intranautic.com/posts/pwnabletw-unexploitable/</loc>
     <lastmod>2023-04-02T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://intranautic.com/posts/the-lambda-calculus/</loc>
+    <lastmod>2023-03-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://intranautic.com/posts/sigreturn-oriented-programming/</loc>
     <lastmod>2023-02-27T00:00:00+00:00</lastmod>
@@ -22,6 +52,16 @@
   </url><url>
     <loc>https://intranautic.com/posts/glibc-ptmalloc-internals/</loc>
     <lastmod>2022-12-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://intranautic.com/posts/attacking-tcache/</loc>
+  </url><url>
+    <loc>https://intranautic.com/posts/computability-and-complexity/</loc>
+  </url><url>
+    <loc>https://intranautic.com/posts/heap-off-by-one/</loc>
+  </url><url>
+    <loc>https://intranautic.com/posts/heap-unlink-pwn/</loc>
+  </url><url>
+    <loc>https://intranautic.com/posts/microarchitecture-pwn/</loc>
   </url><url>
     <loc>https://intranautic.com/about/</loc>
   </url>
