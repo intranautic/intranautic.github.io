@@ -6,50 +6,8 @@
     <description>Recent content in Home on Intranautic</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 21 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Jul 2023 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://intranautic.com/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Elliptic Curve Cryptography</title>
-      <link>https://intranautic.com/posts/ecc-cryptography/</link>
-      <pubDate>Thu, 21 Mar 2024 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/ecc-cryptography/</guid>
-      <description>&lt;hr&gt;</description>
-    </item>
-    <item>
-      <title>Concurrency: Primer and Patterns</title>
-      <link>https://intranautic.com/posts/concurrency/</link>
-      <pubDate>Mon, 08 Jan 2024 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/concurrency/</guid>
-      <description>&lt;hr&gt;&#xA;&lt;h2 id=&#34;preface&#34;&gt;Preface&lt;/h2&gt;&#xA;&lt;p&gt;I decided to write this as a means of both consolidating my own intuition of concurrency as well as provide an all-encompassing and intuitive perspective on the topic.&lt;/p&gt;&#xA;&lt;p&gt;My goal is to provide a bottom-up approach to understanding concurrency, as oftentimes one is first introduced to the topic via high-level concurrent patterns without first formalising their intuition on the concept.&lt;/p&gt;&#xA;&lt;p&gt;I&amp;rsquo;ll be covering both the practical and theoretical aspects of concurrent programming and implementation patterns, as well as how these systems and models interact. I hope that in providing a structured and generally intuitive explication, we can both exercise and better establish our understandings of concurrency.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Operational Semantics</title>
-      <link>https://intranautic.com/posts/operational-semantics/</link>
-      <pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/operational-semantics/</guid>
-      <description>&lt;hr&gt;</description>
-    </item>
-    <item>
-      <title>Dataflow Analysis</title>
-      <link>https://intranautic.com/posts/dataflow-analysis/</link>
-      <pubDate>Sun, 12 Nov 2023 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/dataflow-analysis/</guid>
-      <description>&lt;hr&gt;</description>
-    </item>
-    <item>
-      <title>Ret2dl_resolve Technique</title>
-      <link>https://intranautic.com/posts/ret2dlresolve/</link>
-      <pubDate>Thu, 09 Nov 2023 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/ret2dlresolve/</guid>
-      <description>&lt;hr&gt;</description>
-    </item>
-    <item>
-      <title>C&#43;&#43; Move Semantics</title>
-      <link>https://intranautic.com/posts/move-semantics/</link>
-      <pubDate>Sun, 05 Nov 2023 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/move-semantics/</guid>
-      <description>&lt;hr&gt;&#xA;&lt;p&gt;Generally, C++ is commonly referred to as one of the most difficult languages and ecosystems to master due to the various renditions and additions to its fundamental design and development. The cost for abstraction is complexity, and serendipitously C++ has no shortage of either as the language gradually matured over the decades.&lt;/p&gt;&#xA;&lt;p&gt;One of the more vexing aspects of the language to understand lies in its semantics, largely due to its more nuanced and implicit nature. As such rules often arent explicitly defined or visible to the programmer we are left to our wits, intuition and the words of the compiler to guide us.&lt;/p&gt;</description>
-    </item>
     <item>
       <title>SEFCOM Research Internship</title>
       <link>https://intranautic.com/posts/sefcom-intern/</link>
@@ -58,39 +16,11 @@
       <description>&lt;hr&gt;&#xA;&lt;p&gt;This summer I had decided to attend a high school research internship at the &lt;a href=&#34;https://sefcom.asu.edu/&#34;&gt;SEFCOM&lt;/a&gt; lab with Zion Basque also known as&#xA;&lt;a href=&#34;https://twitter.com/mahal0z&#34;&gt;mahaloz&lt;/a&gt; serving as my mentor. Within this post I will document my work and findings throughout the course of the internship, as well as various insights I have acquired as a result.&lt;/p&gt;&#xA;&lt;p&gt;My work throughout the course of the internship was largely centered around implementing simplifcation passes with the goal of improving readability. I had implemented it within the &lt;a href=&#34;https://github.com/angr/angr&#34;&gt;angr&lt;/a&gt; decompiler.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>File Structure Exploitation</title>
-      <link>https://intranautic.com/posts/file-struct-pwn/</link>
-      <pubDate>Tue, 02 May 2023 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/file-struct-pwn/</guid>
-      <description>&lt;hr&gt;</description>
-    </item>
-    <item>
-      <title>Symbolic Execution</title>
-      <link>https://intranautic.com/posts/symbolic-execution/</link>
-      <pubDate>Sat, 29 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/symbolic-execution/</guid>
-      <description>&lt;hr&gt;</description>
-    </item>
-    <item>
-      <title>Dynamic Taint Analysis</title>
-      <link>https://intranautic.com/posts/dynamic-taint-analysis/</link>
-      <pubDate>Fri, 28 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/dynamic-taint-analysis/</guid>
-      <description>&lt;hr&gt;</description>
-    </item>
-    <item>
       <title>Pwnable.tw: Unexploitable</title>
       <link>https://intranautic.com/posts/pwnabletw-unexploitable/</link>
       <pubDate>Sun, 02 Apr 2023 00:00:00 +0000</pubDate>
       <guid>https://intranautic.com/posts/pwnabletw-unexploitable/</guid>
       <description>&lt;hr&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;unexploitable [500 pts]&lt;/p&gt;&#xA;&lt;p&gt;The original challenge is on pwnable.kr and it is solvable.&lt;/p&gt;&#xA;&lt;p&gt;This time we fix the vulnerability and now we promise that the service is unexploitable.&lt;/p&gt;&#xA;&lt;p&gt;nc chall.pwnable.tw 10403&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://pwnable.tw/static/chall/unexploitable&#34;&gt;unexploitable&lt;/a&gt;&#xA;&lt;a href=&#34;https://pwnable.tw/static/libc/libc_64.so.6&#34;&gt;libc.so&lt;/a&gt;&lt;/p&gt;&#xA;&lt;/blockquote&gt;&#xA;&lt;h1 id=&#34;initial-analysis&#34;&gt;Initial Analysis&lt;/h1&gt;&#xA;&lt;p&gt;By running &lt;code&gt;checksec&lt;/code&gt;, we can view the protections and memory corruption mitigations&#xA;enabled on this binary.&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Arch:     amd64-64-little&#xA;RELRO:    Partial RELRO&#xA;Stack:    No canary found&#xA;NX:       NX enabled&#xA;PIE:      No PIE (0x400000)&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;As we can see, the only protection enable is NX, which means the stack is non executable.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>The Lambda Calculus</title>
-      <link>https://intranautic.com/posts/the-lambda-calculus/</link>
-      <pubDate>Sun, 12 Mar 2023 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/the-lambda-calculus/</guid>
-      <description>&lt;hr&gt;</description>
     </item>
     <item>
       <title>Sigreturn Oriented Programming</title>
@@ -112,41 +42,6 @@
       <pubDate>Thu, 08 Dec 2022 00:00:00 +0000</pubDate>
       <guid>https://intranautic.com/posts/glibc-ptmalloc-internals/</guid>
       <description>&lt;hr&gt;&#xA;&lt;p&gt;The GNU C Library is a complex library, and it&amp;rsquo;s default memory allocator PTMalloc&#xA;(Posix Thread aware malloc) is no exception to this rule. Within this blog post, I&#xA;will attempt to document the internals of this allocator, as well as it&amp;rsquo;s evolution&#xA;throughout the years.&lt;/p&gt;&#xA;&lt;p&gt;This post is primarily an in depth analysis and a collection of notes which I have&#xA;amassed throughout the years of being bombarded with heapnote challenges. I am creating&#xA;this post partially for my sake as its become very difficult to keep track of the&#xA;differences between each version of Glibc without some form of reference.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title></title>
-      <link>https://intranautic.com/posts/attacking-tcache/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/attacking-tcache/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title></title>
-      <link>https://intranautic.com/posts/computability-and-complexity/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/computability-and-complexity/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title></title>
-      <link>https://intranautic.com/posts/heap-off-by-one/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/heap-off-by-one/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title></title>
-      <link>https://intranautic.com/posts/heap-unlink-pwn/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/heap-unlink-pwn/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title></title>
-      <link>https://intranautic.com/posts/microarchitecture-pwn/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://intranautic.com/posts/microarchitecture-pwn/</guid>
-      <description></description>
     </item>
     <item>
       <title>About</title>
