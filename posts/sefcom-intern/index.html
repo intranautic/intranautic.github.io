@@ -46,11 +46,11 @@
 
 
 
-  <meta name="generator" content="Hugo 0.134.2">
+  <meta name="generator" content="Hugo 0.145.0">
 
   
 
-  <link rel="canonical" href="https://intranautic.com/posts/sefcom-intern/"><link href="/sass/main.min.3b44fe6994688f9ba825d879b8c72754ccf0ed1a5da171db5a4d27a4e9747c31.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+  <link rel="canonical" href="https://intranautic.com/posts/sefcom-intern/"><link href="/sass/main.min.07a3f0f6189ea46a3c50d3d165a0947645a3d057493266d18987ba97529e48c3.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
 
   
 
@@ -133,8 +133,7 @@ stroke-linejoin="round" class="feather feather-home">
                 </div>
             </header>
             <div class="page-content">
-                <hr>
-<p>This summer I had decided to attend a high school research internship at the <a href="https://sefcom.asu.edu/">SEFCOM</a> lab with Zion Basque also known as
+                <p>This summer I had decided to attend a high school research internship at the <a href="https://sefcom.asu.edu/">SEFCOM</a> lab with Zion Basque also known as
 <a href="https://twitter.com/mahal0z">mahaloz</a> serving as my mentor. Within this post I will document my work and findings throughout the course of the internship, as well as various insights I have acquired as a result.</p>
 <p>My work throughout the course of the internship was largely centered around implementing simplifcation passes with the goal of improving readability. I had implemented it within the <a href="https://github.com/angr/angr">angr</a> decompiler.</p>
 <h2 id="background">Background</h2>
@@ -235,18 +234,18 @@ consider the following example.</p>
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Original Source CFG</th>
-          <th style="text-align: left">Decompilation CFG</th>
+          <th>Original Source CFG</th>
+          <th>Decompilation CFG</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left"><img src="/assets/img/sefcom-original.png" alt=""></td>
-          <td style="text-align: left"><img src="/assets/img/sefcom-decomp.png" alt=""></td>
+          <td><img src="/assets/img/sefcom-original.png" alt=""></td>
+          <td><img src="/assets/img/sefcom-decomp.png" alt=""></td>
       </tr>
       <tr>
-          <td style="text-align: left"><img src="/assets/img/graph1.png" alt=""></td>
-          <td style="text-align: left"><img src="/assets/img/graph2.png" alt=""></td>
+          <td><img src="/assets/img/graph1.png" alt=""></td>
+          <td><img src="/assets/img/graph2.png" alt=""></td>
       </tr>
   </tbody>
 </table>
@@ -262,8 +261,7 @@ contains any successors. By doing so we can identify if the branch exits from th
 optimization pass takes.</p>
 <hr>
 <blockquote>
-<p>Original decompilation output</p>
-</blockquote>
+<p>Original decompilation output</p></blockquote>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">    <span class="nf">putchar</span><span class="p">(</span><span class="sc">&#39;a&#39;</span><span class="p">);</span>
@@ -274,8 +272,7 @@ optimization pass takes.</p>
 </span></span></code></pre></div><hr>
 <blockquote>
 <p>The optimization flips the true and false branches of the condition node and negates the
-condition within the comparison iff the else branch does not contain any successors.</p>
-</blockquote>
+condition within the comparison iff the else branch does not contain any successors.</p></blockquote>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">argc</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
@@ -287,8 +284,7 @@ condition within the comparison iff the else branch does not contain any success
 <blockquote>
 <p>Now due to the fact that the <code>true</code> branch does not return, it will never fall through
 so the <code>else</code> statement is redundant. Due to this property we can completely remove the else
-branch.</p>
-</blockquote>
+branch.</p></blockquote>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">argc</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
@@ -341,8 +337,7 @@ instances in which the optimization was able to remove a redundant else scope.</
 decompilers with the original source to measure correctness.</p>
 <hr>
 <blockquote>
-<p>Original reformatted source of <code>od.o:skip</code></p>
-</blockquote>
+<p>Original reformatted source of <code>od.o:skip</code></p></blockquote>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">bool</span> <span class="nf">skip</span><span class="p">(</span><span class="kt">uintmax_t</span> <span class="n">n_skip</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">ok</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">in_errno</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -409,8 +404,7 @@ decompilers with the original source to measure correctness.</p>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><hr>
 <blockquote>
-<p>Binary Ninja Decompilation of <code>od.o:skip</code></p>
-</blockquote>
+<p>Binary Ninja Decompilation of <code>od.o:skip</code></p></blockquote>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">uint64_t</span> <span class="nf">skip</span><span class="p">(</span><span class="kt">int64_t</span> <span class="n">arg1</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">int64_t</span> <span class="n">var_1028</span><span class="p">;</span>
@@ -539,8 +533,7 @@ decompilers with the original source to measure correctness.</p>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><hr>
 <blockquote>
-<p>Angr Decompilation of <code>od.o:skip</code></p>
-</blockquote>
+<p>Angr Decompilation of <code>od.o:skip</code></p></blockquote>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">in_stream</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">char</span> <span class="n">input_filename</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
@@ -747,7 +740,7 @@ of decompilation, as well as enabling me to work on the internals angr.</p>
 </a>
 </div>
     <small class="footer_copyright">
-        © 2024 Intranautic.
+        © 2025 Intranautic.
     </small>
 </footer>
 </body>

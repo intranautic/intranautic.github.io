@@ -46,11 +46,11 @@
 
 
 
-  <meta name="generator" content="Hugo 0.134.2">
+  <meta name="generator" content="Hugo 0.145.0">
 
   
 
-  <link rel="canonical" href="https://intranautic.com/posts/glibc-ptmalloc-internals/"><link href="/sass/main.min.3b44fe6994688f9ba825d879b8c72754ccf0ed1a5da171db5a4d27a4e9747c31.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+  <link rel="canonical" href="https://intranautic.com/posts/glibc-ptmalloc-internals/"><link href="/sass/main.min.07a3f0f6189ea46a3c50d3d165a0947645a3d057493266d18987ba97529e48c3.css" rel="stylesheet"><link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
 
   
 
@@ -133,8 +133,7 @@ stroke-linejoin="round" class="feather feather-home">
                 </div>
             </header>
             <div class="page-content">
-                <hr>
-<p>The GNU C Library is a complex library, and it&rsquo;s default memory allocator PTMalloc
+                <p>The GNU C Library is a complex library, and it&rsquo;s default memory allocator PTMalloc
 (Posix Thread aware malloc) is no exception to this rule. Within this blog post, I
 will attempt to document the internals of this allocator, as well as it&rsquo;s evolution
 throughout the years.</p>
@@ -428,46 +427,46 @@ belong to each group.</p>
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Group</th>
-          <th style="text-align: left">Quantity of Bins</th>
-          <th style="text-align: left">Spacing</th>
+          <th>Group</th>
+          <th>Quantity of Bins</th>
+          <th>Spacing</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">1</td>
-          <td style="text-align: left">32 bins</td>
-          <td style="text-align: left">64 bytes</td>
+          <td>1</td>
+          <td>32 bins</td>
+          <td>64 bytes</td>
       </tr>
       <tr>
-          <td style="text-align: left">2</td>
-          <td style="text-align: left">16 bins</td>
-          <td style="text-align: left">512 bytes</td>
+          <td>2</td>
+          <td>16 bins</td>
+          <td>512 bytes</td>
       </tr>
       <tr>
-          <td style="text-align: left">3</td>
-          <td style="text-align: left">8 bins</td>
-          <td style="text-align: left">4096 bytes</td>
+          <td>3</td>
+          <td>8 bins</td>
+          <td>4096 bytes</td>
       </tr>
       <tr>
-          <td style="text-align: left">4</td>
-          <td style="text-align: left">4 bins</td>
-          <td style="text-align: left">32768 bytes</td>
+          <td>4</td>
+          <td>4 bins</td>
+          <td>32768 bytes</td>
       </tr>
       <tr>
-          <td style="text-align: left">5</td>
-          <td style="text-align: left">2 bins</td>
-          <td style="text-align: left">262144 bytes</td>
+          <td>5</td>
+          <td>2 bins</td>
+          <td>262144 bytes</td>
       </tr>
       <tr>
-          <td style="text-align: left">6</td>
-          <td style="text-align: left">1 bin</td>
-          <td style="text-align: left">what&rsquo;s left / infinite</td>
+          <td>6</td>
+          <td>1 bin</td>
+          <td>what&rsquo;s left / infinite</td>
       </tr>
       <tr>
-          <td style="text-align: left">total: 63 large bins</td>
-          <td style="text-align: left"></td>
-          <td style="text-align: left"></td>
+          <td>total: 63 large bins</td>
+          <td></td>
+          <td></td>
       </tr>
   </tbody>
 </table>
@@ -929,96 +928,96 @@ error string within the source.</p>
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Symbol</th>
-          <th style="text-align: left">Check</th>
-          <th style="text-align: left">Error</th>
-          <th style="text-align: left">Version</th>
+          <th>Symbol</th>
+          <th>Check</th>
+          <th>Error</th>
+          <th>Version</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">_int_malloc</td>
-          <td style="text-align: left">verify that the entry being removed from fastbin is within size range.</td>
-          <td style="text-align: left">malloc(): memory corruption (fast)</td>
-          <td style="text-align: left">2.23+</td>
+          <td>_int_malloc</td>
+          <td>verify that the entry being removed from fastbin is within size range.</td>
+          <td>malloc(): memory corruption (fast)</td>
+          <td>2.23+</td>
       </tr>
       <tr>
-          <td style="text-align: left">_int_malloc</td>
-          <td style="text-align: left">check the size of the entries within the unsorted bin. verify that size is less than or equals 2 * SIZE_SZ and larger than av-&gt;system_mem.</td>
-          <td style="text-align: left">malloc(): memory corruption</td>
-          <td style="text-align: left">2.23+</td>
+          <td>_int_malloc</td>
+          <td>check the size of the entries within the unsorted bin. verify that size is less than or equals 2 * SIZE_SZ and larger than av-&gt;system_mem.</td>
+          <td>malloc(): memory corruption</td>
+          <td>2.23+</td>
       </tr>
       <tr>
-          <td style="text-align: left">unlink</td>
-          <td style="text-align: left">verify that the fd and bk pointers of the chunk we want to remove from the free list dont point to itself.</td>
-          <td style="text-align: left">corrupted double-linked list</td>
-          <td style="text-align: left">2.23+</td>
+          <td>unlink</td>
+          <td>verify that the fd and bk pointers of the chunk we want to remove from the free list dont point to itself.</td>
+          <td>corrupted double-linked list</td>
+          <td>2.23+</td>
       </tr>
       <tr>
-          <td style="text-align: left">unlink</td>
-          <td style="text-align: left">if the chunk is not within the small bin range, check if the fd_nextsize and bk_nextsize point to itself.</td>
-          <td style="text-align: left">corrupted double-linked list (not small)</td>
-          <td style="text-align: left">2.23+</td>
+          <td>unlink</td>
+          <td>if the chunk is not within the small bin range, check if the fd_nextsize and bk_nextsize point to itself.</td>
+          <td>corrupted double-linked list (not small)</td>
+          <td>2.23+</td>
       </tr>
       <tr>
-          <td style="text-align: left">unlink</td>
-          <td style="text-align: left">check if the current chunks size is equal to the mchunk_prev_size field of the next chunk. this check essentially ensures that the size of the current chunk is valid according to the free list.</td>
-          <td style="text-align: left">corrupted size vs. prev_size</td>
-          <td style="text-align: left">2.26+</td>
+          <td>unlink</td>
+          <td>check if the current chunks size is equal to the mchunk_prev_size field of the next chunk. this check essentially ensures that the size of the current chunk is valid according to the free list.</td>
+          <td>corrupted size vs. prev_size</td>
+          <td>2.26+</td>
       </tr>
       <tr>
-          <td style="text-align: left">_int_malloc</td>
-          <td style="text-align: left">when removing a chunk from the small bin, check to see if the chunk is actually part of the free list. it does this by ensuring that the victim-&gt;bk-&gt;fd is equal to victim.</td>
-          <td style="text-align: left">malloc(): smallbin double linked list corrupted</td>
-          <td style="text-align: left">2.27+</td>
+          <td>_int_malloc</td>
+          <td>when removing a chunk from the small bin, check to see if the chunk is actually part of the free list. it does this by ensuring that the victim-&gt;bk-&gt;fd is equal to victim.</td>
+          <td>malloc(): smallbin double linked list corrupted</td>
+          <td>2.27+</td>
       </tr>
       <tr>
-          <td style="text-align: left">_int_malloc</td>
-          <td style="text-align: left">when splitting a chunk in the unsorted bin and inserting the last remainder chunk back into the free list, check if next chunks bk pointer is equal to the current chunk.</td>
-          <td style="text-align: left">malloc(): corrupted unsorted chunks</td>
-          <td style="text-align: left">2.27+</td>
+          <td>_int_malloc</td>
+          <td>when splitting a chunk in the unsorted bin and inserting the last remainder chunk back into the free list, check if next chunks bk pointer is equal to the current chunk.</td>
+          <td>malloc(): corrupted unsorted chunks</td>
+          <td>2.27+</td>
       </tr>
       <tr>
-          <td style="text-align: left">_int_free</td>
-          <td style="text-align: left">check to see if the cached chunk within the fastbin has a valid size</td>
-          <td style="text-align: left">free(): invalid next size (fast)</td>
-          <td style="text-align: left">2.27+</td>
+          <td>_int_free</td>
+          <td>check to see if the cached chunk within the fastbin has a valid size</td>
+          <td>free(): invalid next size (fast)</td>
+          <td>2.27+</td>
       </tr>
       <tr>
-          <td style="text-align: left">_int_free</td>
-          <td style="text-align: left">checks that the chunk on the top of the fastbin is not the same as the chunk being inserted. this is used to prevent consecutive double frees from occurring.</td>
-          <td style="text-align: left">double free or corruption (fasttop)</td>
-          <td style="text-align: left">2.27+</td>
+          <td>_int_free</td>
+          <td>checks that the chunk on the top of the fastbin is not the same as the chunk being inserted. this is used to prevent consecutive double frees from occurring.</td>
+          <td>double free or corruption (fasttop)</td>
+          <td>2.27+</td>
       </tr>
       <tr>
-          <td style="text-align: left">_int_free</td>
-          <td style="text-align: left">checks that the size of the fast bin chunk at the top is the same size as the chunk that we are inserting into the free list.</td>
-          <td style="text-align: left">invalid fastbin entry (free)</td>
-          <td style="text-align: left">2.27+</td>
+          <td>_int_free</td>
+          <td>checks that the size of the fast bin chunk at the top is the same size as the chunk that we are inserting into the free list.</td>
+          <td>invalid fastbin entry (free)</td>
+          <td>2.27+</td>
       </tr>
       <tr>
-          <td style="text-align: left">_int_free</td>
-          <td style="text-align: left">verifies that the chunk we want to free is not a pointer to the top chunk.</td>
-          <td style="text-align: left">double free or corruption (top)</td>
-          <td style="text-align: left">2.27+</td>
+          <td>_int_free</td>
+          <td>verifies that the chunk we want to free is not a pointer to the top chunk.</td>
+          <td>double free or corruption (top)</td>
+          <td>2.27+</td>
       </tr>
       <tr>
-          <td style="text-align: left">_int_free</td>
-          <td style="text-align: left">check whether the chunk we want to free is within the boundaries of the heap arena.</td>
-          <td style="text-align: left">double free or corruption (out)</td>
-          <td style="text-align: left">2.27+</td>
+          <td>_int_free</td>
+          <td>check whether the chunk we want to free is within the boundaries of the heap arena.</td>
+          <td>double free or corruption (out)</td>
+          <td>2.27+</td>
       </tr>
       <tr>
-          <td style="text-align: left">_int_free</td>
-          <td style="text-align: left">check if the chunk we want to free is in use via the IS_INUSE bit.</td>
-          <td style="text-align: left">double free or corruption (!prev)</td>
-          <td style="text-align: left">2.27+</td>
+          <td>_int_free</td>
+          <td>check if the chunk we want to free is in use via the IS_INUSE bit.</td>
+          <td>double free or corruption (!prev)</td>
+          <td>2.27+</td>
       </tr>
       <tr>
-          <td style="text-align: left">_int_free</td>
-          <td style="text-align: left">when placing chunks into the unsorted bin, verify that the next chunk&rsquo;s bk pointer is equal to the current chunk. this simply checks if the free list which the unsorted bin is maintaining has not been corrupted.</td>
-          <td style="text-align: left">free(): corrupted unsorted chunks</td>
-          <td style="text-align: left">2.27+</td>
+          <td>_int_free</td>
+          <td>when placing chunks into the unsorted bin, verify that the next chunk&rsquo;s bk pointer is equal to the current chunk. this simply checks if the free list which the unsorted bin is maintaining has not been corrupted.</td>
+          <td>free(): corrupted unsorted chunks</td>
+          <td>2.27+</td>
       </tr>
   </tbody>
 </table>
@@ -1107,7 +1106,7 @@ https://github.com/shellphish/how2heap/
 </a>
 </div>
     <small class="footer_copyright">
-        © 2024 Intranautic.
+        © 2025 Intranautic.
     </small>
 </footer>
 </body>
